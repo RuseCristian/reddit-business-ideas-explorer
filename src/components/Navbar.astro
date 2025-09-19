@@ -1,0 +1,325 @@
+---
+import ClerkNav from "./ClerkNav.tsx";
+---
+
+<nav class="navbar">
+    <div class="nav-container">
+        <!-- Logo -->
+        <div class="nav-logo">
+            <a href="/" class="logo-link">
+                <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <path
+                        d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                    ></path>
+                </svg>
+                <span class="logo-text">Spark</span>
+            </a>
+        </div>
+
+        <div class="nav-actions">
+            <ClerkNav client:load />
+            
+            <button
+                id="theme-toggle"
+                class="nav-btn theme-toggle"
+                aria-label="Toggle theme"
+                title="Toggle between light and dark theme"
+            >
+                <div class="btn-icon">
+                    <svg
+                        class="sun-icon"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <path
+                            d="m12 1 0 2m0 18 0 2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12l2 0m18 0 2 0M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                        ></path>
+                    </svg>
+                    <svg
+                        class="moon-icon"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+                        ></path>
+                    </svg>
+                </div>
+                <span class="btn-text">Theme</span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<style lang="scss" is:global>
+    // ===== NAVBAR CONTAINER =====
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: var(--bg-secondary);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    // ===== NAVIGATION LAYOUT =====
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        @media (max-width: 768px) {
+            padding: 1rem;
+        }
+    }
+
+    // ===== LOGO SECTION =====
+    .nav-logo {
+        // Logo link styles
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: scale(1.05);
+            }
+        }
+
+        // Logo icon
+        .logo-link svg {
+            color: var(--accent-primary);
+        }
+
+        // Logo text - hide on mobile
+        .logo-text {
+            @media (max-width: 480px) {
+                display: none;
+            }
+        }
+    }
+
+    // ===== NAVIGATION ACTIONS =====
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    // ===== USER SECTION =====
+    .user-section {
+        display: flex;
+        align-items: center;
+        margin-right: 0.5rem;
+    }
+
+    // User button container
+    .user-button-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        background: var(--bg-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 50px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: var(--text-primary);
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-primary);
+        }
+    }
+
+    // User avatar
+    .user-avatar {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        border: 2px solid var(--border-color) !important;
+    }
+
+    // Force text color to follow theme
+    .user-button-container * {
+        color: var(--text-primary) !important;
+    }
+
+    // User popover styles
+    .user-popover-card {
+        background: var(--bg-primary) !important;
+        border: 1px solid var(--border-color) !important;
+        box-shadow: var(--shadow-lg) !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(20px) !important;
+    }
+
+    .user-popover-main {
+        padding: 1rem !important;
+        color: var(--text-primary) !important;
+    }
+
+    .user-popover-footer {
+        border-top: 1px solid var(--border-color) !important;
+        padding-top: 0.75rem !important;
+        margin-top: 0.75rem !important;
+    }
+
+    // ===== NAVIGATION BUTTONS =====
+    .nav-btn {
+        // Base button styles
+        position: relative;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 2px solid var(--border-color);
+        background: var(--bg-secondary);
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: var(--text-primary);
+        overflow: visible;
+        padding: 0;
+
+        // Button interactions
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+            .btn-text {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+                visibility: visible;
+            }
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+
+        // Mobile responsive sizing
+        @media (max-width: 768px) {
+            width: 44px;
+            height: 44px;
+
+            .btn-text {
+                display: none;
+            }
+        }
+    }
+
+    // Button icon container
+    .btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    // ===== BUTTON TOOLTIP =====
+    .btn-text {
+        position: absolute;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+            opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        color: var(--text-primary);
+        z-index: 10;
+
+        // Tooltip arrow
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-bottom: 5px solid var(--bg-primary);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+        }
+    }
+
+    // ===== THEME TOGGLE SPECIFIC =====
+    .theme-toggle {
+        // Icon positioning and transitions
+        .sun-icon,
+        .moon-icon {
+            position: absolute;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        // Default state (light theme)
+        .moon-icon {
+            opacity: 0;
+            transform: rotate(90deg);
+        }
+
+        // Dark theme state
+        &.dark {
+            .sun-icon {
+                opacity: 0;
+                transform: rotate(-90deg);
+            }
+
+            .moon-icon {
+                opacity: 1;
+                transform: rotate(0deg);
+            }
+        }
+    }
+</style>
+
+<script>
+    import { initThemeToggle } from "../scripts/themeToggle";
+
+    // Initialize theme toggle when the component loads
+    initThemeToggle();
+</script>
