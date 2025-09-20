@@ -3,7 +3,6 @@ import Image from "astro/components/Image.astro";
 ---
 
 <footer>
-	<div class="container">
 		<div class="content">
 			<!-- Main Footer Content -->
 			<div class="main">
@@ -117,22 +116,18 @@ import Image from "astro/components/Image.astro";
 				</nav>
 			</div>
 		</div>
-	</div>
 </footer>
 
 <style lang="scss">
 	footer {
 		background: var(--bg-tertiary);
 		border-top: 1px solid var(--border-color);
-
-		.container {
-			@media (max-width: 768px) {
-				padding: 0 1rem;
-			}
-		}
+		
 
 		.content {
 			padding: 4rem 0 2rem;
+			max-inline-size: 1200px;
+			margin-inline: auto;
 		}
 
 		.main {
