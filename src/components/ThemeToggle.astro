@@ -37,9 +37,8 @@
 
 <style lang="scss">
 	.theme-toggle {
-		position: fixed;
-		top: 2rem;
-		right: 2rem;
+		// Base button styles to match navbar buttons
+		position: relative;
 		width: 48px;
 		height: 48px;
 		border-radius: 50%;
@@ -51,16 +50,25 @@
 		align-items: center;
 		justify-content: center;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		z-index: 1000;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		color: var(--text-primary);
+		overflow: visible;
+		padding: 0;
 
+		// Button interactions
 		&:hover {
-			transform: scale(1.1);
-			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 		}
 
 		&:active {
-			transform: scale(0.95);
+			transform: translateY(0);
+		}
+
+		// Mobile responsive sizing
+		@media (max-width: 768px) {
+			width: 44px;
+			height: 44px;
 		}
 
 		.sun-icon,
@@ -70,11 +78,13 @@
 			color: var(--text-primary);
 		}
 
+		// Default state (light theme)
 		.moon-icon {
 			opacity: 0;
 			transform: rotate(90deg);
 		}
 
+		// Dark theme state
 		&.dark {
 			.sun-icon {
 				opacity: 0;
@@ -85,15 +95,6 @@
 				opacity: 1;
 				transform: rotate(0deg);
 			}
-		}
-	}
-
-	@media (max-width: 768px) {
-		.theme-toggle {
-			top: 1rem;
-			right: 1rem;
-			width: 44px;
-			height: 44px;
 		}
 	}
 </style>
