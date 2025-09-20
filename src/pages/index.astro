@@ -2,8 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
-import FeatureCard from '../components/FeatureCard.astro';
-import TestimonialCard from '../components/TestimonialCard.astro';
+import Card from '../components/Card.astro';
+import Image from 'astro/components/Image.astro';
 ---
 
 <Layout>
@@ -20,13 +20,13 @@ import TestimonialCard from '../components/TestimonialCard.astro';
 
 				<h1 class="hero-title">
 					Ignite Your Next
-					<span class="gradient-text">Business Spark</span>
+					<span class="gradient-text">Business Vantage</span>
 					with AI-Powered Insights
 				</h1>
 
 				<p class="hero-description">
 					Transform scattered online conversations into brilliant business ideas. 
-					Spark uses advanced AI to discover, analyze, and rank emerging opportunities 
+					Vantage uses advanced AI to discover, analyze, and rank emerging opportunities 
 					from across the web, giving you the competitive edge to act first.
 				</p>
 
@@ -78,16 +78,90 @@ import TestimonialCard from '../components/TestimonialCard.astro';
 		</div>
 	</section>
 
+	<section class="communities">
+		<div class="container">
+			<div class="communities-grid">
+				<div class="content">
+					<div class="feature-item">
+						<div class="feature-header">
+							<div class="icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+									<circle cx="9" cy="7" r="4"></circle>
+									<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+									<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+								</svg>
+							</div>
+							<h3>130,000 active communities</h3>
+						</div>
+						<p>One for every niche, multiple for most</p>
+					</div>
+					
+					<div class="feature-item">
+						<div class="feature-header">
+							<div class="icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<circle cx="11" cy="11" r="8"></circle>
+									<path d="M21 21l-4.35-4.35"></path>
+								</svg>
+							</div>
+							<h3>Find them in minutes</h3>
+						</div>
+						<p>Community discovery is quick & easy</p>
+					</div>
+					
+					<div class="feature-item">
+						<div class="feature-header">
+							<div class="icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+								</svg>
+							</div>
+							<h3>Discover breakout niches</h3>
+						</div>
+						<p>Top active/growing communities</p>
+					</div>
+					
+					<div class="feature-item">
+						<div class="feature-header">
+							<div class="icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<rect x="3" y="3" width="7" height="7"></rect>
+									<rect x="14" y="3" width="7" height="7"></rect>
+									<rect x="14" y="14" width="7" height="7"></rect>
+									<rect x="3" y="14" width="7" height="7"></rect>
+								</svg>
+							</div>
+							<h3>Organize multiple audiences</h3>
+						</div>
+						<p>Multiple customer types? No problem</p>
+					</div>
+				</div>
+				
+				<div class="image">
+					<Image
+						src={import('../assets/placeholder.svg')}
+						alt="Community Discovery Platform"
+						width={500}
+						height={400}
+						class="communities-image"
+					/>
+				</div>
+			</div>
+		</div>
+	</section>
+
 	<!-- Features Section -->
 	<section class="features">
 		<div class="container">
 			<div class="section-header">
-				<h2>Why Choose Spark?</h2>
+				<h2>Why Choose Vantage?</h2>
 				<p>Where artificial intelligence meets entrepreneurial brilliance</p>
 			</div>
 
 			<div class="features-grid">
-				<FeatureCard
+				<Card
+					type="feature"
 					icon={`<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 						<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
 					</svg>`}
@@ -95,7 +169,8 @@ import TestimonialCard from '../components/TestimonialCard.astro';
 					description="Continuously monitor conversations across multiple platforms to capture emerging business opportunities the moment they surface in online communities."
 				/>
 
-				<FeatureCard
+				<Card
+					type="feature"
 					icon={`<svg width="32" height="32" viewBox="0 0 640 640" fill="currentColor">
 						<path d="M184 120C184 89.1 209.1 64 240 64L264 64C281.7 64 296 78.3 296 96L296 544C296 561.7 281.7 576 264 576L232 576C202.2 576 177.1 555.6 170 528C169.3 528 168.7 528 168 528C123.8 528 88 492.2 88 448C88 430 94 413.4 104 400C84.6 385.4 72 362.2 72 336C72 305.1 89.6 278.2 115.2 264.9C108.1 252.9 104 238.9 104 224C104 179.8 139.8 144 184 144L184 120zM456 120L456 144C500.2 144 536 179.8 536 224C536 239 531.9 253 524.8 264.9C550.5 278.2 568 305 568 336C568 362.2 555.4 385.4 536 400C546 413.4 552 430 552 448C552 492.2 516.2 528 472 528C471.3 528 470.7 528 470 528C462.9 555.6 437.8 576 408 576L376 576C358.3 576 344 561.7 344 544L344 96C344 78.3 358.3 64 376 64L400 64C430.9 64 456 89.1 456 120z"></path>
 					</svg>`}
@@ -103,7 +178,8 @@ import TestimonialCard from '../components/TestimonialCard.astro';
 					description="Advanced AI algorithms evaluate market sentiment, demand signals, and feasibility to rank each opportunity by its potential for success."
 				/>
 
-				<FeatureCard
+				<Card
+					type="feature"
 					icon={`<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 						<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
 						<polyline points="3.27,6.96 12,12.01 20.73,6.96"></polyline>
@@ -122,7 +198,7 @@ import TestimonialCard from '../components/TestimonialCard.astro';
 			<div class="cta-content">
 				<h2>Ready to Ignite Your Next Venture?</h2>
 				<p>
-					Join visionary entrepreneurs who use Spark to discover 
+					Join visionary entrepreneurs who use Vantage to discover 
 					breakthrough opportunities before the competition.
 				</p>
 				<button class="btn btn-primary btn-large">
@@ -148,27 +224,30 @@ import TestimonialCard from '../components/TestimonialCard.astro';
 			<div class="section-header">
 				<h2>Success Stories</h2>
 				<p>
-					Real entrepreneurs sharing how Spark ignited their 
+					Real entrepreneurs sharing how Vantage ignited their 
 					breakthrough moments
 				</p>
 			</div>
 			<div class="testimonials-grid">
-				<TestimonialCard
-					quote="Spark revealed three untapped market opportunities in my first week. The AI-powered insights gave me the confidence to launch my subscription box business, which hit $50K ARR in just 4 months."
+				<Card
+					type="testimonial"
+					quote="Vantage revealed three untapped market opportunities in my first week. The AI-powered insights gave me the confidence to launch my subscription box business, which hit $50K ARR in just 4 months."
 					authorName="Sarah Mitchell"
 					authorTitle="E-commerce Entrepreneur"
 					avatarInitials="SM"
 				/>
 
-				<TestimonialCard
-					quote="Spark's trend analysis eliminated months of guesswork. I identified a gap in the productivity software market and built a SaaS that hit $25K MRR within 6 months. Pure gold."
+				<Card
+					type="testimonial"
+					quote="Vantage's trend analysis eliminated months of guesswork. I identified a gap in the productivity software market and built a SaaS that hit $25K MRR within 6 months. Pure gold."
 					authorName="Marcus Chen"
 					authorTitle="SaaS Founder"
 					avatarInitials="MC"
 				/>
 
-				<TestimonialCard
-					quote="Spark transforms how I create content. I discover trending pain points and emerging topics before they explode. My YouTube channel grew from 5K to 150K subscribers in 8 months thanks to being first to market!"
+				<Card
+					type="testimonial"
+					quote="Vantage transforms how I create content. I discover trending pain points and emerging topics before they explode. My YouTube channel grew from 5K to 150K subscribers in 8 months thanks to being first to market!"
 					authorName="Alex Johnson"
 					authorTitle="Content Creator"
 					avatarInitials="AJ"
@@ -219,8 +298,7 @@ import TestimonialCard from '../components/TestimonialCard.astro';
 		align-items: center;
 		position: relative;
 		overflow: hidden;
-		background: var(--hero-bg);
-		padding: 6rem 0 4rem;
+		padding: 6rem 0 0;
 
 		.hero-content {
 			position: relative;
@@ -306,6 +384,87 @@ import TestimonialCard from '../components/TestimonialCard.astro';
 					font-size: 0.875rem;
 					color: var(--text-muted);
 				}
+			}
+		}
+	}
+
+	// Communities Section
+	.communities {
+		padding: 6rem 0;
+		margin-top: 0;
+		background: linear-gradient(transparent, var(--bg-primary) 50%);
+
+		.communities-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 4rem;
+			align-items: center;
+
+			@media (max-width: 768px) {
+				grid-template-columns: 1fr;
+				gap: 3rem;
+			}
+		}
+
+		.content {
+			.feature-item {
+				margin-bottom: 2rem;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+
+				.feature-header {
+					display: flex;
+					align-items: center;
+					gap: 1rem;
+					margin-bottom: 0.25rem;
+
+					.icon {
+						width: 48px;
+						height: 48px;
+						border-radius: 12px;
+						background: var(--accent-gradient);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						color: white;
+						flex-shrink: 0;
+					}
+
+					h3 {
+						font-size: 1.5rem;
+						font-weight: 700;
+						color: var(--text-primary);
+						margin: 0;
+					}
+				}
+
+				p {
+					font-size: 1rem;
+					color: var(--text-secondary);
+					line-height: 0.5;
+					margin: 0;
+					margin-left: 4rem; // Align with text after icon
+					margin-bottom: 4rem;
+
+					@media (max-width: 640px) {
+						margin-left: 0;
+					}
+				}
+			}
+		}
+
+		.image {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			.communities-image {
+				max-width: 100%;
+				height: auto;
+				border-radius: 16px;
+				box-shadow: var(--shadow-lg);
 			}
 		}
 	}
@@ -487,7 +646,3 @@ import TestimonialCard from '../components/TestimonialCard.astro';
 		}
 	}
 </style>
-
-<script>
-	// Page-specific scripts can go here
-</script>
