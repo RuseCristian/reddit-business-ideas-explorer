@@ -1,5 +1,6 @@
 ---
 import ClerkNav from "./ClerkNav.tsx";
+import Image from "astro/components/Image.astro";
 ---
 
 <nav class="navbar">
@@ -7,19 +8,14 @@ import ClerkNav from "./ClerkNav.tsx";
         <!-- Logo -->
         <div class="nav-logo">
             <a href="/" class="logo-link">
-                <svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path
-                        d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                    ></path>
-                </svg>
-                <span class="logo-text">Spark</span>
+                <Image 
+                    src="/favicon.png" 
+                    alt="Vantage Logo" 
+                    width={32} 
+                    height={32}
+                    class="logo-icon"
+                />
+                <span class="logo-text">Vantage</span>
             </a>
         </div>
 
@@ -112,8 +108,10 @@ import ClerkNav from "./ClerkNav.tsx";
         }
 
         // Logo icon
-        .logo-link svg {
-            color: var(--accent-primary);
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
 
         // Logo text - hide on mobile
