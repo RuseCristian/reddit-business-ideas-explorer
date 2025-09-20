@@ -1,0 +1,245 @@
+---
+// CTA Section Component
+---
+
+<section class="cta">
+	<div class="container">
+		<div class="cta-content">
+			<h2>Ready to Ignite Your Next Venture?</h2>
+			<p>
+				Join visionary entrepreneurs who use Vantage to discover 
+				breakthrough opportunities before the competition.
+			</p>
+			<button class="btn btn-primary btn-large">
+				Start Your Journey
+				<svg
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+				>
+					<path d="m9 18 6-6-6-6"></path>
+				</svg>
+			</button>
+		</div>
+	</div>
+	
+	<!-- Floating Subreddit Tags -->
+	<div class="floating-icons">
+		<div class="floating-icon subreddit-tag icon-1">
+			<span>r/SideProject</span>
+		</div>
+		
+		<div class="floating-icon subreddit-tag icon-2">
+			<span>r/IndieMakers</span>
+		</div>
+		
+		<div class="floating-icon subreddit-tag icon-3">
+			<span>r/SaaS</span>
+		</div>
+		
+		<div class="floating-icon subreddit-tag icon-4">
+			<span>r/TechStartups</span>
+		</div>
+		
+		<div class="floating-icon subreddit-tag icon-5">
+			<span>r/SmallBusiness</span>
+		</div>
+		
+		<div class="floating-icon subreddit-tag icon-6">
+			<span>r/Innovation</span>
+		</div>
+	</div>
+</section>
+
+<style lang="scss">
+	// CTA Section
+	.cta {
+		padding: 6rem 0;
+		background: var(--bg-tertiary);	
+		position: relative;
+		overflow: hidden;
+
+		.cta-content {
+			text-align: center;
+			position: relative;
+			z-index: 2;
+
+			h2 {
+				font-size: 2.5rem;
+				font-weight: 700;
+				margin-bottom: 1rem;
+			}
+
+			p {
+				font-size: 1.125rem;
+				color: var(--text-secondary);
+				margin-bottom: 2rem;
+				max-width: 500px;
+				margin-inline: auto;
+			}
+		}
+	}
+
+	// Floating Icons
+	.floating-icons {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	.floating-icon {
+		position: absolute;
+		opacity: 0.7;
+		transition: all 0.3s ease;
+
+		&.subreddit-tag {
+			background: rgba(135, 206, 250, 0.15);
+			color: #2E86AB;
+			padding: 0.5rem 1rem;
+			border-radius: 20px;
+			font-size: 0.875rem;
+			font-weight: 500;
+			border: 1px solid rgba(135, 206, 250, 0.3);
+			backdrop-filter: blur(10px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		// Position and animate each icon
+		&.icon-1 {
+			top: 15%;
+			left: 10%;
+			animation: float-1 6s ease-in-out infinite;
+		}
+
+		&.icon-2 {
+			top: 25%;
+			right: 15%;
+			animation: float-2 8s ease-in-out infinite;
+		}
+
+		&.icon-3 {
+			bottom: 30%;
+			left: 5%;
+			animation: float-3 7s ease-in-out infinite;
+		}
+
+		&.icon-4 {
+			top: 60%;
+			right: 8%;
+			animation: float-4 9s ease-in-out infinite;
+		}
+
+		&.icon-5 {
+			bottom: 15%;
+			right: 25%;
+			animation: float-5 5s ease-in-out infinite;
+		}
+
+		&.icon-6 {
+			top: 40%;
+			left: 3%;
+			animation: float-6 10s ease-in-out infinite;
+		}
+
+		&:hover {
+			opacity: 0.9;
+			transform: scale(1.05);
+		}
+	}
+
+	// Floating animations
+	@keyframes float-1 {
+		0%, 100% { transform: translateY(0px) rotate(0deg); }
+		50% { transform: translateY(-20px) rotate(5deg); }
+	}
+
+	@keyframes float-2 {
+		0%, 100% { transform: translateY(0px) rotate(0deg); }
+		50% { transform: translateY(-15px) rotate(-3deg); }
+	}
+
+	@keyframes float-3 {
+		0%, 100% { transform: translateY(0px) rotate(0deg); }
+		50% { transform: translateY(-25px) rotate(4deg); }
+	}
+
+	@keyframes float-4 {
+		0%, 100% { transform: translateY(0px) rotate(0deg); }
+		50% { transform: translateY(-18px) rotate(-2deg); }
+	}
+
+	@keyframes float-5 {
+		0%, 100% { transform: translateY(0px) rotate(0deg); }
+		50% { transform: translateY(-22px) rotate(3deg); }
+	}
+
+	@keyframes float-6 {
+		0%, 100% { transform: translateY(0px) rotate(0deg); }
+		50% { transform: translateY(-16px) rotate(-4deg); }
+	}
+
+	// Responsive adjustments
+	@media (max-width: 768px) {
+		.floating-icon {
+			&.icon-2, &.icon-4, &.icon-6 {
+				display: none; // Hide some icons on mobile to avoid clutter
+			}
+		}
+	}
+
+	// Buttons
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1.5rem;
+		border-radius: 8px;
+		font-weight: 500;
+		text-decoration: none;
+		border: none;
+		cursor: pointer;
+		transition:
+			transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+			box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: 1rem;
+
+		&.btn-primary {
+			background: var(--accent-gradient);
+			color: white;
+			box-shadow: var(--shadow-md);
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: var(--shadow-lg);
+			}
+		}
+
+		&.btn-secondary {
+			background: var(--bg-secondary);
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+			backdrop-filter: blur(10px);
+
+			&:hover {
+				background: var(--bg-tertiary);
+				transform: translateY(-2px);
+			}
+		}
+
+		&.btn-large {
+			padding: 1rem 2rem;
+			font-size: 1.125rem;
+		}
+
+		&:active {
+			transform: translateY(0);
+		}
+	}
+</style>

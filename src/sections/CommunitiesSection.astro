@@ -1,0 +1,164 @@
+---
+import Image from 'astro/components/Image.astro';
+---
+
+<section class="communities">
+	<div class="container">
+		<div class="communities-grid">
+			<div class="content">
+				<div class="feature-item">
+					<div class="feature-header">
+						<div class="icon">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+								<circle cx="9" cy="7" r="4"></circle>
+								<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+								<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+							</svg>
+						</div>
+						<h3>130,000 active communities</h3>
+					</div>
+					<p>One for every niche, multiple for most</p>
+				</div>
+				
+				<div class="feature-item">
+					<div class="feature-header">
+						<div class="icon">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<circle cx="11" cy="11" r="8"></circle>
+								<path d="M21 21l-4.35-4.35"></path>
+							</svg>
+						</div>
+						<h3>Find them in minutes</h3>
+					</div>
+					<p>Community discovery is quick & easy</p>
+				</div>
+				
+				<div class="feature-item">
+					<div class="feature-header">
+						<div class="icon">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+							</svg>
+						</div>
+						<h3>Discover breakout niches</h3>
+					</div>
+					<p>Top active/growing communities</p>
+				</div>
+				
+				<div class="feature-item">
+					<div class="feature-header">
+						<div class="icon">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<rect x="3" y="3" width="7" height="7"></rect>
+								<rect x="14" y="3" width="7" height="7"></rect>
+								<rect x="14" y="14" width="7" height="7"></rect>
+								<rect x="3" y="14" width="7" height="7"></rect>
+							</svg>
+						</div>
+						<h3>Organize multiple audiences</h3>
+					</div>
+					<p>Multiple customer types? No problem</p>
+				</div>
+			</div>
+			
+			<div class="image">
+				<Image
+					src={import('../assets/placeholder.svg')}
+					alt="Community Discovery Platform"
+					width={500}
+					height={400}
+					class="communities-image"
+				/>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style lang="scss">
+	// Communities Section
+	.container {
+		justify-self: center
+	}
+
+	.communities {
+		padding: 6rem 0;
+		margin-top: 0;
+		background: linear-gradient(transparent, var(--bg-primary) 50%);
+
+		.communities-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 4rem;
+			align-items: center;
+			max-inline-size: 1200px;
+
+			@media (max-width: 768px) {
+				grid-template-columns: 1fr;
+				gap: 3rem;
+			}
+		}
+
+		.content {
+			.feature-item {
+				margin-bottom: 2rem;
+
+				&:last-child {
+					margin-bottom: 0;
+				}
+
+				.feature-header {
+					display: flex;
+					align-items: center;
+					gap: 1rem;
+					margin-bottom: 0.25rem;
+
+					.icon {
+						width: 48px;
+						height: 48px;
+						border-radius: 12px;
+						background: var(--accent-gradient);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						color: white;
+						flex-shrink: 0;
+					}
+
+					h3 {
+						font-size: 1.5rem;
+						font-weight: 700;
+						color: var(--text-primary);
+						margin: 0;
+					}
+				}
+
+				p {
+					font-size: 1rem;
+					color: var(--text-secondary);
+					line-height: 0.5;
+					margin: 0;
+					margin-left: 4rem; // Align with text after icon
+					margin-bottom: 4rem;
+
+					@media (max-width: 640px) {
+						margin-left: 0;
+					}
+				}
+			}
+		}
+
+		.image {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			.communities-image {
+				max-width: 100%;
+				height: auto;
+				border-radius: 16px;
+				box-shadow: var(--shadow-lg);
+			}
+		}
+	}
+</style>

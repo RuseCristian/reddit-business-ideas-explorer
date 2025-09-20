@@ -1,0 +1,220 @@
+---
+// Hero Section Component
+---
+
+<section class="hero">
+	<div class="container">
+		<div class="hero-content">
+			<div class="badge">
+				<span class="badge-icon">🚀</span>
+				AI-Powered Business Intelligence
+			</div>
+
+			<h1 class="hero-title">
+				Ignite Your Next
+				<span class="gradient-text">Business Vantage</span>
+				with AI-Powered Insights
+			</h1>
+
+			<p class="hero-description">
+				Transform scattered online conversations into brilliant business ideas. 
+				Vantage uses advanced AI to discover, analyze, and rank emerging opportunities 
+				from across the web, giving you the competitive edge to act first.
+			</p>
+
+			<div class="hero-cta">
+				<button class="btn btn-primary">
+					<span>Start Discovering</span>
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<path d="m9 18 6-6-6-6"></path>
+					</svg>
+				</button>
+
+				<button class="btn btn-secondary">
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<polygon points="5,3 19,12 5,21"></polygon>
+					</svg>
+					Watch Demo
+				</button>
+			</div>
+
+			<div class="hero-stats">
+				<div class="stat">
+					<div class="stat-number">10K+</div>
+					<div class="stat-label">Ideas Analyzed</div>
+				</div>
+				<div class="stat">
+					<div class="stat-number">95%</div>
+					<div class="stat-label">Accuracy Rate</div>
+				</div>
+				<div class="stat">
+					<div class="stat-number">24/7</div>
+					<div class="stat-label">Live Monitoring</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style lang="scss">
+	// Hero Section
+	.hero {
+		min-height: 80vh;
+		display: flex;
+		align-items: center;
+		position: relative;
+		overflow: hidden;
+		padding: 6rem 0 0;
+		justify-content: center;
+
+		.hero-content {
+			position: relative;
+			z-index: 2;
+			text-align: center;
+			color: var(--text-primary);
+		}
+
+		.badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 0.5rem 1rem;
+			background: var(--bg-secondary);
+			border: 1px solid var(--border-color);
+			border-radius: 50px;
+			font-size: 0.875rem;
+			font-weight: 500;
+			margin-bottom: 2rem;
+			backdrop-filter: blur(10px);
+			color: var(--text-secondary);
+
+			.badge-icon {
+				font-size: 1rem;
+			}
+		}
+
+		.hero-title {
+			font-size: clamp(2.5rem, 5vw, 4rem);
+			font-weight: 700;
+			line-height: 1.1;
+			margin-bottom: 1.5rem;
+			color: var(--text-primary);
+
+			.gradient-text {
+				background: var(--accent-gradient);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
+		}
+
+		.hero-description {
+			font-size: 1.25rem;
+			line-height: 1.6;
+			max-width: 600px;
+			margin: 0 auto 2.5rem;
+			color: var(--text-secondary);
+		}
+
+		.hero-cta {
+			display: flex;
+			gap: 1rem;
+			justify-content: center;
+			margin-bottom: 4rem;
+
+			@media (max-width: 640px) {
+				flex-direction: column;
+				align-items: center;
+			}
+		}
+
+		.hero-stats {
+			display: flex;
+			gap: 3rem;
+			justify-content: center;
+
+			@media (max-width: 640px) {
+				gap: 2rem;
+			}
+
+			.stat {
+				text-align: center;
+
+				.stat-number {
+					font-size: 2rem;
+					font-weight: 700;
+					margin-bottom: 0.25rem;
+					color: var(--text-primary);
+				}
+
+				.stat-label {
+					font-size: 0.875rem;
+					color: var(--text-muted);
+				}
+			}
+		}
+	}
+
+	// Buttons
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1.5rem;
+		border-radius: 8px;
+		font-weight: 500;
+		text-decoration: none;
+		border: none;
+		cursor: pointer;
+		transition:
+			transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+			box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: 1rem;
+
+		&.btn-primary {
+			background: var(--accent-gradient);
+			color: white;
+			box-shadow: var(--shadow-md);
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: var(--shadow-lg);
+			}
+		}
+
+		&.btn-secondary {
+			background: var(--bg-secondary);
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+			backdrop-filter: blur(10px);
+
+			&:hover {
+				background: var(--bg-tertiary);
+				transform: translateY(-2px);
+			}
+		}
+
+		&.btn-large {
+			padding: 1rem 2rem;
+			font-size: 1.125rem;
+		}
+
+		&:active {
+			transform: translateY(0);
+		}
+	}
+</style>
