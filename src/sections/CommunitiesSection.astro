@@ -16,9 +16,11 @@ import Image from 'astro/components/Image.astro';
 								<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
 							</svg>
 						</div>
-						<h3>130,000 active communities</h3>
+						<div class="text-content">
+							<h3>130,000 active communities</h3>
+							<p>One for every niche, multiple for most</p>
+						</div>
 					</div>
-					<p>One for every niche, multiple for most</p>
 				</div>
 				
 				<div class="feature-item">
@@ -29,9 +31,11 @@ import Image from 'astro/components/Image.astro';
 								<path d="M21 21l-4.35-4.35"></path>
 							</svg>
 						</div>
-						<h3>Find them in minutes</h3>
+						<div class="text-content">
+							<h3>Find them in minutes</h3>
+							<p>Community discovery is quick & easy</p>
+						</div>
 					</div>
-					<p>Community discovery is quick & easy</p>
 				</div>
 				
 				<div class="feature-item">
@@ -41,9 +45,11 @@ import Image from 'astro/components/Image.astro';
 								<polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
 							</svg>
 						</div>
-						<h3>Discover breakout niches</h3>
+						<div class="text-content">
+							<h3>Discover breakout niches</h3>
+							<p>Top active/growing communities</p>
+						</div>
 					</div>
-					<p>Top active/growing communities</p>
 				</div>
 				
 				<div class="feature-item">
@@ -56,9 +62,11 @@ import Image from 'astro/components/Image.astro';
 								<rect x="3" y="14" width="7" height="7"></rect>
 							</svg>
 						</div>
-						<h3>Organize multiple audiences</h3>
+						<div class="text-content">
+							<h3>Organize multiple audiences</h3>
+							<p>Multiple customer types? No problem</p>
+						</div>
 					</div>
-					<p>Multiple customer types? No problem</p>
 				</div>
 			</div>
 			
@@ -104,9 +112,8 @@ import Image from 'astro/components/Image.astro';
 
 				.feature-header {
 					display: flex;
-					align-items: center;
+					align-items: flex-start;
 					gap: 1rem;
-					margin-bottom: 0.25rem;
 
 					.icon {
 						width: 48px;
@@ -120,24 +127,22 @@ import Image from 'astro/components/Image.astro';
 						flex-shrink: 0;
 					}
 
-					h3 {
-						font-size: 1.5rem;
-						font-weight: 700;
-						color: var(--text-primary);
-						margin: 0;
-					}
-				}
+					.text-content {
+						flex: 1;
+						
+						h3 {
+							font-size: 1.5rem;
+							font-weight: 700;
+							color: var(--text-primary);
+							margin: 0 0 0.25rem 0;
+						}
 
-				p {
-					font-size: 1rem;
-					color: var(--text-secondary);
-					line-height: 0.5;
-					margin: 0;
-					margin-left: 4rem; // Align with text after icon
-					margin-bottom: 4rem;
-
-					@media (max-width: 640px) {
-						margin-left: 0;
+						p {
+							font-size: 1rem;
+							color: var(--text-secondary);
+							line-height: 1.5;
+							margin: 0;
+						}
 					}
 				}
 			}
