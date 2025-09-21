@@ -33,6 +33,7 @@
 	>
 		<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
 	</svg>
+	<span class="btn-text">Theme</span>
 </button>
 
 <style lang="scss">
@@ -59,6 +60,12 @@
 		&:hover {
 			transform: translateY(-2px);
 			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+			.btn-text {
+				opacity: 1;
+				transform: translateX(-50%) translateY(0);
+				visibility: visible;
+			}
 		}
 
 		&:active {
@@ -69,6 +76,10 @@
 		@media (max-width: 768px) {
 			width: 44px;
 			height: 44px;
+
+			.btn-text {
+				display: none;
+			}
 		}
 
 		.sun-icon,
@@ -95,6 +106,45 @@
 				opacity: 1;
 				transform: rotate(0deg);
 			}
+		}
+	}
+
+	// ===== BUTTON TOOLTIP =====
+	.btn-text {
+		position: absolute;
+		top: 60px;
+		left: 50%;
+		transform: translateX(-50%) translateY(10px);
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 6px;
+		padding: 0.5rem 0.75rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		white-space: nowrap;
+		opacity: 0;
+		visibility: hidden;
+		transition:
+			opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+			transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+			visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		pointer-events: none;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		color: var(--text-primary);
+		z-index: 10;
+
+		// Tooltip arrow
+		&::before {
+			content: "";
+			position: absolute;
+			bottom: 100%;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 0;
+			height: 0;
+			border-bottom: 5px solid var(--bg-primary);
+			border-left: 5px solid transparent;
+			border-right: 5px solid transparent;
 		}
 	}
 </style>

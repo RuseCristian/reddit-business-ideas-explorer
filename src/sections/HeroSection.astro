@@ -1,13 +1,13 @@
 ---
 // Hero Section Component
+import Badge from '../components/Badge.astro';
 ---
 
 <section class="hero">
 	<div class="container">
-		<div class="hero-content">
-			<div class="badge">
-				<span class="badge-icon">🚀</span>
-				AI-Powered Business Intelligence
+		<header class="hero-content">
+			<div class="badge-wrapper">
+				<Badge icon="🚀" text="AI-Powered Business Intelligence" />
 			</div>
 
 			<h1 class="hero-title">
@@ -22,8 +22,8 @@
 				from across the web, giving you the competitive edge to act first.
 			</p>
 
-			<div class="hero-cta">
-				<button class="btn btn-primary">
+			<nav class="hero-cta" aria-label="Primary actions">
+				<a href="#pricing" class="btn btn-primary" role="button">
 					<span>Start Discovering</span>
 					<svg
 						width="20"
@@ -32,12 +32,13 @@
 						fill="none"
 						stroke="currentColor"
 						stroke-width="2"
+						aria-hidden="true"
 					>
 						<path d="m9 18 6-6-6-6"></path>
 					</svg>
-				</button>
+				</a>
 
-				<button class="btn btn-secondary">
+				<button type="button" class="btn btn-secondary">
 					<svg
 						width="20"
 						height="20"
@@ -45,14 +46,15 @@
 						fill="none"
 						stroke="currentColor"
 						stroke-width="2"
+						aria-hidden="true"
 					>
 						<polygon points="5,3 19,12 5,21"></polygon>
 					</svg>
 					Watch Demo
 				</button>
-			</div>
+			</nav>
 
-			<div class="hero-stats">
+			<aside class="hero-stats" aria-label="Platform statistics">
 				<div class="stat">
 					<div class="stat-number">10K+</div>
 					<div class="stat-label">Ideas Analyzed</div>
@@ -65,8 +67,8 @@
 					<div class="stat-number">24/7</div>
 					<div class="stat-label">Live Monitoring</div>
 				</div>
-			</div>
-		</div>
+			</aside>
+		</header>
 	</div>
 </section>
 
@@ -88,23 +90,8 @@
 			color: var(--text-primary);
 		}
 
-		.badge {
-			display: inline-flex;
-			align-items: center;
-			gap: 0.5rem;
-			padding: 0.5rem 1rem;
-			background: var(--bg-secondary);
-			border: 1px solid var(--border-color);
-			border-radius: 50px;
-			font-size: 0.875rem;
-			font-weight: 500;
+		.badge-wrapper {
 			margin-bottom: 2rem;
-			backdrop-filter: blur(10px);
-			color: var(--text-secondary);
-
-			.badge-icon {
-				font-size: 1rem;
-			}
 		}
 
 		.hero-title {

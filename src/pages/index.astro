@@ -5,17 +5,23 @@ import Footer from "../components/Footer.astro";
 import HeroSection from "../sections/HeroSection.astro";
 import CommunitiesSection from "../sections/CommunitiesSection.astro";
 import FeaturesSection from "../sections/FeaturesSection.astro";
+import PricingSection from "../sections/PricingSection.astro";
+import FAQSection from "../sections/FAQSection.astro";
 import CTASection from "../sections/CTASection.astro";
 import TestimonialsSection from "../sections/TestimonialsSection.astro";
 ---
 
 <Layout>
 	<Navbar />
-	<HeroSection />
-	<CommunitiesSection />
-	<FeaturesSection />
-	<CTASection />
-	<TestimonialsSection />
+	<main>
+		<HeroSection />
+		<CommunitiesSection />
+		<FeaturesSection />
+		<PricingSection />
+		<FAQSection />
+		<CTASection />
+		<TestimonialsSection />
+	</main>
 	<Footer />
 </Layout>
 

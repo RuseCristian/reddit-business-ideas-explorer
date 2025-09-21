@@ -1,10 +1,12 @@
 ---
 import Card from '../components/Card.astro';
+import Badge from '../components/Badge.astro';
 ---
 
 <section class="testimonials">
 	<div class="container">
 		<div class="section-header">
+			<Badge icon="⭐" text="Success Stories" />
 			<h2>Success Stories</h2>
 			<p>
 				Real entrepreneurs sharing how Vantage ignited their 
@@ -67,6 +69,10 @@ import Card from '../components/Card.astro';
 		.section-header {
 			text-align: center;
 			margin-bottom: 4rem;
+
+			:global(.badge) {
+				margin-bottom: 2rem;
+			}
 
 			h2 {
 				font-size: 2.5rem;

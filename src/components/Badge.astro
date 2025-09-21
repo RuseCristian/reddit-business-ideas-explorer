@@ -1,0 +1,79 @@
+---
+// Badge Component
+export interface Props {
+	icon?: string;
+	text: string;
+	class?: string;
+}
+
+const { icon, text, class: className = "" } = Astro.props;
+---
+
+<div class={`badge ${className}`}>
+	{icon && <span class="badge-icon">{icon}</span>}
+	<span class="badge-text">{text}</span>
+</div>
+
+<style lang="scss">
+	.badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 50px;
+		font-size: 0.875rem;
+		font-weight: 500;
+		backdrop-filter: blur(10px);
+		color: var(--text-secondary);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+		.badge-icon {
+			font-size: 1rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.badge-text {
+			line-height: 1;
+		}
+
+		// Hover effect for interactive badges
+		&.interactive {
+			cursor: pointer;
+
+			&:hover {
+				transform: translateY(-1px);
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				border-color: var(--accent-primary);
+			}
+		}
+
+		// Variant styles
+		&.success {
+			background: rgba(34, 197, 94, 0.1);
+			border-color: rgba(34, 197, 94, 0.3);
+			color: #22c55e;
+		}
+
+		&.warning {
+			background: rgba(251, 191, 36, 0.1);
+			border-color: rgba(251, 191, 36, 0.3);
+			color: #fbbf24;
+		}
+
+		&.info {
+			background: rgba(59, 130, 246, 0.1);
+			border-color: rgba(59, 130, 246, 0.3);
+			color: #3b82f6;
+		}
+
+		&.accent {
+			background: var(--accent-gradient);
+			border-color: transparent;
+			color: white;
+		}
+	}
+</style>

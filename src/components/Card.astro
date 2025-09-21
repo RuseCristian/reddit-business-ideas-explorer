@@ -81,6 +81,8 @@ const {
 			transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
 			box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		box-shadow: var(--shadow-lg);
+		display: flex;
+		flex-direction: column;
 
 		// Feature card specific styles
 		&.feature {
@@ -106,6 +108,7 @@ const {
 			.description {
 				color: var(--text-secondary);
 				line-height: 1.6;
+				flex-grow: 1;
 			}
 		}
 
