@@ -2,9 +2,15 @@
 import ClerkNav from "./ClerkNav.tsx";
 import Image from "astro/components/Image.astro";
 import ThemeToggle from "./ThemeToggle.astro";
+
+export interface Props {
+    forceScrolled?: boolean;
+}
+
+const { forceScrolled = false } = Astro.props;
 ---
 
-<nav class="navbar">
+<nav class={`navbar ${forceScrolled ? 'scrolled' : ''}`}>
     <div class="nav-container">
         <!-- Logo -->
         <div class="nav-logo">
@@ -270,12 +276,16 @@ import ThemeToggle from "./ThemeToggle.astro";
         const navbar = document.querySelector('.navbar');
         if (!navbar) return;
 
+        // Check if navbar is force-scrolled (for dashboard pages)
+        const isForceScrolled = navbar.classList.contains('scrolled');
+
         function handleScroll() {
             if (!navbar) return;
             
+            // If force-scrolled, don't remove the scrolled class
             if (window.scrollY > 50) {
                 navbar.classList.add('scrolled');
-            } else {
+            } else if (!isForceScrolled) {
                 navbar.classList.remove('scrolled');
             }
         }
