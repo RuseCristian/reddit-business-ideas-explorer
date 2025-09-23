@@ -126,12 +126,12 @@ const { forceScrolled = false } = Astro.props;
         border-radius: 50px;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--shadow-md);
         color: var(--text-primary);
 
         &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-lg);
             border-color: var(--accent-primary);
         }
     }
@@ -184,7 +184,7 @@ const { forceScrolled = false } = Astro.props;
         align-items: center;
         justify-content: center;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--shadow-md);
         color: var(--text-primary);
         overflow: visible;
         padding: 0;
@@ -192,7 +192,7 @@ const { forceScrolled = false } = Astro.props;
         // Button interactions
         &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-lg);
 
             .btn-text {
                 opacity: 1;
@@ -245,7 +245,7 @@ const { forceScrolled = false } = Astro.props;
             transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
             visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         pointer-events: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--shadow-md);
         color: var(--text-primary);
         z-index: 10;
 

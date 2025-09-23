@@ -2,22 +2,130 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Aside from "../components/Aside.astro";
+import Panel from "../components/Panel.astro";
 ---
 
 
 <Layout>
 	<Navbar forceScrolled={true} />
-	<Aside />
-	<main class="dashboard-main">
-		<!-- Dashboard content will go here -->
+	<main>
+		<Aside />
 		<div class="dashboard-content">
-			<h1>Dashboard</h1>
-			<p>Welcome to your business intelligence dashboard.</p>
+			<div class="panels-grid">
+				<!-- Featured Panel -->
+				<Panel 
+					title="AI Business Ideas" 
+					subtitle="Generated based on Reddit trends"
+					icon="ai-brain"
+					variant="featured"
+				>
+					<div class="metric">127</div>
+					<p>New ideas discovered this week from trending Reddit discussions.</p>
+					<div class="badge">Trending</div>
+					<div class="badge">AI-Powered</div>
+				</Panel>
+
+				<!-- Analytics Panel -->
+				<Panel 
+					title="Analytics Overview" 
+					subtitle="Your activity summary"
+					icon="activity"
+				>
+					<h4>This Week</h4>
+					<ul>
+						<li>15 ideas saved</li>
+						<li>8 communities joined</li>
+						<li>42 posts analyzed</li>
+					</ul>
+					<div class="progress-bar">
+						<div class="progress-fill" style="width: 75%"></div>
+					</div>
+				</Panel>
+
+				<!-- Quick Stats -->
+				<Panel 
+					title="Quick Stats" 
+					icon="trending"
+					variant="compact"
+				>
+					<div class="metric">89%</div>
+					<p>Ideas with positive sentiment this month.</p>
+				</Panel>
+
+				<!-- Communities Panel -->
+				<Panel 
+					title="Active Communities" 
+					subtitle="Top performing subreddits"
+					icon="users"
+				>
+					<h4>Trending Now</h4>
+					<ul>
+						<li>r/entrepreneur - 12 new ideas</li>
+						<li>r/startups - 8 new ideas</li>
+						<li>r/SideProject - 5 new ideas</li>
+						<li>r/business - 3 new ideas</li>
+					</ul>
+				</Panel>
+
+				<!-- Search Activity -->
+				<Panel 
+					title="Recent Searches" 
+					icon="search"
+					variant="compact"
+				>
+					<ul>
+						<li>SaaS business ideas</li>
+						<li>E-commerce trends</li>
+						<li>AI startups</li>
+						<li>Remote work tools</li>
+					</ul>
+				</Panel>
+
+				<!-- Market Trends -->
+				<Panel 
+					title="Market Trends" 
+					subtitle="What's hot right now"
+					icon="trending"
+				>
+					<h4>Top Categories</h4>
+					<div class="badge">AI & ML</div>
+					<div class="badge">Sustainability</div>
+					<div class="badge">Remote Work</div>
+					<div class="badge">FinTech</div>
+					<div class="badge">Health Tech</div>
+					<p>Based on 500+ analyzed Reddit posts from the last 7 days.</p>
+				</Panel>
+
+				<!-- Bookmarks -->
+				<Panel 
+					title="Saved Ideas" 
+					icon="package"
+					variant="compact"
+				>
+					<div class="metric">23</div>
+					<p>Ideas in your bookmarks ready for research.</p>
+				</Panel>
+
+				<!-- Activity Feed -->
+				<Panel 
+					title="Recent Activity" 
+					subtitle="What's happening"
+					icon="activity"
+				>
+					<h4>Latest Updates</h4>
+					<ul>
+						<li>New AI tool idea from r/MachineLearning</li>
+						<li>Sustainable packaging solution trending</li>
+						<li>Remote collaboration tool gaining traction</li>
+						<li>FinTech innovation in micropayments</li>
+					</ul>
+				</Panel>
+			</div>
 		</div>
 	</main>
 </Layout>
 
-<style>
+<style lang="scss">
 	/* Hide scrollbar for dashboard since we have fixed layout */
 	:global(html) {
 		overflow: hidden !important;
@@ -27,38 +135,140 @@ import Aside from "../components/Aside.astro";
 		overflow: hidden !important;
 	}
 
-	.dashboard-main {
-		margin-left: 280px;
-		margin-top: 80px; /* Offset by navbar height */
-		height: calc(100vh - 80px); /* Fill remaining viewport height */
+	main {
+		margin-top: 80px;
+		display: flex;
+		height: calc(100vh - 80px);
 		background: var(--bg-secondary);
-		overflow-y: auto; /* Allow scrolling only when content exceeds viewport */
-
-		@media (max-width: 1024px) {
-			margin-left: 260px;
-		}
-
-		@media (max-width: 768px) {
-			margin-left: 0;
-			margin-top: 100px;
-			height: calc(100vh - 100px);
-		}
 	}
 
 	.dashboard-content {
+		flex: 1;
 		padding: 2rem;
-		max-width: 1200px;
+		overflow-y: auto;
+
+		/* Custom thin scrollbar for dashboard content */
+		&::-webkit-scrollbar {
+			width: 4px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: var(--border-color);
+			border-radius: 4px;
+			transition: all 0.2s ease;
+
+			&:hover {
+				background: var(--text-muted);
+			}
+		}
+
+		/* Firefox */
+		scrollbar-width: thin;
+		scrollbar-color: var(--border-color) transparent;
+
+		.panels-grid {
+			// CSS Masonry Layout using columns
+			columns: 3;
+			column-gap: 1.5rem;
+			column-fill: balance;
+
+			// Responsive columns
+			@media (max-width: 1200px) {
+				columns: 2;
+				column-gap: 1.25rem;
+			}
+
+			@media (max-width: 768px) {
+				columns: 1;
+				column-gap: 1rem;
+			}
+
+			// Ensure panels don't break across columns
+			:global(.panel) {
+				break-inside: avoid;
+				margin-bottom: 1.5rem;
+
+				@media (max-width: 1200px) {
+					margin-bottom: 1.25rem;
+				}
+
+				@media (max-width: 768px) {
+					margin-bottom: 1rem;
+				}
+			}
+		}
+
+		.metric {
+			font-size: 2.5rem;
+			font-weight: bold;
+			color: var(--accent-primary);
+			margin: 0.5rem 0;
+		}
+
+		.badge {
+			display: inline-block;
+			background: var(--accent-primary);
+			color: var(--bg-primary);
+			padding: 0.25rem 0.75rem;
+			border-radius: 1rem;
+			font-size: 0.875rem;
+			font-weight: 500;
+			margin: 0.25rem 0.5rem 0.25rem 0;
+		}
+
+		.progress-bar {
+			width: 100%;
+			height: 8px;
+			background: var(--bg-secondary);
+			border-radius: 4px;
+			overflow: hidden;
+			margin-top: 1rem;
+
+			.progress-fill {
+				height: 100%;
+				background: var(--accent-primary);
+				transition: width 0.3s ease;
+			}
+		}
+
+		h4 {
+			color: var(--text-primary);
+			margin: 1rem 0 0.5rem 0;
+			font-size: 1rem;
+			font-weight: 600;
+		}
+
+		ul {
+			list-style: none;
+			padding: 0;
+			margin: 0.5rem 0;
+
+			li {
+				padding: 0.5rem 0;
+				border-bottom: 1px solid var(--bg-secondary);
+				color: var(--text-secondary);
+
+				&:last-child {
+					border-bottom: none;
+				}
+			}
+		}
+
+		p {
+			color: var(--text-secondary);
+			line-height: 1.6;
+			margin: 0.5rem 0;
+		}
 
 		h1 {
 			color: var(--text-primary);
 			font-size: 2rem;
 			font-weight: 700;
 			margin-bottom: 1rem;
-		}
-
-		p {
-			color: var(--text-secondary);
-			font-size: 1.125rem;
 		}
 	}
 </style>

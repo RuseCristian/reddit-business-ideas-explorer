@@ -27,7 +27,12 @@ import TestimonialsSection from "../sections/TestimonialsSection.astro";
 
 <style is:global>
 	.container {
-		max-inline-size: 1200px;
-		justify-self: center;
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 2rem;
+		
+		@media (max-width: 768px) {
+			padding: 0 1rem;
+		}
 	}
 </style>

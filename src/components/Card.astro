@@ -1,8 +1,10 @@
 ---
+import Icon from './Icon.astro';
+
 export interface Props {
 	type: 'feature' | 'testimonial';
 	// Feature card props
-	icon?: string;
+	iconName?: string;
 	title?: string;
 	description?: string;
 	// Testimonial card props
@@ -14,7 +16,7 @@ export interface Props {
 
 const { 
 	type, 
-	icon, 
+	iconName, 
 	title, 
 	description, 
 	quote, 
@@ -28,7 +30,7 @@ const {
 	{type === 'feature' && (
 		<>
 			<div class="icon">
-				<Fragment set:html={icon} />
+				{iconName && <Icon name={iconName} size={32} />}
 			</div>
 			<h3>{title}</h3>
 			<p class="description">{description}</p>
@@ -39,21 +41,7 @@ const {
 		<>
 			<div class="content">
 				<div class="quote-icon">
-					<svg
-						width="32"
-						height="32"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<path
-							d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"
-						></path>
-						<path
-							d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"
-						></path>
-					</svg>
+					<Icon name="quote" size={32} />
 				</div>
 				<p class="quote">{quote}</p>
 			</div>
@@ -73,7 +61,7 @@ const {
 <style lang="scss">
 	.card {
 		padding: 2rem;
-		border-radius: 16px;
+		border-radius: 12px;
 		border: 3px solid var(--border-color);
 		background: var(--bg-secondary);
 		backdrop-filter: blur(10px);

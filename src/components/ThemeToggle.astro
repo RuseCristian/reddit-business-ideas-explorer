@@ -1,87 +1,21 @@
 ---
-// Theme Toggle Component
+import CircularButton from './CircularButton.astro';
+import Icon from './Icon.astro';
 ---
 
-<button
+<CircularButton
 	id="theme-toggle"
 	class="theme-toggle"
-	aria-label="Toggle theme"
+	ariaLabel="Toggle theme"
 	title="Toggle between light and dark theme"
+	label="Theme"
 >
-	<svg
-		class="sun-icon"
-		width="20"
-		height="20"
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		stroke-width="2"
-	>
-		<circle cx="12" cy="12" r="5"></circle>
-		<path
-			d="m12 1 0 2m0 18 0 2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12l2 0m18 0 2 0M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
-		></path>
-	</svg>
-	<svg
-		class="moon-icon"
-		width="20"
-		height="20"
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		stroke-width="2"
-	>
-		<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-	</svg>
-	<span class="btn-text">Theme</span>
-</button>
+	<Icon name="sun" class="sun-icon" />
+	<Icon name="moon" class="moon-icon" />
+</CircularButton>
 
 <style lang="scss">
 	.theme-toggle {
-		// Base button styles to match navbar buttons
-		position: relative;
-		width: 48px;
-		height: 48px;
-		border-radius: 50%;
-		border: 2px solid var(--border-color);
-		background: var(--bg-secondary);
-		backdrop-filter: blur(10px);
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-		color: var(--text-primary);
-		overflow: visible;
-		padding: 0;
-
-		// Button interactions
-		&:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-
-			.btn-text {
-				opacity: 1;
-				transform: translateX(-50%) translateY(0);
-				visibility: visible;
-			}
-		}
-
-		&:active {
-			transform: translateY(0);
-		}
-
-		// Mobile responsive sizing
-		@media (max-width: 768px) {
-			width: 44px;
-			height: 44px;
-
-			.btn-text {
-				display: none;
-			}
-		}
-
 		.sun-icon,
 		.moon-icon {
 			position: absolute;
@@ -106,45 +40,6 @@
 				opacity: 1;
 				transform: rotate(0deg);
 			}
-		}
-	}
-
-	// ===== BUTTON TOOLTIP =====
-	.btn-text {
-		position: absolute;
-		top: 60px;
-		left: 50%;
-		transform: translateX(-50%) translateY(10px);
-		background: var(--bg-primary);
-		border: 1px solid var(--border-color);
-		border-radius: 6px;
-		padding: 0.5rem 0.75rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		white-space: nowrap;
-		opacity: 0;
-		visibility: hidden;
-		transition:
-			opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-			transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-			visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		pointer-events: none;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-		color: var(--text-primary);
-		z-index: 10;
-
-		// Tooltip arrow
-		&::before {
-			content: "";
-			position: absolute;
-			bottom: 100%;
-			left: 50%;
-			transform: translateX(-50%);
-			width: 0;
-			height: 0;
-			border-bottom: 5px solid var(--bg-primary);
-			border-left: 5px solid transparent;
-			border-right: 5px solid transparent;
 		}
 	}
 </style>
