@@ -1,0 +1,226 @@
+---
+import Icon from './Icon.astro';
+
+export interface Props {
+	title?: string;
+	subtitle?: string;
+	icon?: string;
+	class?: string;
+	variant?: 'default' | 'featured' | 'compact';
+	[key: string]: any;
+}
+
+const { 
+	title,
+	subtitle,
+	icon,
+	class: className = '',
+	variant = 'default',
+	...props 
+} = Astro.props;
+
+const variantClass = `panel-${variant}`;
+const combinedClass = `panel ${variantClass} ${className}`.trim();
+---
+
+<div class={combinedClass} {...props}>
+	{(title || icon) && (
+		<div class="panel-header">
+			{icon && (
+				<div class="panel-icon">
+					<Icon name={icon} size={20} />
+				</div>
+			)}
+			<div class="panel-title-section">
+				{title && <h3 class="panel-title">{title}</h3>}
+				{subtitle && <p class="panel-subtitle">{subtitle}</p>}
+			</div>
+		</div>
+	)}
+	
+	<div class="panel-content">
+		<slot />
+	</div>
+</div>
+
+<style lang="scss">
+	// ===== BASE PANEL =====
+	.panel {
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		padding: 1.5rem;
+		transition: all 0.3s ease;
+		box-shadow: var(--shadow-sm);
+		break-inside: avoid;
+
+		&:hover {
+			box-shadow: var(--shadow-md);
+			border-color: var(--accent-primary);
+		}
+	}
+
+	// ===== PANEL VARIANTS =====
+	.panel-default {
+		// Base styling already applied
+	}
+
+	.panel-featured {
+		background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+		border-color: var(--accent-primary);
+		box-shadow: var(--shadow-md);
+
+		.panel-title {
+			color: var(--accent-primary);
+		}
+
+		.panel-icon {
+			background: var(--accent-primary);
+			color: white;
+		}
+	}
+
+	.panel-compact {
+		padding: 1rem;
+
+		.panel-header {
+			margin-bottom: 0.75rem;
+		}
+
+		.panel-title {
+			font-size: 1rem;
+		}
+	}
+
+	// ===== PANEL HEADER =====
+	.panel-header {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+
+	.panel-icon {
+		width: 40px;
+		height: 40px;
+		background: var(--bg-tertiary);
+		border-radius: 8px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--text-secondary);
+		flex-shrink: 0;
+	}
+
+	.panel-title-section {
+		flex: 1;
+		min-width: 0; // Prevent text overflow
+	}
+
+	.panel-title {
+		font-size: 1.125rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0 0 0.25rem 0;
+		line-height: 1.4;
+	}
+
+	.panel-subtitle {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		margin: 0;
+		line-height: 1.4;
+	}
+
+	// ===== PANEL CONTENT =====
+	.panel-content {
+		color: var(--text-primary);
+		line-height: 1.6;
+
+		// Style common content elements
+		:global(p) {
+			margin: 0 0 1rem 0;
+			color: var(--text-secondary);
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		:global(h4) {
+			font-size: 1rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 0.5rem 0;
+		}
+
+		:global(ul) {
+			margin: 0 0 1rem 0;
+			padding-left: 1.25rem;
+			color: var(--text-secondary);
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		:global(li) {
+			margin-bottom: 0.25rem;
+		}
+
+		:global(.metric) {
+			font-size: 2rem;
+			font-weight: 700;
+			color: var(--accent-primary);
+			margin: 0.5rem 0;
+		}
+
+		:global(.badge) {
+			display: inline-block;
+			padding: 0.25rem 0.5rem;
+			background: var(--bg-tertiary);
+			color: var(--text-secondary);
+			border-radius: 4px;
+			font-size: 0.75rem;
+			font-weight: 500;
+			margin-right: 0.5rem;
+			margin-bottom: 0.25rem;
+		}
+
+		:global(.progress-bar) {
+			width: 100%;
+			height: 8px;
+			background: var(--bg-tertiary);
+			border-radius: 4px;
+			overflow: hidden;
+			margin: 0.5rem 0;
+
+			.progress-fill {
+				height: 100%;
+				background: var(--accent-primary);
+				border-radius: 4px;
+				transition: width 0.3s ease;
+			}
+		}
+	}
+
+	// ===== RESPONSIVE =====
+	@media (max-width: 768px) {
+		.panel {
+			padding: 1rem;
+		}
+
+		.panel-header {
+			margin-bottom: 0.75rem;
+		}
+
+		.panel-title {
+			font-size: 1rem;
+		}
+
+		.panel-icon {
+			width: 32px;
+			height: 32px;
+		}
+	}
+</style>

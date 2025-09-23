@@ -66,9 +66,47 @@
 		padding: 0;
 	}
 
-	html {
-		/* Ensure scrollbar is always visible */
-		overflow-y: scroll;
+	* {
+		/* Webkit browsers (Chrome, Safari, Edge) */
+		&::-webkit-scrollbar {
+			width: 8px;
+			height: 8px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: var(--bg-secondary);
+			border-radius: 10px;
+			border: 1px solid var(--border-color);
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+			border-radius: 10px;
+			border: 1px solid var(--border-color);
+			transition: all 0.3s ease;
+
+			&:hover {
+				background: linear-gradient(135deg, #475569 0%, #334155 100%);
+				transform: scale(1.1);
+			}
+
+			&:active {
+				background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+			}
+		}
+
+		&::-webkit-scrollbar-corner {
+			background: var(--bg-secondary);
+		}
+
+		/* Firefox */
+		scrollbar-width: thin;
+		scrollbar-color: #64748b var(--bg-secondary);
+	}
+
+	/* Smooth scrolling behavior */
+	* {
+		scroll-behavior: smooth;
 	}
 
 	body {
@@ -81,6 +119,7 @@
 		background-size: 32px 32px, 32px 32px, 100% 100%;
 		color: var(--text-primary);
 		scroll-behavior: smooth;
+		min-block-size: 100vh;
 
 		&[style*="padding"] {
 			/* Target inline styles that Clerk adds */
@@ -88,7 +127,7 @@
 		}
 	}
 
-	/* .container {
+	.container {
 		max-width: 1200px;
 		margin: 0 auto;
 		padding: 0 2rem;
@@ -97,6 +136,6 @@
 		@media (max-width: 768px) {
 			padding: 0 1rem;
 		}
-	} */
+	}
 </style>
 

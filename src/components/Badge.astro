@@ -22,7 +22,7 @@ const { icon, text, class: className = "" } = Astro.props;
 		padding: 0.5rem 1rem;
 		background: var(--bg-secondary);
 		border: 1px solid var(--border-color);
-		border-radius: 50px;
+		border-radius: 24px;
 		font-size: 0.875rem;
 		font-weight: 500;
 		backdrop-filter: blur(10px);
@@ -46,7 +46,7 @@ const { icon, text, class: className = "" } = Astro.props;
 
 			&:hover {
 				transform: translateY(-1px);
-				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				box-shadow: var(--shadow-md);
 				border-color: var(--accent-primary);
 			}
 		}

@@ -1,366 +1,43 @@
 ---
-// Dashboard Sidebar Navigation
+import CircularButton from "./CircularButton.astro";
 ---
 
-<aside class="dashboard-sidebar">
-	<div class="sidebar-content">
+<aside>
+	<CircularButton
+		icon="grid"
+		label="Dashboard"
+		href="/dashboard"
+		labelPosition="right"
+	/>
 
-		<!-- Navigation Menu -->
-		<nav class="sidebar-nav" aria-label="Dashboard navigation">
-			<ul class="nav-list">
-				<li class="nav-item">
-					<a href="/dashboard" class="nav-link active" aria-current="page">
-						<svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<rect x="3" y="3" width="7" height="9"></rect>
-							<rect x="14" y="3" width="7" height="5"></rect>
-							<rect x="14" y="12" width="7" height="9"></rect>
-							<rect x="3" y="16" width="7" height="5"></rect>
-						</svg>
-						<span class="nav-text">Dashboard</span>
-					</a>
-				</li>
+	<CircularButton icon="search" label="Search Ideas" labelPosition="right" />
 
-				<li class="nav-item">
-					<a href="/dashboard/opportunities" class="nav-link">
-						<svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M9 11H5a2 2 0 0 0-2 2v3c0 1.1.9 2 2 2h4m6-6h4a2 2 0 0 1 2 2v3c0 1.1-.9 2-2 2h-4m-6 0V9a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-1"></path>
-						</svg>
-						<span class="nav-text">Opportunities</span>
-						<span class="nav-badge">12</span>
-					</a>
-				</li>
+	<CircularButton
+		icon="ai-brain"
+		label="AI Assistant"
+		labelPosition="right"
+	/>
 
-				<li class="nav-item">
-					<a href="/dashboard/communities" class="nav-link">
-						<svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-							<circle cx="9" cy="7" r="4"></circle>
-							<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-							<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-						</svg>
-						<span class="nav-text">Communities</span>
-					</a>
-				</li>
+	<CircularButton icon="users" label="Communities" labelPosition="right" />
 
-				<li class="nav-item">
-					<a href="/dashboard/analytics" class="nav-link">
-						<svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
-						</svg>
-						<span class="nav-text">Analytics</span>
-					</a>
-				</li>
-
-				<li class="nav-item">
-					<a href="/dashboard/trends" class="nav-link">
-						<svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-							<polyline points="17 6 23 6 23 12"></polyline>
-						</svg>
-						<span class="nav-text">Trends</span>
-						<span class="nav-badge trending">Hot</span>
-					</a>
-				</li>
-
-				<li class="nav-item">
-					<a href="/dashboard/alerts" class="nav-link">
-						<svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-							<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-						</svg>
-						<span class="nav-text">Alerts</span>
-						<span class="nav-badge alert">3</span>
-					</a>
-				</li>
-			</ul>
-
-			<!-- Divider -->
-			<div class="nav-divider"></div>
-
-			<!-- Secondary Navigation -->
-			<ul class="nav-list secondary">
-				<li class="nav-item">
-					<a href="/dashboard/settings" class="nav-link">
-						<svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<circle cx="12" cy="12" r="3"></circle>
-							<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V5a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-						</svg>
-						<span class="nav-text">Settings</span>
-					</a>
-				</li>
-
-				<li class="nav-item">
-					<a href="/dashboard/help" class="nav-link">
-						<svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<circle cx="12" cy="12" r="10"></circle>
-							<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-							<line x1="12" y1="17" x2="12.01" y2="17"></line>
-						</svg>
-						<span class="nav-text">Help & Support</span>
-					</a>
-				</li>
-			</ul>
-		</nav>
-
-		<!-- User Section -->
-		<div class="sidebar-user">
-			<div class="user-info">
-				<div class="user-avatar">
-					<span>U</span>
-				</div>
-				<div class="user-details">
-					<div class="user-name">User</div>
-					<div class="user-plan">Pro Plan</div>
-				</div>
-			</div>
-			<button class="user-menu-toggle" aria-label="User menu">
-				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-					<circle cx="12" cy="12" r="1"></circle>
-					<circle cx="12" cy="5" r="1"></circle>
-					<circle cx="12" cy="19" r="1"></circle>
-				</svg>
-			</button>
-		</div>
-	</div>
+	<CircularButton icon="activity" label="Analytics" labelPosition="right" />
 </aside>
 
 <style lang="scss">
-	.dashboard-sidebar {
-		position: fixed;
-		top: 80px; /* Start below the navbar */
-		left: 0;
-		height: calc(100vh - 80px); /* Full height minus navbar */
-		width: 280px;
-		background: var(--bg-primary);
+	// ===== SIDEBAR CONTAINER =====
+	aside {
+		background: var(--bg-secondary);
 		border-right: 1px solid var(--border-color);
 		z-index: 100;
 		display: flex;
 		flex-direction: column;
-		backdrop-filter: blur(20px);
-
-		@media (max-width: 1024px) {
-			width: 260px;
-		}
+		padding: 1rem;
+		box-shadow: var(--shadow-md);
+		gap: 0.5rem;
 
 		@media (max-width: 768px) {
-			transform: translateX(-100%);
-			transition: transform 0.3s ease;
-
-			&.open {
-				transform: translateX(0);
-			}
-		}
-	}
-
-	.sidebar-content {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		padding: 1.5rem 0;
-	}
-
-	// Logo Section
-	.sidebar-logo {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		padding: 0 1.5rem;
-		margin-bottom: 2rem;
-
-		.logo-icon {
-			width: 32px;
-			height: 32px;
-			border-radius: 8px;
-			background: var(--accent-gradient);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			color: white;
-		}
-
-		.logo-text {
-			font-size: 1.25rem;
-			font-weight: 700;
-			color: var(--text-primary);
-		}
-	}
-
-	// Navigation
-	.sidebar-nav {
-		flex: 1;
-		overflow-y: auto;
-		
-		&::-webkit-scrollbar {
-			width: 4px;
-		}
-
-		&::-webkit-scrollbar-track {
-			background: transparent;
-		}
-
-		&::-webkit-scrollbar-thumb {
-			background: var(--border-color);
-			border-radius: 2px;
-		}
-	}
-
-	.nav-list {
-		list-style: none;
-		margin: 0;
-		padding: 0 1rem;
-
-		&.secondary {
-			margin-top: 1rem;
-		}
-	}
-
-	.nav-item {
-		margin-bottom: 0.25rem;
-	}
-
-	.nav-link {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		padding: 0.75rem 1rem;
-		border-radius: 8px;
-		text-decoration: none;
-		color: var(--text-secondary);
-		transition: all 0.2s ease;
-		position: relative;
-
-		&:hover {
-			background: var(--bg-secondary);
-			color: var(--text-primary);
-			transform: translateX(2px);
-		}
-
-		&.active {
-			background: var(--accent-gradient);
-			color: white;
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-
-			.nav-icon {
-				color: white;
-			}
-		}
-	}
-
-	.nav-icon {
-		flex-shrink: 0;
-		color: inherit;
-	}
-
-	.nav-text {
-		flex: 1;
-		font-weight: 500;
-		font-size: 0.9rem;
-	}
-
-	.nav-badge {
-		background: var(--bg-tertiary);
-		color: var(--text-primary);
-		padding: 0.25rem 0.5rem;
-		border-radius: 12px;
-		font-size: 0.75rem;
-		font-weight: 600;
-		min-width: 20px;
-		text-align: center;
-
-		&.trending {
-			background: linear-gradient(135deg, #ff6b6b, #feca57);
-			color: white;
-		}
-
-		&.alert {
-			background: #ef4444;
-			color: white;
-		}
-	}
-
-	.nav-divider {
-		height: 1px;
-		background: var(--border-color);
-		margin: 1rem 1.5rem;
-	}
-
-	// User Section
-	.sidebar-user {
-		padding: 1rem 1.5rem;
-		border-top: 1px solid var(--border-color);
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-
-	.user-info {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		flex: 1;
-	}
-
-	.user-avatar {
-		width: 36px;
-		height: 36px;
-		border-radius: 50%;
-		background: var(--accent-gradient);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: white;
-		font-weight: 600;
-		font-size: 0.9rem;
-	}
-
-	.user-details {
-		.user-name {
-			font-weight: 600;
-			color: var(--text-primary);
-			font-size: 0.9rem;
-		}
-
-		.user-plan {
-			font-size: 0.75rem;
-			color: var(--text-muted);
-		}
-	}
-
-	.user-menu-toggle {
-		background: none;
-		border: none;
-		color: var(--text-secondary);
-		cursor: pointer;
-		padding: 0.25rem;
-		border-radius: 4px;
-		transition: all 0.2s ease;
-
-		&:hover {
-			background: var(--bg-secondary);
-			color: var(--text-primary);
-		}
-	}
-
-	// Responsive adjustments
-	@media (max-width: 768px) {
-		.logo-text {
-			display: none;
-		}
-
-		.nav-text {
-			display: none;
-		}
-
-		.user-details {
-			display: none;
-		}
-
-		.sidebar-content {
-			padding: 1rem 0;
-		}
-
-		.nav-list {
-			padding: 0 0.5rem;
+			width: 60px;
+			padding: 0.75rem 0;
 		}
 	}
 </style>
