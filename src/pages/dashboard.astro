@@ -3,6 +3,28 @@ import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Aside from "../components/Aside.astro";
 import Panel from "../components/Panel.astro";
+import { DatabaseService } from "../lib/database/service";
+
+// Simple database test
+let dbTest: { status: string, message: string, data: any } = { status: "❌", message: "Not tested", data: null };
+
+try {
+	console.log('🔄 Attempting database connection...');
+	const stats = await DatabaseService.getDashboardStats();
+	console.log('✅ Database connection successful!', stats);
+	dbTest = {
+		status: "✅",
+		message: "Database connected successfully!",
+		data: stats
+	};
+} catch (error) {
+	console.error('❌ Database connection failed:', error);
+	dbTest = {
+		status: "❌",
+		message: `Database error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		data: null
+	};
+}
 ---
 
 
@@ -45,7 +67,7 @@ import Panel from "../components/Panel.astro";
 				<!-- Quick Stats -->
 				<Panel 
 					title="Quick Stats" 
-					icon="trending"
+					icon="thumbs-up"
 					variant="compact"
 				>
 					<div class="metric">89%</div>
@@ -85,7 +107,7 @@ import Panel from "../components/Panel.astro";
 				<Panel 
 					title="Market Trends" 
 					subtitle="What's hot right now"
-					icon="trending"
+					icon="activity"
 				>
 					<h4>Top Categories</h4>
 					<div class="badge">AI & ML</div>
@@ -119,6 +141,26 @@ import Panel from "../components/Panel.astro";
 						<li>Remote collaboration tool gaining traction</li>
 						<li>FinTech innovation in micropayments</li>
 					</ul>
+				</Panel>
+
+				<!-- DATABASE TEST PANEL -->
+				<Panel 
+					title="Database Test" 
+					subtitle="Prisma connection status"
+					icon="package"
+					variant="compact"
+				>
+					<div class="db-test-status">
+						<div class="status-indicator">{dbTest.status}</div>
+						<p><strong>{dbTest.message}</strong></p>
+						{dbTest.data && (
+							<div class="db-stats">
+								<div>Subreddits: {dbTest.data.totalSubreddits}</div>
+								<div>Posts: {dbTest.data.totalPosts}</div>
+								<div>Opportunities: {dbTest.data.totalOpportunities}</div>
+							</div>
+						)}
+					</div>
 				</Panel>
 			</div>
 		</div>
@@ -269,6 +311,28 @@ import Panel from "../components/Panel.astro";
 			font-size: 2rem;
 			font-weight: 700;
 			margin-bottom: 1rem;
+		}
+
+		.db-test-status {
+			text-align: center;
+			
+			.status-indicator {
+				font-size: 2rem;
+				margin-bottom: 0.5rem;
+			}
+			
+			.db-stats {
+				margin-top: 1rem;
+				padding: 0.75rem;
+				background: var(--bg-secondary);
+				border-radius: 0.5rem;
+				font-size: 0.875rem;
+				
+				div {
+					margin: 0.25rem 0;
+					color: var(--text-secondary);
+				}
+			}
 		}
 	}
 </style>
