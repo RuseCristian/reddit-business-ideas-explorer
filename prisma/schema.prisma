@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Subreddit {
+  id                    Int                   @id @default(autoincrement())
+  name                  String                @unique
+  displayName           String?               @map("display_name")
+  subscriberCount       Int?                  @map("subscriber_count")
+  createdUtc            DateTime?             @map("created_utc") @db.Timestamp(6)
+  iconPath              String?               @map("icon_path")
+  lastUpdated           DateTime?             @map("last_updated") @db.Timestamp(6)
+  businessOpportunities BusinessOpportunity[]
+  clusters              Cluster[]
+  comments              Comment[]
+  posts                 Post[]
+
+  @@map("subreddits")
+}
+
+model Post {
+  id          Int        @id @default(autoincrement())
+  redditId    String     @unique @map("reddit_id")
+  subredditId Int?       @map("subreddit_id")
+  title       String
+  selftext    String?
+  url         String?
+  author      String?
+  score       Int?
+  upvotes     Int?
+  createdUtc  DateTime?  @map("created_utc") @db.Timestamp(6)
+  scrapedAt   DateTime?  @map("scraped_at") @db.Timestamp(6)
+  processed   Boolean?
+  comments    Comment[]
+  subreddit   Subreddit? @relation(fields: [subredditId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("posts")
+}
+
+model Comment {
+  id          Int        @id @default(autoincrement())
+  redditId    String     @unique @map("reddit_id")
+  subredditId Int?       @map("subreddit_id")
+  postId      Int?       @map("post_id")
+  content     String
+  author      String?
+  upvotes     Int?
+  createdUtc  DateTime?  @map("created_utc") @db.Timestamp(6)
+  permalink   String
+  scrapedAt   DateTime?  @map("scraped_at") @db.Timestamp(6)
+  processed   Boolean?
+  post        Post?      @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subreddit   Subreddit? @relation(fields: [subredditId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("comments")
+}
+
+model Cluster {
+  id                  Int                  @id @default(autoincrement())
+  createdDate         DateTime?            @default(now()) @map("created_date") @db.Timestamp(6)
+  lastUpdated         DateTime?            @default(now()) @map("last_updated") @db.Timestamp(6)
+  size                Int?                 @default(0)
+  maxSize             Int                  @map("max_size")
+  expiryDate          DateTime             @map("expiry_date") @db.Timestamp(6)
+  isActive            Boolean?             @default(true) @map("is_active")
+  subredditId         Int?                 @map("subreddit_id")
+  keywordTags         Json?                @map("keyword_tags") @db.Json
+  clusterType         String?              @map("cluster_type") @db.VarChar(50)
+  sentiment           String?              @db.VarChar(20)
+  isProcessed         Boolean?             @default(false) @map("is_processed")
+  isFeatured          Boolean?             @default(true) @map("is_featured")
+  businessOpportunity BusinessOpportunity?
+  clusterItems        ClusterItem[]
+  subreddit           Subreddit?           @relation(fields: [subredditId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([isFeatured], map: "idx_clusters_is_featured")
+  @@index([isProcessed], map: "idx_clusters_is_processed")
+  @@index([isProcessed], map: "idx_clusters_processed")
+  @@index([subredditId, isProcessed], map: "idx_clusters_subreddit_is_processed")
+  @@index([subredditId, isProcessed], map: "idx_clusters_subreddit_processed")
+  @@map("clusters")
+}
+
+model ClusterItem {
+  id              Int       @id @default(autoincrement())
+  clusterId       Int?      @map("cluster_id")
+  itemType        String    @map("item_type") @db.VarChar(10)
+  itemId          Int       @map("item_id")
+  addedDate       DateTime? @default(now()) @map("added_date") @db.Timestamp(6)
+  similarityScore Float?    @map("similarity_score")
+  cluster         Cluster?  @relation(fields: [clusterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([clusterId, itemType, itemId])
+  @@map("cluster_items")
+}
+
+model BusinessOpportunity {
+  id                  Int                   @id @default(autoincrement())
+  clusterId           Int?                  @unique(map: "unique_cluster_opportunity") @map("cluster_id")
+  subredditId         Int?                  @map("subreddit_id")
+  mainTitle           String                @map("main_title")
+  problemDescription  String?               @map("problem_description")
+  affectedAudience    String?               @map("affected_audience")
+  painSeverity        String?               @map("pain_severity")
+  marketGap           String?               @map("market_gap")
+  businessImpactScore Int?                  @map("business_impact_score")
+  validatedNeed       String?               @map("validated_need")
+  addressableMarket   String?               @map("addressable_market")
+  timeSensitivity     String?               @map("time_sensitivity")
+  clusterSentiment    String?               @map("cluster_sentiment") @db.VarChar(20)
+  isFeatured          Boolean?              @default(false) @map("is_featured")
+  processedAt         DateTime?             @default(now()) @map("processed_at") @db.Timestamp(6)
+  cluster             Cluster?              @relation(fields: [clusterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subreddit           Subreddit?            @relation(fields: [subredditId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  solutions           OpportunitySolution[]
+
+  @@index([businessImpactScore(sort: Desc)], map: "idx_business_opportunities_business_impact_score")
+  @@index([subredditId], map: "idx_business_opportunities_subreddit_id")
+  @@map("business_opportunities")
+}
+
+model OpportunitySolution {
+  id                  Int                  @id @default(autoincrement())
+  opportunityId       Int?                 @map("opportunity_id")
+  title               String
+  businessModel       String?              @map("business_model")
+  marketSize          String?              @map("market_size")
+  solutionDescription String?              @map("solution_description")
+  solutionOrder       Int?                 @default(1) @map("solution_order")
+  opportunity         BusinessOpportunity? @relation(fields: [opportunityId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([opportunityId], map: "idx_opportunity_solutions_opportunity_id")
+  @@map("opportunity_solutions")
+}

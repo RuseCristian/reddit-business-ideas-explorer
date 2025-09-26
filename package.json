@@ -1,24 +1,31 @@
 {
-  "name": "proiect",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/node": "^9.4.3",
-    "@astrojs/react": "^4.3.1",
-    "@clerk/astro": "^2.13.0",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
-    "astro": "^5.13.9",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
-  },
-  "devDependencies": {
-    "sass-embedded": "^1.92.1"
-  }
+	"name": "proiect",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"db:generate": "prisma generate",
+		"db:push": "prisma db push",
+		"db:migrate": "prisma migrate dev",
+		"db:studio": "prisma studio",
+		"db:reset": "prisma migrate reset"
+	},
+	"dependencies": {
+		"@astrojs/node": "^9.4.3",
+		"@astrojs/react": "^4.3.1",
+		"@clerk/astro": "^2.13.0",
+		"@prisma/client": "^6.16.2",
+		"@types/react": "^19.1.13",
+		"@types/react-dom": "^19.1.9",
+		"astro": "^5.13.9",
+		"prisma": "^6.16.2",
+		"react": "^19.1.1",
+		"react-dom": "^19.1.1"
+	},
+	"devDependencies": {
+		"sass-embedded": "^1.92.1"
+	}
 }
