@@ -9,6 +9,27 @@ import PricingSection from "../sections/PricingSection.astro";
 import FAQSection from "../sections/FAQSection.astro";
 import CTASection from "../sections/CTASection.astro";
 import TestimonialsSection from "../sections/TestimonialsSection.astro";
+import UsersSection from "../sections/UsersSection.astro";
+import type { Post, User } from "../generated/prisma/client.js";
+
+type UserWithPosts = User & { posts: Post[] };
+
+let users: UserWithPosts[] = [];
+
+try {
+  const apiUrl = new URL("/api/users", Astro.request.url);
+  const response = await fetch(apiUrl, {
+    headers: { Accept: "application/json" },
+  });
+
+  if (response.ok) {
+    users = await response.json();
+  } else {
+    console.error("[index] Failed to load users", await response.text());
+  }
+} catch (error) {
+  console.error("[index] Error while fetching users", error);
+}
 ---
 
 <Layout>
@@ -20,6 +41,7 @@ import TestimonialsSection from "../sections/TestimonialsSection.astro";
 		<PricingSection />
 		<FAQSection />
 		<CTASection />
+		<UsersSection users={users} />
 		<TestimonialsSection />
 	</main>
 	<Footer />

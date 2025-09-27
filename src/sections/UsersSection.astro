@@ -1,0 +1,215 @@
+---
+import type { Post, User } from "../generated/prisma/client.js";
+
+type UserWithPosts = User & { posts: Post[] };
+
+interface Props {
+  title?: string;
+  description?: string;
+  users: UserWithPosts[];
+}
+
+const {
+  users,
+  title = "Community Builders",
+  description = "Real founders sharing their latest experiments pulled straight from the database.",
+} = Astro.props as Props;
+---
+
+<section class="users-section" aria-labelledby="users-heading">
+  <div class="container">
+    <header class="users-header">
+      <h2 id="users-heading">{title}</h2>
+      <p>{description}</p>
+    </header>
+
+    {users.length === 0 ? (
+      <p class="empty-state">No community activity yet. Seed the database to get started.</p>
+    ) : (
+      <ul class="users-grid">
+        {users.map((user) => (
+          <li class="user-card">
+            <div class="user-card__header">
+              <span class="avatar" aria-hidden="true">{user.name?.[0] ?? user.email[0]}</span>
+              <div>
+                <h3>{user.name ?? "Unnamed founder"}</h3>
+                <p class="user-email">{user.email}</p>
+              </div>
+            </div>
+
+            <ul class="posts-list">
+              {user.posts.map((post: Post) => (
+                <li class="post-item">
+                  <h4>{post.title}</h4>
+                  {post.content && <p>{post.content}</p>}
+                  <span class={`post-pill ${post.published ? "post-pill--published" : "post-pill--draft"}`}>
+                    {post.published ? "Published" : "Draft"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</section>
+
+<style lang="scss">
+.users-section {
+  padding: clamp(3rem, 8vw, 5rem) 0;
+  background: radial-gradient(circle at top, rgba(79, 70, 229, 0.08), transparent 55%),
+    var(--theme-surface, #0f172a);
+  color: var(--theme-text, #f8fafc);
+}
+
+.users-header {
+  text-align: center;
+  margin-bottom: clamp(2rem, 6vw, 3rem);
+
+  h2 {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    max-width: 32rem;
+    margin: 0 auto;
+    color: color-mix(in srgb, currentColor 70%, transparent 30%);
+    line-height: 1.6;
+  }
+}
+
+.users-grid {
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.user-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 1.25rem;
+  padding: clamp(1.5rem, 4vw, 2rem);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 45px -30px rgba(15, 23, 42, 1);
+
+  &__header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.user-email {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: rgba(226, 232, 240, 0.75);
+}
+
+.posts-list {
+  display: grid;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-item {
+  background: rgba(30, 41, 59, 0.85);
+  border-radius: 0.9rem;
+  padding: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+
+  h4 {
+    margin: 0 0 0.4rem;
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0 0 0.75rem;
+    color: rgba(226, 232, 240, 0.8);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+.post-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.16);
+  color: rgba(226, 232, 240, 0.85);
+
+  &::before {
+    content: "";
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+  }
+
+  &--published {
+    background: rgba(16, 185, 129, 0.18);
+    color: rgb(52, 211, 153);
+
+    &::before {
+      background: #34d399;
+    }
+  }
+
+  &--draft {
+    background: rgba(250, 204, 21, 0.16);
+    color: rgb(250, 204, 21);
+
+    &::before {
+      background: #facc15;
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  color: rgba(226, 232, 240, 0.7);
+  font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+  .user-card {
+    padding: 1.25rem;
+  }
+
+  .user-card__header {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+</style>

@@ -8,10 +8,15 @@
     "preview": "astro preview",
     "astro": "astro"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@astrojs/node": "^9.4.3",
     "@astrojs/react": "^4.3.1",
     "@clerk/astro": "^2.13.0",
+    "@prisma/client": "^6.16.2",
+    "@prisma/extension-accelerate": "^2.0.2",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "astro": "^5.13.9",
@@ -19,6 +24,8 @@
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
-    "sass-embedded": "^1.92.1"
+    "prisma": "^6.16.2",
+    "sass-embedded": "^1.92.1",
+    "tsx": "^4.20.6"
   }
 }
