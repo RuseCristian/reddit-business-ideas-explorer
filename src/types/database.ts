@@ -1,3 +1,13 @@
+export interface Subreddit {
+	id: number;
+	name: string;
+	displayName: string;
+	subscriberCount: number;
+	createdUtc?: Date;
+	iconPath?: string | null;
+	lastUpdated?: Date;
+}
+
 export interface BusinessIdeaWithTags {
 	id: string;
 	title: string;
