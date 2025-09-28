@@ -7,13 +7,13 @@ export const onRequest = clerkMiddleware((auth, context) => {
 	const { request } = context;
 	const url = new URL(request.url);
 
-	// Skip auth for public routes
-	if (isPublicRoute(request)) {
-		return;
-	}
-
 	try {
-		const { isAuthenticated, redirectToSignIn } = auth();
+		const { isAuthenticated, userId, redirectToSignIn } = auth();
+		// Skip auth for public routes
+		if (isPublicRoute(request)) {
+			console.log("Public route accessed, skipping auth:", url.pathname);
+			return;
+		}
 
 		// If user is signed in and on landing page, redirect to dashboard
 		if (isAuthenticated && url.pathname === "/") {
