@@ -10,17 +10,26 @@ import CircularButton from "./CircularButton.astro";
 		labelPosition="right"
 	/>
 
-	<CircularButton icon="search" label="Search Ideas" labelPosition="right" />
-
 	<CircularButton
-		icon="ai-brain"
-		label="AI Assistant"
+		icon="users"
+		label="Communities"
+		href="/dashboard/search"
 		labelPosition="right"
 	/>
 
-	<CircularButton icon="users" label="Communities" labelPosition="right" />
+	<CircularButton
+		icon="search"
+		label="Search Ideas"
+		href="/dashboard/communities"
+		labelPosition="right"
+	/>
 
-	<CircularButton icon="activity" label="Analytics" labelPosition="right" />
+	<CircularButton
+		icon="activity"
+		label="Analytics"
+		href="/dashboard/analytics"
+		labelPosition="right"
+	/>
 </aside>
 
 <style lang="scss">

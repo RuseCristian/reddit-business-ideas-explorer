@@ -1,0 +1,152 @@
+---
+interface Props {
+	variant?: 'default' | 'featured' | 'compact';
+	hasMetric?: boolean;
+	hasBadges?: boolean;
+	hasProgress?: boolean;
+}
+
+const { variant = 'default', hasMetric = false, hasBadges = false, hasProgress = false } = Astro.props;
+---
+
+<div class={`panel skeleton-panel ${variant}`}>
+	<div class="panel-header">
+		<div class="skeleton skeleton-icon"></div>
+		<div class="panel-content">
+			<div class="skeleton skeleton-title"></div>
+			<div class="skeleton skeleton-subtitle"></div>
+		</div>
+	</div>
+	
+	<div class="panel-body">
+		{hasMetric && (
+			<div class="skeleton skeleton-metric"></div>
+		)}
+		
+		<div class="skeleton skeleton-text"></div>
+		<div class="skeleton skeleton-text skeleton-text-short"></div>
+		
+		{hasBadges && (
+			<div class="skeleton-badges">
+				<div class="skeleton skeleton-badge"></div>
+				<div class="skeleton skeleton-badge"></div>
+			</div>
+		)}
+		
+		{hasProgress && (
+			<div class="skeleton skeleton-progress"></div>
+		)}
+	</div>
+</div>
+
+<style lang="scss">
+	.skeleton-panel {
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		padding: 1.5rem;
+		transition: all 0.2s ease;
+		
+		&.featured {
+			background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+			color: white;
+			border: none;
+		}
+		
+		&.compact {
+			padding: 1rem;
+		}
+	}
+	
+	.panel-header {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		margin-bottom: 1rem;
+	}
+	
+	.panel-content {
+		flex: 1;
+	}
+	
+	.skeleton {
+		background: linear-gradient(90deg, 
+			var(--bg-secondary) 25%, 
+			var(--border-color) 50%, 
+			var(--bg-secondary) 75%
+		);
+		background-size: 200% 100%;
+		animation: shimmer 2s infinite;
+		border-radius: 4px;
+		
+		.featured & {
+			background: linear-gradient(90deg, 
+				rgba(255,255,255,0.1) 25%, 
+				rgba(255,255,255,0.2) 50%, 
+				rgba(255,255,255,0.1) 75%
+			);
+			background-size: 200% 100%;
+		}
+	}
+	
+	.skeleton-icon {
+		width: 24px;
+		height: 24px;
+		border-radius: 6px;
+	}
+	
+	.skeleton-title {
+		height: 20px;
+		width: 70%;
+		margin-bottom: 0.5rem;
+	}
+	
+	.skeleton-subtitle {
+		height: 14px;
+		width: 50%;
+	}
+	
+	.skeleton-metric {
+		height: 40px;
+		width: 80px;
+		margin: 0.5rem 0;
+		border-radius: 8px;
+	}
+	
+	.skeleton-text {
+		height: 16px;
+		margin: 0.5rem 0;
+		
+		&.skeleton-text-short {
+			width: 60%;
+		}
+	}
+	
+	.skeleton-badges {
+		display: flex;
+		gap: 0.5rem;
+		margin: 1rem 0;
+	}
+	
+	.skeleton-badge {
+		height: 24px;
+		width: 60px;
+		border-radius: 12px;
+	}
+	
+	.skeleton-progress {
+		height: 8px;
+		width: 100%;
+		margin-top: 1rem;
+		border-radius: 4px;
+	}
+	
+	@keyframes shimmer {
+		0% {
+			background-position: -200% 0;
+		}
+		100% {
+			background-position: 200% 0;
+		}
+	}
+</style>
