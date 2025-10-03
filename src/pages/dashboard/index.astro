@@ -1,7 +1,54 @@
 ---
 import DashboardHeader from "../../components/dashboard/DashboardHeader.astro";
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
-// Fetch business opportunity data from the API endpoint
+import OpportunitySection from "../../components/dashboard/OpportunitySection.astro";
+
+// Mock data for opportunities
+const recentlyViewedOpportunities = [
+	{
+		id: 1,
+		title: "AI-Powered Customer Service Bot",
+		description: "Automate customer support for small businesses",
+		subreddit: "r/entrepreneur",
+		impactScore: 8.7,
+		timeText: "2 hours ago"
+	},
+	{
+		id: 2,
+		title: "Subscription Management Tool",
+		description: "Help content creators manage their subscriptions",
+		subreddit: "r/SaaS",
+		impactScore: 7.9,
+		timeText: "1 day ago"
+	},
+	{
+		id: 3,
+		title: "Remote Work Productivity Dashboard",
+		description: "Track and improve remote team productivity",
+		subreddit: "r/remotework",
+		impactScore: 7.5,
+		timeText: "2 days ago"
+	}
+];
+
+const savedOpportunities = [
+	{
+		id: 4,
+		title: "Mobile App for Local Service Providers",
+		description: "Connect local services with customers seamlessly",
+		subreddit: "r/startup",
+		impactScore: 9.1,
+		timeText: "Saved 3 days ago"
+	},
+	{
+		id: 5,
+		title: "Eco-Friendly Packaging Solutions",
+		description: "Sustainable packaging for e-commerce businesses",
+		subreddit: "r/ecommerce",
+		impactScore: 8.3,
+		timeText: "Saved 1 week ago"
+	}
+];
 ---
 
 <script>
@@ -22,38 +69,33 @@ import DashboardLayout from "../../layouts/DashboardLayout.astro";
 			subtitle="Discover and analyze business opportunities from Reddit communities"
 		/>
 
-		<div class="dashboard-overview">
-			<div class="stats-cards">
-				<div class="stat-card">
-					<div class="stat-icon">🏘️</div>
-					<div class="stat-content">
-						<h3>Communities</h3>
-						<p>Explore business ideas from various Reddit communities</p>
-					</div>
-				</div>
-				
-				<div class="stat-card">
-					<div class="stat-icon">📈</div>
-					<div class="stat-content">
-						<h3>Analytics</h3>
-						<p>View trends and insights from discovered opportunities</p>
-					</div>
-				</div>
-				
-				<div class="stat-card">
-					<div class="stat-icon">🔍</div>
-					<div class="stat-content">
-						<h3>Search</h3>
-						<p>Find specific business ideas and opportunities</p>
-					</div>
-				</div>
-			</div>
+		<!-- User Activity Sections -->
+		<div class="user-sections">
+			<OpportunitySection
+				title="Recently Viewed"
+				icon="👁️"
+				count="3 items"
+				opportunities={recentlyViewedOpportunities}
+				footerLink="/dashboard/search"
+				footerText="View All Recent"
+				variant="default"
+			/>
+			
+			<OpportunitySection
+				title="Saved Ideas"
+				icon="💾"
+				count="2 saved"
+				opportunities={savedOpportunities}
+				footerLink="/dashboard/search?filter=saved"
+				footerText="Manage Saved Ideas"
+				variant="saved"
+			/>
 		</div>
 
 		<div class="quick-actions">
 			<h3>🚀 Quick Actions</h3>
 			<div class="action-links">
-				<a href="/dashboard/communities" class="action-link primary">
+				<a href="/dashboard/communities" class="action-link">
 					<div class="action-icon">🏘️</div>
 					<div class="action-content">
 						<strong>Browse Communities</strong>
@@ -84,6 +126,20 @@ import DashboardLayout from "../../layouts/DashboardLayout.astro";
 		max-width: 1000px;
 		margin: 0 auto;
 	}
+
+	// User Activity Sections
+	.user-sections {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 2rem;
+		margin-bottom: 3rem;
+
+		@media (max-width: 768px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	// Styles for the container only - component styles are in their own files
 
 	.welcome-section {
 		text-align: center;
@@ -187,10 +243,6 @@ import DashboardLayout from "../../layouts/DashboardLayout.astro";
 		&:hover {
 			transform: translateY(-2px);
 			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-		}
-
-		&.primary {
-			border-left: 4px solid var(--accent-color);
 		}
 
 		.action-icon {
