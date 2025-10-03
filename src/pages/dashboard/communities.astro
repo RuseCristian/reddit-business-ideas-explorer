@@ -1,0 +1,69 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import DashboardHeader from "../../components/dashboard/DashboardHeader.astro";
+import SubredditPanel from "../../components/dashboard/SubredditPanel.astro";
+---
+
+<DashboardLayout>
+	<DashboardHeader 
+		title="Communities" 
+		subtitle="Explore Reddit communities with business opportunities"
+	/>
+
+	<div class="communities-grid">
+		<SubredditPanel
+			name="r/entrepreneur"
+			description="A community for entrepreneurs and business owners"
+			memberCount="2.5M"
+			posts={1234}
+			comments={5678}
+			opportunities={89}
+			avgScore={8.5}
+		/>
+
+		<SubredditPanel
+			name="r/startups"
+			description="Startup ideas and discussion"
+			memberCount="890K"
+			posts={892}
+			comments={3421}
+			opportunities={54}
+			avgScore={7.8}
+		/>
+
+		<SubredditPanel
+			name="r/SaaS"
+			description="Software as a Service discussions"
+			memberCount="156K"
+			posts={456}
+			comments={2103}
+			opportunities={67}
+			avgScore={9.2}
+		/>
+	</div>
+
+</DashboardLayout>
+
+<style>
+	.communities-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+		gap: 1.5rem;
+		max-width: 1400px;
+		margin: 0 auto;
+	}
+
+	@media (max-width: 1024px) {
+		.communities-grid {
+			grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+		}
+	}
+
+	@media (max-width: 768px) {
+		.communities-grid {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+			padding: 0 1rem;
+		}
+	}
+</style>

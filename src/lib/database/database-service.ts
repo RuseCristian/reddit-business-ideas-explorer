@@ -1,0 +1,440 @@
+import { prisma, DatabaseConnection } from "./client";
+import { Prisma } from "@prisma/client";
+
+// Error handling utility for database operations
+class DatabaseError extends Error {
+	constructor(
+		message: string,
+		public code?: string,
+		public originalError?: unknown
+	) {
+		super(message);
+		this.name = "DatabaseError";
+	}
+
+	static fromPrismaError(error: unknown): DatabaseError {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			// Handle known Prisma errors
+			switch (error.code) {
+				case "P2002":
+					return new DatabaseError(
+						"Unique constraint violation",
+						error.code,
+						error
+					);
+				case "P2025":
+					return new DatabaseError("Record not found", error.code, error);
+				case "P2003":
+					return new DatabaseError(
+						"Foreign key constraint violation",
+						error.code,
+						error
+					);
+				case "P1001":
+					return new DatabaseError(
+						"Database connection failed",
+						error.code,
+						error
+					);
+				default:
+					return new DatabaseError(
+						"Database operation failed",
+						error.code,
+						error
+					);
+			}
+		}
+
+		if (error instanceof Prisma.PrismaClientUnknownRequestError) {
+			return new DatabaseError("Unknown database error", "UNKNOWN", error);
+		}
+
+		if (error instanceof Prisma.PrismaClientValidationError) {
+			return new DatabaseError("Invalid query parameters", "VALIDATION", error);
+		}
+
+		return new DatabaseError("Unexpected database error", "UNEXPECTED", error);
+	}
+}
+
+class DatabaseService {
+	/**
+	 * Get business opportunities by subreddit ID and in the last X days
+	 * Returns: score, title, description, date, and keywords of the associated cluster
+	 */
+	static async getBusinessOpportunitiesBySubreddit(
+		subredditId: number,
+		days: number = 30
+	) {
+		try {
+			const sinceDate = new Date();
+			sinceDate.setDate(sinceDate.getDate() - days);
+			const opportunities = await prisma.businessOpportunity.findMany({
+				where: {
+					subredditId,
+					processedAt: { gte: sinceDate },
+				},
+				orderBy: { processedAt: "desc" },
+				select: {
+					id: true,
+					mainTitle: true,
+					problemDescription: true,
+					businessImpactScore: true,
+					processedAt: true,
+					cluster: {
+						select: {
+							keywordTags: true,
+						},
+					},
+				},
+			});
+			return opportunities.map((opp) => ({
+				id: opp.id,
+				title: opp.mainTitle,
+				description: opp.problemDescription,
+				score: opp.businessImpactScore,
+				date: opp.processedAt,
+				keywords: opp.cluster?.keywordTags || [],
+			}));
+		} catch (error) {
+			throw DatabaseError.fromPrismaError(error);
+		}
+	}
+	/**
+	 * Test database connection
+	 */
+	static async testConnection(): Promise<boolean> {
+		return DatabaseConnection.testConnection();
+	}
+
+	/**
+	 * Get a business opportunity by ID, including its cluster, subreddit, and solutions
+	 */
+	static async getBusinessOpportunityById(id: number) {
+		try {
+			const opportunity = await prisma.businessOpportunity.findUnique({
+				where: { id },
+				select: {
+					mainTitle: true,
+					problemDescription: true,
+					affectedAudience: true,
+					painSeverity: true,
+					marketGap: true,
+					businessImpactScore: true,
+					validatedNeed: true,
+					addressableMarket: true,
+					timeSensitivity: true,
+					clusterSentiment: true,
+					cluster: {
+						select: {
+							id: true,
+							keywordTags: true,
+							size: true,
+						},
+					},
+					subreddit: {
+						select: {
+							name: true,
+							displayName: true,
+							subscriberCount: true,
+						},
+					},
+					solutions: {
+						select: {
+							title: true,
+							businessModel: true,
+							marketSize: true,
+							solutionDescription: true,
+							solutionOrder: true,
+						},
+					},
+				},
+			});
+			if (!opportunity) return null;
+
+			// Fetch up to 8 posts and 8 comments via ClusterItems for the related cluster
+			let posts: any[] = [];
+			let comments: any[] = [];
+			if (opportunity.cluster?.id) {
+				// Posts
+				const postItems = await prisma.clusterItem.findMany({
+					where: {
+						clusterId: opportunity.cluster.id,
+						itemType: "post",
+					},
+					take: 8,
+					orderBy: { addedDate: "desc" },
+				});
+				const postIds = postItems.map((item) => item.itemId);
+				if (postIds.length > 0) {
+					posts = await prisma.post.findMany({
+						where: { id: { in: postIds } },
+						select: {
+							title: true,
+							url: true,
+							author: true,
+							upvotes: true,
+							createdUtc: true,
+						},
+					});
+				}
+				// Comments
+				const commentItems = await prisma.clusterItem.findMany({
+					where: {
+						clusterId: opportunity.cluster.id,
+						itemType: "comment",
+					},
+					take: 8,
+					orderBy: { addedDate: "desc" },
+				});
+				const commentIds = commentItems.map((item) => item.itemId);
+				if (commentIds.length > 0) {
+					comments = await prisma.comment.findMany({
+						where: { id: { in: commentIds } },
+						select: {
+							content: true,
+							author: true,
+							upvotes: true,
+							createdUtc: true,
+						},
+					});
+				}
+			}
+
+			// Always include keywords as a property
+			const { cluster, ...rest } = opportunity;
+			return {
+				...rest,
+				keywords: cluster?.keywordTags,
+				sources: cluster?.size,
+				posts,
+				comments,
+			};
+		} catch (error) {
+			throw DatabaseError.fromPrismaError(error);
+		}
+	}
+
+	/**
+	 * Get communities with enhanced security and error handling
+	 */
+	static async getCommunities(
+		limit: number = 10,
+		options: {
+			searchTerm?: string;
+			includeAnalytics?: boolean;
+			includeRecentPosts?: boolean;
+			userId?: string; // For permission checks
+		} = {}
+	) {
+		try {
+			const {
+				searchTerm,
+				includeAnalytics = true,
+				includeRecentPosts = true,
+				userId,
+			} = options;
+
+			console.log(
+				`🔍 [DB-SERVICE] Getting communities (limit: ${limit}, search: "${searchTerm}", user: ${userId})`
+			);
+
+			// Build where clause for search
+			const whereClause: Prisma.SubredditWhereInput = searchTerm
+				? {
+						OR: [
+							{ name: { contains: searchTerm, mode: "insensitive" } },
+							{ displayName: { contains: searchTerm, mode: "insensitive" } },
+						],
+				  }
+				: {};
+
+			// Step 1: Get basic communities with counts
+			const communities = await prisma.subreddit.findMany({
+				where: whereClause,
+				take: Math.min(limit, 100), // Enforce max limit for security
+				orderBy: [{ subscriberCount: "desc" }, { name: "asc" }],
+				include: {
+					_count: {
+						select: {
+							posts: true,
+							comments: true,
+							businessOpportunities: true,
+							clusters: true,
+						},
+					},
+				},
+			});
+
+			// Step 2: Get total count for pagination
+			const totalCount = await prisma.subreddit.count({
+				where: whereClause,
+			});
+
+			// Step 3: Enhanced analytics (only if requested and user has permissions)
+			const communitiesWithAnalytics = includeAnalytics
+				? await Promise.all(
+						communities.map(async (community) => {
+							try {
+								// Get post analytics
+								const postAnalytics = await prisma.post.aggregate({
+									where: { subredditId: community.id },
+									_sum: { upvotes: true, score: true },
+									_avg: { upvotes: true, score: true },
+									_count: true,
+								});
+
+								// Get comment analytics
+								const commentAnalytics = await prisma.comment.aggregate({
+									where: { subredditId: community.id },
+									_sum: { upvotes: true },
+									_avg: { upvotes: true },
+									_count: true,
+								});
+
+								// Get recent posts (if requested)
+								const recentPosts = includeRecentPosts
+									? await prisma.post.findMany({
+											where: { subredditId: community.id },
+											orderBy: [{ createdUtc: "desc" }, { upvotes: "desc" }],
+											take: 3,
+											select: {
+												id: true,
+												title: true,
+												upvotes: true,
+												createdUtc: true,
+												author: true,
+											},
+									  })
+									: [];
+
+								// Get top business opportunities
+								const topOpportunities =
+									await prisma.businessOpportunity.findMany({
+										where: { subredditId: community.id },
+										orderBy: { businessImpactScore: "desc" },
+										take: 3,
+										select: {
+											id: true,
+											mainTitle: true,
+											businessImpactScore: true,
+											painSeverity: true,
+										},
+									});
+
+								// Calculate engagement rate
+								const engagementRate =
+									postAnalytics._count > 0
+										? (commentAnalytics._count || 0) / postAnalytics._count
+										: 0;
+
+								return {
+									id: community.id,
+									name: community.name,
+									displayName: community.displayName,
+									subscriberCount: community.subscriberCount,
+									createdUtc: community.createdUtc,
+									lastUpdated: community.lastUpdated,
+									counts: {
+										posts: community._count.posts,
+										comments: community._count.comments,
+										opportunities: community._count.businessOpportunities,
+										clusters: community._count.clusters,
+									},
+									analytics: {
+										totalPostUpvotes: postAnalytics._sum.upvotes || 0,
+										avgPostUpvotes: Math.round(postAnalytics._avg.upvotes || 0),
+										totalPostScore: postAnalytics._sum.score || 0,
+										avgPostScore: Math.round(postAnalytics._avg.score || 0),
+										totalCommentUpvotes: commentAnalytics._sum.upvotes || 0,
+										avgCommentUpvotes: Math.round(
+											commentAnalytics._avg.upvotes || 0
+										),
+										engagementRate: Math.round(engagementRate * 10) / 10,
+										recentPosts: recentPosts.map((post) => ({
+											id: post.id,
+											title:
+												post.title.length > 50
+													? post.title.substring(0, 50) + "..."
+													: post.title,
+											upvotes: post.upvotes || 0,
+											author: post.author || "Unknown",
+											daysAgo: post.createdUtc
+												? Math.floor(
+														(new Date().getTime() -
+															new Date(post.createdUtc).getTime()) /
+															(1000 * 60 * 60 * 24)
+												  )
+												: 0,
+										})),
+										topOpportunities: topOpportunities.map((opp) => ({
+											id: opp.id,
+											title:
+												opp.mainTitle.length > 40
+													? opp.mainTitle.substring(0, 40) + "..."
+													: opp.mainTitle,
+											impactScore: opp.businessImpactScore || 0,
+											painSeverity: opp.painSeverity || "Unknown",
+										})),
+									},
+								};
+							} catch (error) {
+								console.error(
+									`Error getting analytics for community ${community.id}:`,
+									error
+								);
+								// Return basic community data without analytics
+								return {
+									id: community.id,
+									name: community.name,
+									displayName: community.displayName,
+									subscriberCount: community.subscriberCount,
+									createdUtc: community.createdUtc,
+									lastUpdated: community.lastUpdated,
+									counts: {
+										posts: community._count.posts,
+										comments: community._count.comments,
+										opportunities: community._count.businessOpportunities,
+										clusters: community._count.clusters,
+									},
+									analytics: null, // Analytics failed
+								};
+							}
+						})
+				  )
+				: communities.map((community) => ({
+						id: community.id,
+						name: community.name,
+						displayName: community.displayName,
+						subscriberCount: community.subscriberCount,
+						createdUtc: community.createdUtc,
+						lastUpdated: community.lastUpdated,
+						counts: {
+							posts: community._count.posts,
+							comments: community._count.comments,
+							opportunities: community._count.businessOpportunities,
+							clusters: community._count.clusters,
+						},
+				  }));
+
+			console.log(
+				`✅ [DB-SERVICE] Communities retrieved successfully (${communitiesWithAnalytics.length}/${totalCount})`
+			);
+
+			return {
+				communities: communitiesWithAnalytics,
+				totalCommunities: totalCount,
+				timestamp: new Date().toISOString(),
+				searchTerm,
+				limit,
+			};
+		} catch (error) {
+			console.error("❌ [DB-SERVICE] Error fetching communities:", error);
+			throw DatabaseError.fromPrismaError(error);
+		}
+	}
+}
+
+// Export the enhanced service
+export { DatabaseService, DatabaseError };
+export default DatabaseService;

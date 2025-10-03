@@ -1,0 +1,239 @@
+---
+import DashboardHeader from "../../components/dashboard/DashboardHeader.astro";
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+// Fetch business opportunity data from the API endpoint
+---
+
+<script>
+	(async () => {
+		const res = await fetch("/api/database/business-opportunity?id=2");
+		const apiData = await res.json();
+		const opportunity = apiData.data;
+		console.log("Business Opportunity (id=2) from API (client-side):", opportunity);
+		// You can now use `opportunity` to update the DOM if needed
+	})();
+</script>
+
+<DashboardLayout>
+	<div class="dashboard-home">
+
+		<DashboardHeader 
+			title="Reddit Business Ideas Dashboard" 
+			subtitle="Discover and analyze business opportunities from Reddit communities"
+		/>
+
+		<div class="dashboard-overview">
+			<div class="stats-cards">
+				<div class="stat-card">
+					<div class="stat-icon">🏘️</div>
+					<div class="stat-content">
+						<h3>Communities</h3>
+						<p>Explore business ideas from various Reddit communities</p>
+					</div>
+				</div>
+				
+				<div class="stat-card">
+					<div class="stat-icon">📈</div>
+					<div class="stat-content">
+						<h3>Analytics</h3>
+						<p>View trends and insights from discovered opportunities</p>
+					</div>
+				</div>
+				
+				<div class="stat-card">
+					<div class="stat-icon">🔍</div>
+					<div class="stat-content">
+						<h3>Search</h3>
+						<p>Find specific business ideas and opportunities</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="quick-actions">
+			<h3>🚀 Quick Actions</h3>
+			<div class="action-links">
+				<a href="/dashboard/communities" class="action-link primary">
+					<div class="action-icon">🏘️</div>
+					<div class="action-content">
+						<strong>Browse Communities</strong>
+						<span>Explore business ideas by subreddit</span>
+					</div>
+				</a>
+				<a href="/dashboard/analytics" class="action-link">
+					<div class="action-icon">📈</div>
+					<div class="action-content">
+						<strong>View Analytics</strong>
+						<span>Analyze trends and metrics</span>
+					</div>
+				</a>
+				<a href="/dashboard/search" class="action-link">
+					<div class="action-icon">🔍</div>
+					<div class="action-content">
+						<strong>Search Ideas</strong>
+						<span>Find specific opportunities</span>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+</DashboardLayout>
+
+<style lang="scss">
+	.dashboard-home {
+		max-width: 1000px;
+		margin: 0 auto;
+	}
+
+	.welcome-section {
+		text-align: center;
+		margin-bottom: 3rem;
+		padding: 2rem;
+		background: var(--bg-primary);
+		border-radius: 12px;
+		border: 1px solid var(--border-color);
+
+		h1 {
+			color: var(--text-primary);
+			margin-bottom: 1rem;
+			font-size: 2.5rem;
+		}
+
+		p {
+			color: var(--text-secondary);
+			font-size: 1.1rem;
+		}
+	}
+
+	.dashboard-overview {
+		margin-bottom: 3rem;
+	}
+
+	.stats-cards {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 1.5rem;
+		margin-bottom: 2rem;
+	}
+
+	.stat-card {
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		padding: 2rem;
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		transition: all 0.2s ease;
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		}
+
+		.stat-icon {
+			font-size: 2.5rem;
+			background: var(--bg-secondary);
+			padding: 1rem;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 60px;
+			height: 60px;
+		}
+
+		.stat-content {
+			flex: 1;
+
+			h3 {
+				color: var(--text-primary);
+				margin: 0 0 0.5rem 0;
+				font-size: 1.2rem;
+			}
+
+			p {
+				color: var(--text-secondary);
+				margin: 0;
+				line-height: 1.5;
+			}
+		}
+	}
+
+	.quick-actions {
+		h3 {
+			color: var(--text-primary);
+			margin-bottom: 1.5rem;
+			text-align: center;
+		}
+	}
+
+	.action-links {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.action-link {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		padding: 1.5rem 2rem;
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		text-decoration: none;
+		transition: all 0.2s ease;
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		}
+
+		&.primary {
+			border-left: 4px solid var(--accent-color);
+		}
+
+		.action-icon {
+			font-size: 2rem;
+			background: var(--bg-secondary);
+			padding: 1rem;
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 60px;
+			height: 60px;
+		}
+
+		.action-content {
+			flex: 1;
+
+			strong {
+				display: block;
+				color: var(--text-primary);
+				font-size: 1.1rem;
+				margin-bottom: 0.25rem;
+			}
+
+			span {
+				color: var(--text-secondary);
+				font-size: 0.9rem;
+			}
+		}
+	}
+
+	@media (max-width: 768px) {
+		.stats-cards {
+			grid-template-columns: 1fr;
+		}
+
+		.stat-card,
+		.action-link {
+			padding: 1.5rem;
+		}
+
+		.welcome-section h1 {
+			font-size: 2rem;
+		}
+	}
+</style>
