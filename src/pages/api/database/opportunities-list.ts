@@ -1,4 +1,4 @@
-// Paginated business opportunities endpoint - /api/database/business-opportunities
+// Paginated opportunities list endpoint - /api/database/opportunities-list
 import type { APIRoute } from "astro";
 import {
 	Secure,
@@ -11,7 +11,7 @@ import {
 	SECURITY_CONFIG,
 } from "../../../lib/config/api-config";
 
-// Enhanced secure wrapper function for paginated business opportunities
+// Enhanced secure wrapper function for opportunities list
 const secureGetBusinessOpportunities = Secure({
 	auth: "required", // Require authentication
 	rateLimit: RATE_LIMITS.USER.USER,
@@ -118,7 +118,7 @@ const secureGetBusinessOpportunities = Secure({
 						timestamp: new Date().toISOString(),
 						requestedBy: context.user?.id || "anonymous",
 						securityLevel: context.user ? "authenticated" : "public",
-						endpoint: "business-opportunities",
+						endpoint: "opportunities-list",
 					},
 				}),
 				{

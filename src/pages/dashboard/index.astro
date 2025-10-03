@@ -6,7 +6,7 @@ import DashboardLayout from "../../layouts/DashboardLayout.astro";
 
 <script>
 	(async () => {
-		const res = await fetch("/api/database/business-opportunity?id=2");
+		const res = await fetch("/api/database/opportunity-details?id=2");
 		const apiData = await res.json();
 		const opportunity = apiData.data;
 		console.log("Business Opportunity (id=2) from API (client-side):", opportunity);

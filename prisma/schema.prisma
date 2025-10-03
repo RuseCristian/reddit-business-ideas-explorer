@@ -104,6 +104,7 @@ model BusinessOpportunity {
   clusterId           Int?                  @unique(map: "unique_cluster_opportunity") @map("cluster_id")
   subredditId         Int?                  @map("subreddit_id")
   mainTitle           String                @map("main_title")
+  keywords            Json?                 @map("keywords") @db.Json
   problemDescription  String?               @map("problem_description")
   affectedAudience    String?               @map("affected_audience")
   painSeverity        String?               @map("pain_severity")

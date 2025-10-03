@@ -115,9 +115,9 @@ class DatabaseService {
 						problemDescription: true,
 						businessImpactScore: true,
 						processedAt: true,
+						keywords: true,
 						cluster: {
 							select: {
-								keywordTags: true,
 								size: true,
 							},
 						},
@@ -128,20 +128,20 @@ class DatabaseService {
 							},
 						},
 					},
-				}),
+				} as any),
 				prisma.businessOpportunity.count({
 					where: whereClause,
 				}),
 			]);
 
 			// Transform results
-			const transformedOpportunities = opportunities.map((opp) => ({
+			const transformedOpportunities = opportunities.map((opp: any) => ({
 				id: opp.id,
 				title: opp.mainTitle,
 				description: opp.problemDescription,
 				score: opp.businessImpactScore,
 				date: opp.processedAt,
-				keywords: opp.cluster?.keywordTags || [],
+				keywords: opp.keywords || [],
 				source: {
 					subreddit: opp.subreddit?.name || "unknown",
 					displayName:
@@ -219,13 +219,11 @@ class DatabaseService {
 		// Search in keywords (JSON field) - simplified approach
 		if (searchFields.includes("keywords")) {
 			searchConditions.push({
-				cluster: {
-					keywordTags: {
-						path: [],
-						string_contains: searchTerm.toLowerCase(),
-					},
+				keywords: {
+					path: [],
+					string_contains: searchTerm.toLowerCase(),
 				},
-			});
+			} as any);
 		}
 
 		return {
@@ -303,7 +301,9 @@ class DatabaseService {
 			const opportunity = await prisma.businessOpportunity.findUnique({
 				where: { id },
 				select: {
+					// Base fields
 					mainTitle: true,
+					keywords: true,
 					problemDescription: true,
 					affectedAudience: true,
 					painSeverity: true,
@@ -313,10 +313,12 @@ class DatabaseService {
 					addressableMarket: true,
 					timeSensitivity: true,
 					clusterSentiment: true,
+					processedAt: true,
+					isFeatured: true,
+					// Relations
 					cluster: {
 						select: {
 							id: true,
-							keywordTags: true,
 							size: true,
 						},
 					},
@@ -338,17 +340,17 @@ class DatabaseService {
 						},
 					},
 				},
-			});
+			} as any);
 			if (!opportunity) return null;
 
 			// Fetch up to 8 posts and 8 comments via ClusterItems for the related cluster
 			let posts: any[] = [];
 			let comments: any[] = [];
-			if (opportunity.cluster?.id) {
+			if ((opportunity as any).cluster?.id) {
 				// Posts
 				const postItems = await prisma.clusterItem.findMany({
 					where: {
-						clusterId: opportunity.cluster.id,
+						clusterId: (opportunity as any).cluster.id,
 						itemType: "post",
 					},
 					take: 8,
@@ -370,7 +372,7 @@ class DatabaseService {
 				// Comments
 				const commentItems = await prisma.clusterItem.findMany({
 					where: {
-						clusterId: opportunity.cluster.id,
+						clusterId: (opportunity as any).cluster.id,
 						itemType: "comment",
 					},
 					take: 8,
@@ -390,13 +392,14 @@ class DatabaseService {
 				}
 			}
 
-			// Always include keywords as a property
-			const { cluster, ...rest } = opportunity;
+			// Return structured data with keywords from business opportunity
+			const oppAny = opportunity as any;
+			const { cluster, subreddit, ...rest } = oppAny;
 			return {
 				...rest,
-				subredditId: opportunity.subreddit?.id || null,
-				keywords: cluster?.keywordTags,
-				sources: cluster?.size,
+				subredditId: subreddit?.id || null,
+				keywords: oppAny.keywords || [],
+				sources: cluster?.size || 0,
 				posts,
 				comments,
 			};

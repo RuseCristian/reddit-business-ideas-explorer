@@ -48,7 +48,9 @@ export default function BusinessOpportunityDetails({
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
-	const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
+	const [expandedComments, setExpandedComments] = useState<Set<string>>(
+		new Set()
+	);
 
 	const getScoreColor = (score: number) => {
 		if (score >= 8) return "score-high";
@@ -68,8 +70,8 @@ export default function BusinessOpportunityDetails({
 		});
 	};
 
-	const toggleExpanded = (type: 'posts' | 'comments', id: string) => {
-		if (type === 'posts') {
+	const toggleExpanded = (type: "posts" | "comments", id: string) => {
+		if (type === "posts") {
 			const newExpanded = new Set(expandedPosts);
 			if (newExpanded.has(id)) {
 				newExpanded.delete(id);
@@ -95,7 +97,7 @@ export default function BusinessOpportunityDetails({
 			try {
 				console.log("Fetching opportunity data...");
 				const response = await fetch(
-					`/api/database/business-opportunity?id=${opportunityId}`
+					`/api/database/opportunity-details?id=${opportunityId}`
 				);
 
 				if (!response.ok) {
@@ -217,8 +219,19 @@ export default function BusinessOpportunityDetails({
 	return (
 		<div className="analysis-dashboard">
 			{/* Debug info */}
-			<div style={{ padding: '1rem', background: 'var(--bg-secondary)', marginBottom: '1rem', fontSize: '12px', borderRadius: '8px' }}>
-				<p>Debug: Loading={loading ? 'true' : 'false'}, Error={error || 'none'}, Opportunity={opportunity ? 'loaded' : 'null'}</p>
+			<div
+				style={{
+					padding: "1rem",
+					background: "var(--bg-secondary)",
+					marginBottom: "1rem",
+					fontSize: "12px",
+					borderRadius: "8px",
+				}}
+			>
+				<p>
+					Debug: Loading={loading ? "true" : "false"}, Error={error || "none"},
+					Opportunity={opportunity ? "loaded" : "null"}
+				</p>
 				{opportunity && <p>Title: {opportunity.title}</p>}
 			</div>
 
@@ -226,7 +239,9 @@ export default function BusinessOpportunityDetails({
 			<div className="metrics-row">
 				<div className="metric-card">
 					<div className="metric-icon">🎯</div>
-					<div className="metric-number">{opportunity.solutions?.length || 0}</div>
+					<div className="metric-number">
+						{opportunity.solutions?.length || 0}
+					</div>
 					<div className="metric-label">Solutions Found</div>
 				</div>
 				<div className="metric-card">
@@ -236,12 +251,17 @@ export default function BusinessOpportunityDetails({
 				</div>
 				<div className="metric-card">
 					<div className="metric-icon">📊</div>
-					<div className="metric-number">{(opportunity.posts?.length || 0) + (opportunity.comments?.length || 0)}</div>
+					<div className="metric-number">
+						{(opportunity.posts?.length || 0) +
+							(opportunity.comments?.length || 0)}
+					</div>
 					<div className="metric-label">Data Sources</div>
 				</div>
 				<div className="metric-card">
 					<div className="metric-icon">🏷️</div>
-					<div className="metric-number">{opportunity.keywords?.length || 0}</div>
+					<div className="metric-number">
+						{opportunity.keywords?.length || 0}
+					</div>
 					<div className="metric-label">Keywords</div>
 				</div>
 			</div>
@@ -252,13 +272,18 @@ export default function BusinessOpportunityDetails({
 				<div className="opportunity-header">
 					<h1 className="main-title">{opportunity.title}</h1>
 					<p className="main-description">{opportunity.description}</p>
-					
+
 					<div className="impact-section">
 						<span className="impact-label">Impact Score:</span>
 						<div className="impact-bar">
-							<div className="impact-fill" style={{ width: `${(opportunity.score / 10) * 100}%` }}></div>
+							<div
+								className="impact-fill"
+								style={{ width: `${(opportunity.score / 10) * 100}%` }}
+							></div>
 						</div>
-						<span className="impact-score">{formatScore(opportunity.score)}/10</span>
+						<span className="impact-score">
+							{formatScore(opportunity.score)}/10
+						</span>
 					</div>
 				</div>
 
@@ -271,7 +296,9 @@ export default function BusinessOpportunityDetails({
 						</h3>
 						<div className="keywords-grid">
 							{opportunity.keywords.map((keyword, index) => (
-								<span key={index} className="keyword-badge">{keyword}</span>
+								<span key={index} className="keyword-badge">
+									{keyword}
+								</span>
 							))}
 						</div>
 					</div>
@@ -309,36 +336,50 @@ export default function BusinessOpportunityDetails({
 				)}
 
 				{/* Sources Section */}
-				{((opportunity.posts && opportunity.posts.length > 0) || (opportunity.comments && opportunity.comments.length > 0)) && (
+				{((opportunity.posts && opportunity.posts.length > 0) ||
+					(opportunity.comments && opportunity.comments.length > 0)) && (
 					<div className="sources-section">
 						<h3 className="section-title">
 							<span className="section-icon">📚</span>
 							Evidence & Sources
 						</h3>
-						
+
 						{/* Posts */}
 						{opportunity.posts && opportunity.posts.length > 0 && (
 							<div className="source-category">
-								<button 
+								<button
 									className="expand-header"
-									onClick={() => toggleExpanded('posts', 'main')}
+									onClick={() => toggleExpanded("posts", "main")}
 								>
 									<span className="expand-icon">📝</span>
 									<span>Reddit Posts ({opportunity.posts.length})</span>
-									<span className="expand-arrow">{expandedPosts.has('main') ? '▼' : '▶'}</span>
+									<span className="expand-arrow">
+										{expandedPosts.has("main") ? "▼" : "▶"}
+									</span>
 								</button>
-								{expandedPosts.has('main') && (
+								{expandedPosts.has("main") && (
 									<div className="expand-content">
 										{opportunity.posts.map((post) => (
 											<div key={post.id} className="source-item">
-												<a href={post.reddit_url} target="_blank" rel="noopener noreferrer" className="source-title">
+												<a
+													href={post.reddit_url}
+													target="_blank"
+													rel="noopener noreferrer"
+													className="source-title"
+												>
 													{post.title}
 												</a>
 												<div className="source-meta">
-													<span className="meta-badge upvotes">⬆️ {post.upvotes}</span>
-													<span className="meta-badge">💬 {post.num_comments}</span>
+													<span className="meta-badge upvotes">
+														⬆️ {post.upvotes}
+													</span>
+													<span className="meta-badge">
+														💬 {post.num_comments}
+													</span>
 													<span className="meta-badge">r/{post.subreddit}</span>
-													<span className="meta-badge">{formatDate(post.created_at)}</span>
+													<span className="meta-badge">
+														{formatDate(post.created_at)}
+													</span>
 												</div>
 											</div>
 										))}
@@ -350,23 +391,34 @@ export default function BusinessOpportunityDetails({
 						{/* Comments */}
 						{opportunity.comments && opportunity.comments.length > 0 && (
 							<div className="source-category">
-								<button 
+								<button
 									className="expand-header"
-									onClick={() => toggleExpanded('comments', 'main')}
+									onClick={() => toggleExpanded("comments", "main")}
 								>
 									<span className="expand-icon">💬</span>
 									<span>Key Comments ({opportunity.comments.length})</span>
-									<span className="expand-arrow">{expandedComments.has('main') ? '▼' : '▶'}</span>
+									<span className="expand-arrow">
+										{expandedComments.has("main") ? "▼" : "▶"}
+									</span>
 								</button>
-								{expandedComments.has('main') && (
+								{expandedComments.has("main") && (
 									<div className="expand-content">
 										{opportunity.comments.slice(0, 10).map((comment) => (
-											<div key={comment.id} className="source-item comment-item">
+											<div
+												key={comment.id}
+												className="source-item comment-item"
+											>
 												<p className="comment-content">"{comment.content}"</p>
 												<div className="source-meta">
-													<span className="meta-badge">👤 {comment.author}</span>
-													<span className="meta-badge">r/{comment.subreddit}</span>
-													<span className="meta-badge">{formatDate(comment.created_at)}</span>
+													<span className="meta-badge">
+														👤 {comment.author}
+													</span>
+													<span className="meta-badge">
+														r/{comment.subreddit}
+													</span>
+													<span className="meta-badge">
+														{formatDate(comment.created_at)}
+													</span>
 												</div>
 											</div>
 										))}

@@ -16,8 +16,8 @@ console.log('Astro [id].astro - received id param:', id);
 	// Test the API directly from the client side (with authentication)
 	(async () => {
 		try {
-			console.log('🔄 [CLIENT] Testing business-opportunities API from browser...');
-			const response = await fetch('/api/database/business-opportunities?subredditId=1&page=1&limit=3');
+			console.log('🔄 [CLIENT] Testing opportunities-list API from browser...');
+			const response = await fetch('/api/database/opportunities-list?subredditId=1&page=1&limit=3');
 			const data = await response.json();
 			
 			console.log('✅ [CLIENT] Browser API Response Status:', response.status);

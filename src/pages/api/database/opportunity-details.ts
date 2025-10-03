@@ -1,3 +1,4 @@
+// Single opportunity details endpoint - /api/database/opportunity-details
 import type { APIRoute } from "astro";
 import {
 	Secure,
@@ -17,7 +18,7 @@ export const GET: APIRoute = Secure({
 	ipRateLimit: RATE_LIMITS.USER.IP,
 	corsOrigins: CORS_CONFIG.USER,
 	httpsOnly: SECURITY_CONFIG.HTTPS_ONLY,
-})({}, "getBusinessOpportunity", {
+})({}, "getOpportunityDetails", {
 	value: async (context: SecureAPIContext) => {
 		const url = new URL(context.request.url);
 		const id = parseInt(url.searchParams.get("id") || "0");
@@ -29,10 +30,10 @@ export const GET: APIRoute = Secure({
 		}
 		const opportunity = await DatabaseService.getBusinessOpportunityById(id);
 		if (!opportunity) {
-			return new Response(
-				JSON.stringify({ error: "Business opportunity not found" }),
-				{ status: 404, headers: { "Content-Type": "application/json" } }
-			);
+			return new Response(JSON.stringify({ error: "Opportunity not found" }), {
+				status: 404,
+				headers: { "Content-Type": "application/json" },
+			});
 		}
 		return new Response(
 			JSON.stringify({
