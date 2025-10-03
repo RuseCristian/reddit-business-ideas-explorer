@@ -59,47 +59,235 @@ class DatabaseError extends Error {
 
 class DatabaseService {
 	/**
-	 * Get business opportunities by subreddit ID and in the last X days
-	 * Returns: score, title, description, date, and keywords of the associated cluster
+	 * Advanced business opportunities query with pagination, sorting, and search
+	 * @param subredditId - The subreddit ID to filter by
+	 * @param options - Query options including pagination, sorting, search, and filters
 	 */
-	static async getBusinessOpportunitiesBySubreddit(
+	static async getBusinessOpportunitiesPaginated(
 		subredditId: number,
-		days: number = 30
+		options: {
+			days?: number;
+			page?: number;
+			limit?: number;
+			sortBy?: "impact_score" | "date";
+			sortOrder?: "asc" | "desc";
+			search?: string;
+			searchFields?: ("title" | "description" | "keywords")[];
+		} = {}
 	) {
+		const {
+			days = 30,
+			page = 1,
+			limit = 9,
+			sortBy = "impact_score",
+			sortOrder = "desc",
+			search,
+			searchFields = ["title", "description", "keywords"],
+		} = options;
+
 		try {
+			// Calculate pagination
+			const skip = (page - 1) * limit;
 			const sinceDate = new Date();
 			sinceDate.setDate(sinceDate.getDate() - days);
-			const opportunities = await prisma.businessOpportunity.findMany({
-				where: {
-					subredditId,
-					processedAt: { gte: sinceDate },
-				},
-				orderBy: { processedAt: "desc" },
-				select: {
-					id: true,
-					mainTitle: true,
-					problemDescription: true,
-					businessImpactScore: true,
-					processedAt: true,
-					cluster: {
-						select: {
-							keywordTags: true,
+
+			// Build where clause with search
+			const whereClause = this.buildSearchWhereClause(
+				subredditId,
+				sinceDate,
+				search,
+				searchFields
+			);
+
+			// Build order by clause
+			const orderBy = this.buildOrderByClause(sortBy, sortOrder);
+
+			// Get paginated results
+			const [opportunities, totalCount] = await Promise.all([
+				prisma.businessOpportunity.findMany({
+					where: whereClause,
+					orderBy,
+					skip,
+					take: limit,
+					select: {
+						id: true,
+						mainTitle: true,
+						problemDescription: true,
+						businessImpactScore: true,
+						processedAt: true,
+						cluster: {
+							select: {
+								keywordTags: true,
+								size: true,
+							},
+						},
+						subreddit: {
+							select: {
+								name: true,
+								displayName: true,
+							},
 						},
 					},
-				},
-			});
-			return opportunities.map((opp) => ({
+				}),
+				prisma.businessOpportunity.count({
+					where: whereClause,
+				}),
+			]);
+
+			// Transform results
+			const transformedOpportunities = opportunities.map((opp) => ({
 				id: opp.id,
 				title: opp.mainTitle,
 				description: opp.problemDescription,
 				score: opp.businessImpactScore,
 				date: opp.processedAt,
 				keywords: opp.cluster?.keywordTags || [],
+				source: {
+					subreddit: opp.subreddit?.name || "unknown",
+					displayName:
+						opp.subreddit?.displayName ||
+						opp.subreddit?.name ||
+						"Unknown Community",
+					clusterSize: opp.cluster?.size || 0,
+				},
 			}));
+
+			// Calculate pagination metadata
+			const totalPages = Math.ceil(totalCount / limit);
+			const hasNextPage = page < totalPages;
+			const hasPrevPage = page > 1;
+
+			return {
+				data: transformedOpportunities,
+				pagination: {
+					currentPage: page,
+					totalPages,
+					totalCount,
+					limit,
+					hasNextPage,
+					hasPrevPage,
+				},
+				filters: {
+					subredditId,
+					days,
+					sortBy,
+					sortOrder,
+					search: search || null,
+					searchFields,
+				},
+			};
 		} catch (error) {
 			throw DatabaseError.fromPrismaError(error);
 		}
 	}
+
+	/**
+	 * Helper function to build search where clause
+	 */
+	private static buildSearchWhereClause(
+		subredditId: number,
+		sinceDate: Date,
+		search?: string,
+		searchFields: ("title" | "description" | "keywords")[] = []
+	): Prisma.BusinessOpportunityWhereInput {
+		const baseWhere: Prisma.BusinessOpportunityWhereInput = {
+			subredditId,
+			processedAt: { gte: sinceDate },
+		};
+
+		if (!search || search.trim() === "") {
+			return baseWhere;
+		}
+
+		const searchTerm = search.trim();
+		const searchConditions: Prisma.BusinessOpportunityWhereInput[] = [];
+
+		// Search in title
+		if (searchFields.includes("title")) {
+			searchConditions.push({
+				mainTitle: { contains: searchTerm, mode: "insensitive" },
+			});
+		}
+
+		// Search in description
+		if (searchFields.includes("description")) {
+			searchConditions.push({
+				problemDescription: { contains: searchTerm, mode: "insensitive" },
+			});
+		}
+
+		// Search in keywords (JSON field) - simplified approach
+		if (searchFields.includes("keywords")) {
+			searchConditions.push({
+				cluster: {
+					keywordTags: {
+						path: [],
+						string_contains: searchTerm.toLowerCase(),
+					},
+				},
+			});
+		}
+
+		return {
+			...baseWhere,
+			OR: searchConditions.length > 0 ? searchConditions : undefined,
+		};
+	}
+
+	/**
+	 * Helper function to build order by clause
+	 */
+	private static buildOrderByClause(
+		sortBy: "impact_score" | "date",
+		sortOrder: "asc" | "desc"
+	): Prisma.BusinessOpportunityOrderByWithRelationInput {
+		switch (sortBy) {
+			case "impact_score":
+				return { businessImpactScore: sortOrder as Prisma.SortOrder };
+			case "date":
+				return { processedAt: sortOrder as Prisma.SortOrder };
+			default:
+				return { businessImpactScore: Prisma.SortOrder.desc };
+		}
+	}
+
+	/**
+	 * Simplified search function for quick frontend implementation
+	 * @param subredditId - The subreddit to search in
+	 * @param searchTerm - What to search for
+	 * @param page - Page number (1-based)
+	 * @param sortBy - How to sort results
+	 */
+	static async searchBusinessOpportunities(
+		subredditId: number,
+		searchTerm: string = "",
+		page: number = 1,
+		sortBy: "impact_score" | "date" = "impact_score",
+		days: number = 30
+	) {
+		return this.getBusinessOpportunitiesPaginated(subredditId, {
+			days,
+			page,
+			limit: 9,
+			sortBy,
+			sortOrder: "desc",
+			search: searchTerm,
+			searchFields: ["title", "description"], // Skip keywords for simplicity
+		});
+	}
+
+	/**
+	 * Get available sorting options for frontend
+	 */
+	static getSortingOptions() {
+		return [
+			{ value: "impact_score", label: "Highest Impact", order: "desc" },
+			{ value: "impact_score_asc", label: "Lowest Impact", order: "asc" },
+			{ value: "date", label: "Most Recent", order: "desc" },
+			{ value: "date_asc", label: "Oldest First", order: "asc" },
+		];
+	}
+
 	/**
 	 * Test database connection
 	 */
@@ -134,6 +322,7 @@ class DatabaseService {
 					},
 					subreddit: {
 						select: {
+							id: true,
 							name: true,
 							displayName: true,
 							subscriberCount: true,
@@ -205,6 +394,7 @@ class DatabaseService {
 			const { cluster, ...rest } = opportunity;
 			return {
 				...rest,
+				subredditId: opportunity.subreddit?.id || null,
 				keywords: cluster?.keywordTags,
 				sources: cluster?.size,
 				posts,

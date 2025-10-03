@@ -9,6 +9,44 @@ console.log('Astro [id].astro - received id param:', id);
   <BusinessOpportunityDetails opportunityId={id || "1"} client:load />
 </DashboardLayout>
 
+<!-- Client-side API test script for browser console -->
+<script>
+	console.log('🌐 [CLIENT] Starting browser-side API test...');
+	
+	// Test the API directly from the client side (with authentication)
+	(async () => {
+		try {
+			console.log('🔄 [CLIENT] Testing business-opportunities API from browser...');
+			const response = await fetch('/api/database/business-opportunities?subredditId=1&page=1&limit=3');
+			const data = await response.json();
+			
+			console.log('✅ [CLIENT] Browser API Response Status:', response.status);
+			console.log('📊 [CLIENT] Browser API Response Data:', data);
+			
+			if (data.success) {
+				console.log(`🎯 [CLIENT] Browser found ${data.data.length} opportunities out of ${data.pagination.totalCount} total`);
+				console.log('📑 [CLIENT] Pagination details:', data.pagination);
+				console.log('🔍 [CLIENT] Applied filters:', data.filters);
+				
+				// Log each opportunity
+				data.data.forEach((opp: any, index: number) => {
+					console.log(`📝 [CLIENT] Opportunity ${index + 1}:`, {
+						id: opp.id,
+						title: opp.title,
+						score: opp.score,
+						keywords: opp.keywords,
+						source: opp.source
+					});
+				});
+			} else {
+				console.warn('⚠️ [CLIENT] API returned success: false');
+			}
+		} catch (error) {
+			console.error('❌ [CLIENT] Browser API test failed:', error);
+		}
+	})();
+</script>
+
 
 <style lang="scss">
 	// Analysis Dashboard Styles with Dark Theme Support
