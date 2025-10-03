@@ -216,33 +216,38 @@ export default function BusinessOpportunityDetails({
 
 	return (
 		<div className="analysis-dashboard">
-			{/* Debug info */}
-			<div style={{ padding: '1rem', background: 'var(--bg-secondary)', marginBottom: '1rem', fontSize: '12px', borderRadius: '8px' }}>
-				<p>Debug: Loading={loading ? 'true' : 'false'}, Error={error || 'none'}, Opportunity={opportunity ? 'loaded' : 'null'}</p>
-				{opportunity && <p>Title: {opportunity.title}</p>}
-			</div>
 
+			<h1 className="main-title">{opportunity.title}</h1>
+			
 			{/* Top Metrics Row */}
 			<div className="metrics-row">
 				<div className="metric-card">
-					<div className="metric-icon">🎯</div>
+					<div className="metric-header">
+						<span className="metric-icon">🎯</span>
+						<span className="metric-label">Solutions Found</span>
+					</div>
 					<div className="metric-number">{opportunity.solutions?.length || 0}</div>
-					<div className="metric-label">Solutions Found</div>
 				</div>
 				<div className="metric-card">
-					<div className="metric-icon">✅</div>
+					<div className="metric-header">
+						<span className="metric-icon">✅</span>
+						<span className="metric-label">Impact Score</span>
+					</div>
 					<div className="metric-number">{formatScore(opportunity.score)}</div>
-					<div className="metric-label">Impact Score</div>
 				</div>
 				<div className="metric-card">
-					<div className="metric-icon">📊</div>
+					<div className="metric-header">
+						<span className="metric-icon">📊</span>
+						<span className="metric-label">Data Sources</span>
+					</div>
 					<div className="metric-number">{(opportunity.posts?.length || 0) + (opportunity.comments?.length || 0)}</div>
-					<div className="metric-label">Data Sources</div>
 				</div>
 				<div className="metric-card">
-					<div className="metric-icon">🏷️</div>
+					<div className="metric-header">
+						<span className="metric-icon">🏷️</span>
+						<span className="metric-label">Keywords</span>
+					</div>
 					<div className="metric-number">{opportunity.keywords?.length || 0}</div>
-					<div className="metric-label">Keywords</div>
 				</div>
 			</div>
 
@@ -250,9 +255,9 @@ export default function BusinessOpportunityDetails({
 			<div className="opportunity-container">
 				{/* Main Title */}
 				<div className="opportunity-header">
-					<h1 className="main-title">{opportunity.title}</h1>
+					<h3 className="main-title">{opportunity.title}</h3>
 					<p className="main-description">{opportunity.description}</p>
-					
+
 					<div className="impact-section">
 						<span className="impact-label">Impact Score:</span>
 						<div className="impact-bar">
@@ -315,11 +320,11 @@ export default function BusinessOpportunityDetails({
 							<span className="section-icon">📚</span>
 							Evidence & Sources
 						</h3>
-						
+
 						{/* Posts */}
 						{opportunity.posts && opportunity.posts.length > 0 && (
 							<div className="source-category">
-								<button 
+								<button
 									className="expand-header"
 									onClick={() => toggleExpanded('posts', 'main')}
 								>
@@ -350,7 +355,7 @@ export default function BusinessOpportunityDetails({
 						{/* Comments */}
 						{opportunity.comments && opportunity.comments.length > 0 && (
 							<div className="source-category">
-								<button 
+								<button
 									className="expand-header"
 									onClick={() => toggleExpanded('comments', 'main')}
 								>
