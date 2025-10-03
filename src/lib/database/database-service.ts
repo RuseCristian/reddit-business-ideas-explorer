@@ -366,6 +366,12 @@ class DatabaseService {
 							author: true,
 							upvotes: true,
 							createdUtc: true,
+							subreddit: {
+								select: {
+									name: true,
+									displayName: true,
+								},
+							},
 						},
 					});
 				}
@@ -387,6 +393,13 @@ class DatabaseService {
 							author: true,
 							upvotes: true,
 							createdUtc: true,
+							permalink: true,
+							subreddit: {
+								select: {
+									name: true,
+									displayName: true,
+								},
+							},
 						},
 					});
 				}
