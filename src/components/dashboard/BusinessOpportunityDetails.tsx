@@ -9,6 +9,7 @@ interface BusinessOpportunity {
 	viability_score: number;
 	competition_level: number;
 	created_at: string;
+	subreddit_name: string;
 	keywords: string[];
 	solutions: Array<{
 		id: string;
@@ -32,6 +33,8 @@ interface BusinessOpportunity {
 		author: string;
 		created_at: string;
 		subreddit: string;
+		permalink?: string;
+		upvotes?: number;
 	}>;
 }
 
@@ -124,6 +127,7 @@ export default function BusinessOpportunityDetails({
 					viability_score: rawOpportunity.businessImpactScore || 0, // Using same score for now
 					competition_level: 5, // Default middle value
 					created_at: new Date().toISOString(), // Default to current date
+					subreddit_name: rawOpportunity.subreddit?.name || rawOpportunity.subreddit?.displayName || "unknown",
 					keywords: Array.isArray(rawOpportunity.keywords)
 						? rawOpportunity.keywords
 						: [],
@@ -144,7 +148,7 @@ export default function BusinessOpportunityDetails({
 							upvotes: post.upvotes || 0,
 							num_comments: 0, // Not available in current API
 							created_at: post.createdUtc || new Date().toISOString(),
-							subreddit: "unknown", // Not available in current API
+							subreddit: post.subreddit?.name || post.subreddit?.displayName || "unknown",
 						})
 					),
 					comments: (rawOpportunity.comments || []).map(
@@ -153,7 +157,9 @@ export default function BusinessOpportunityDetails({
 							content: comment.content || "No content",
 							author: comment.author || "Unknown",
 							created_at: comment.createdUtc || new Date().toISOString(),
-							subreddit: "unknown", // Not available in current API
+							subreddit: comment.subreddit?.name || comment.subreddit?.displayName || "unknown",
+							permalink: comment.permalink || undefined,
+							upvotes: comment.upvotes || 0,
 						})
 					),
 				};
@@ -245,9 +251,11 @@ export default function BusinessOpportunityDetails({
 					<div className="metric-label">Solutions Found</div>
 				</div>
 				<div className="metric-card">
-					<div className="metric-icon">✅</div>
+					<div className="metric-header">
+						<span className="metric-icon">✅</span>
+						<span className="metric-label">Impact Score</span>
+					</div>
 					<div className="metric-number">{formatScore(opportunity.score)}</div>
-					<div className="metric-label">Impact Score</div>
 				</div>
 				<div className="metric-card">
 					<div className="metric-icon">📊</div>
@@ -270,7 +278,7 @@ export default function BusinessOpportunityDetails({
 			<div className="opportunity-container">
 				{/* Main Title */}
 				<div className="opportunity-header">
-					<h1 className="main-title">{opportunity.title}</h1>
+					<h2 className="main-title">{opportunity.title}</h2>
 					<p className="main-description">{opportunity.description}</p>
 
 					<div className="impact-section">
