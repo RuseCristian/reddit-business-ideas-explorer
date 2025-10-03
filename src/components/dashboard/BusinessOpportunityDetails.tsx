@@ -9,6 +9,7 @@ interface BusinessOpportunity {
 	viability_score: number;
 	competition_level: number;
 	created_at: string;
+	subreddit_name: string;
 	keywords: string[];
 	solutions: Array<{
 		id: string;
@@ -32,6 +33,8 @@ interface BusinessOpportunity {
 		author: string;
 		created_at: string;
 		subreddit: string;
+		permalink?: string;
+		upvotes?: number;
 	}>;
 }
 
@@ -122,6 +125,7 @@ export default function BusinessOpportunityDetails({
 					viability_score: rawOpportunity.businessImpactScore || 0, // Using same score for now
 					competition_level: 5, // Default middle value
 					created_at: new Date().toISOString(), // Default to current date
+					subreddit_name: rawOpportunity.subreddit?.name || rawOpportunity.subreddit?.displayName || "unknown",
 					keywords: Array.isArray(rawOpportunity.keywords)
 						? rawOpportunity.keywords
 						: [],
@@ -142,7 +146,7 @@ export default function BusinessOpportunityDetails({
 							upvotes: post.upvotes || 0,
 							num_comments: 0, // Not available in current API
 							created_at: post.createdUtc || new Date().toISOString(),
-							subreddit: "unknown", // Not available in current API
+							subreddit: post.subreddit?.name || post.subreddit?.displayName || "unknown",
 						})
 					),
 					comments: (rawOpportunity.comments || []).map(
@@ -151,7 +155,9 @@ export default function BusinessOpportunityDetails({
 							content: comment.content || "No content",
 							author: comment.author || "Unknown",
 							created_at: comment.createdUtc || new Date().toISOString(),
-							subreddit: "unknown", // Not available in current API
+							subreddit: comment.subreddit?.name || comment.subreddit?.displayName || "unknown",
+							permalink: comment.permalink || undefined,
+							upvotes: comment.upvotes || 0,
 						})
 					),
 				};
@@ -217,8 +223,15 @@ export default function BusinessOpportunityDetails({
 	return (
 		<div className="analysis-dashboard">
 
-			<h1 className="main-title">{opportunity.title}</h1>
-			
+			<div className="title-with-badge">
+				<h1 className="main-title">{opportunity.title}</h1>
+				{/* Subreddit Badge */}
+				<span className="meta-badge subreddit-main">
+					<span className="meta-icon">📍</span>
+					r/{opportunity.subreddit_name}
+				</span>
+			</div>
+
 			{/* Top Metrics Row */}
 			<div className="metrics-row">
 				<div className="metric-card">
@@ -255,7 +268,7 @@ export default function BusinessOpportunityDetails({
 			<div className="opportunity-container">
 				{/* Main Title */}
 				<div className="opportunity-header">
-					<h3 className="main-title">{opportunity.title}</h3>
+					<h2 className="main-title">{opportunity.title}</h2>
 					<p className="main-description">{opportunity.description}</p>
 
 					<div className="impact-section">
@@ -365,16 +378,31 @@ export default function BusinessOpportunityDetails({
 								</button>
 								{expandedComments.has('main') && (
 									<div className="expand-content">
-										{opportunity.comments.slice(0, 10).map((comment) => (
-											<div key={comment.id} className="source-item comment-item">
-												<p className="comment-content">"{comment.content}"</p>
-												<div className="source-meta">
-													<span className="meta-badge">👤 {comment.author}</span>
-													<span className="meta-badge">r/{comment.subreddit}</span>
-													<span className="meta-badge">{formatDate(comment.created_at)}</span>
-												</div>
-											</div>
-										))}
+										{opportunity.comments.slice(0, 10).map((comment) => {
+											const commentUrl = comment.permalink 
+												? `https://www.reddit.com${comment.permalink}`
+												: `https://www.reddit.com/r/${comment.subreddit}/comments/`;
+											
+											return (
+												<a 
+													key={comment.id}
+													href={commentUrl}
+													target="_blank"
+													rel="noopener noreferrer"
+													style={{ textDecoration: 'none', color: 'inherit' }}
+												>
+													<div className="source-item comment-item">
+														<p className="comment-content">"{comment.content}"</p>
+														<div className="source-meta">
+															<span className="meta-badge upvotes">⬆️ {comment.upvotes}</span>
+															<span className="meta-badge">👤 u/{comment.author}</span>
+															<span className="meta-badge">📍 r/{comment.subreddit}</span>
+															<span className="meta-badge">📅 {formatDate(comment.created_at)}</span>
+														</div>
+													</div>
+												</a>
+											);
+										})}
 									</div>
 								)}
 							</div>
