@@ -1,0 +1,132 @@
+---
+import Card from '../common/Card.astro';
+import Badge from '../common/Badge.astro';
+---
+
+<section class="testimonials">
+	<div class="container">
+		<div class="section-header">
+			<Badge icon="⭐" text="Success Stories" />
+			<h2>Success Stories</h2>
+			<p>
+				Real entrepreneurs sharing how Vantage ignited their 
+				breakthrough moments
+			</p>
+		</div>
+		<div class="testimonials-grid">
+			<Card
+				type="testimonial"
+				quote="Vantage revealed three untapped market opportunities in my first week. The AI-powered insights gave me the confidence to launch my subscription box business, which hit $50K ARR in just 4 months."
+				authorName="Sarah Mitchell"
+				authorTitle="E-commerce Entrepreneur"
+				avatarInitials="SM"
+			/>
+
+			<Card
+				type="testimonial"
+				quote="Vantage's trend analysis eliminated months of guesswork. I identified a gap in the productivity software market and built a SaaS that hit $25K MRR within 6 months. Pure gold."
+				authorName="Marcus Chen"
+				authorTitle="SaaS Founder"
+				avatarInitials="MC"
+			/>
+
+			<Card
+				type="testimonial"
+				quote="Vantage transforms how I create content. I discover trending pain points and emerging topics before they explode. My YouTube channel grew from 5K to 150K subscribers in 8 months thanks to being first to market!"
+				authorName="Alex Johnson"
+				authorTitle="Content Creator"
+				avatarInitials="AJ"
+			/>
+		</div>
+
+		<!-- Trust Badges -->
+		<div class="trust-badges">
+			<div class="trust-item">
+				<div class="trust-number">50K+</div>
+				<div class="trust-label">Active Users</div>
+			</div>
+			<div class="trust-item">
+				<div class="trust-number">1M+</div>
+				<div class="trust-label">Ideas Analyzed</div>
+			</div>
+			<div class="trust-item">
+				<div class="trust-number">98%</div>
+				<div class="trust-label">Success Rate</div>
+			</div>
+			<div class="trust-item">
+				<div class="trust-number">24/7</div>
+				<div class="trust-label">Support</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style lang="scss">
+	.testimonials {
+		padding: 6rem 0;
+		background: var(--bg-primary);
+
+		.section-header {
+			text-align: center;
+			margin-bottom: 4rem;
+
+			:global(.badge) {
+				margin-bottom: 2rem;
+			}
+
+			h2 {
+				font-size: 2.5rem;
+				font-weight: 700;
+				margin-bottom: 1rem;
+			}
+
+			p {
+				font-size: 1.125rem;
+				color: var(--text-secondary);
+			}
+		}
+
+		.testimonials-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+			gap: 2rem;
+			margin-bottom: 4rem;
+
+			@media (max-width: 768px) {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		.trust-badges {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+			gap: 2rem;
+			max-width: 800px;
+			margin: 0 auto;
+
+			@media (max-width: 640px) {
+				grid-template-columns: repeat(2, 1fr);
+			}
+
+			.trust-item {
+				text-align: center;
+				padding: 1.5rem 1rem;
+				border-radius: 12px;
+				background: var(--bg-secondary);
+				border: 1px solid var(--border-color);
+
+				.trust-number {
+					font-size: 2rem;
+					font-weight: 700;
+					color: var(--accent-primary);
+					margin-bottom: 0.5rem;
+				}
+
+				.trust-label {
+					font-size: 0.875rem;
+					color: var(--text-secondary);
+				}
+			}
+		}
+	}
+</style>

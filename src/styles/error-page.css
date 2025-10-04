@@ -1,0 +1,273 @@
+/* Shared error page styles for error type page */
+.error-page {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem 1rem;
+	position: relative;
+	overflow: hidden;
+}
+
+.error-container {
+	max-width: 600px;
+	width: 100%;
+	text-align: center;
+	position: relative;
+	z-index: 2;
+}
+
+.error-content {
+	background: var(--bg-secondary);
+	backdrop-filter: blur(20px);
+	border: 1px solid var(--border-color);
+	border-radius: 24px;
+	padding: 3rem 2rem;
+	box-shadow: var(--shadow-lg);
+	position: relative;
+	overflow: hidden;
+}
+
+/* Error code styling */
+.error-code {
+	position: relative;
+	margin-bottom: 2rem;
+}
+
+.code-text {
+	font-size: clamp(6rem, 15vw, 12rem);
+	font-weight: 700;
+	background: var(--accent-gradient);
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	line-height: 1;
+	display: block;
+	font-family: "JetBrains Mono", monospace;
+}
+
+.error-decoration {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+
+.floating-dot {
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	background: var(--accent-primary);
+	border-radius: 50%;
+	opacity: 0.6;
+	animation: float 3s ease-in-out infinite;
+}
+
+.dot-1 {
+	top: 20%;
+	left: 10%;
+	animation-delay: 0s;
+}
+
+.dot-2 {
+	top: 60%;
+	right: 15%;
+	animation-delay: 1s;
+}
+
+.dot-3 {
+	bottom: 20%;
+	left: 20%;
+	animation-delay: 2s;
+}
+
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0px);
+		opacity: 0.6;
+	}
+	50% {
+		transform: translateY(-20px);
+		opacity: 1;
+	}
+}
+
+/* Error message */
+.error-message {
+	margin-bottom: 2.5rem;
+}
+
+.error-title {
+	font-size: 2.25rem;
+	font-weight: 600;
+	color: var(--text-primary);
+	margin-bottom: 1rem;
+	line-height: 1.2;
+}
+
+.error-description {
+	font-size: 1.125rem;
+	color: var(--text-secondary);
+	line-height: 1.6;
+	max-width: 480px;
+	margin: 0 auto;
+}
+
+/* Action buttons */
+.error-actions {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	margin-bottom: 2.5rem;
+	flex-wrap: wrap;
+}
+
+/* Helpful links */
+.error-links {
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--border-color);
+}
+
+.links-title {
+	font-size: 0.875rem;
+	color: var(--text-muted);
+	margin-bottom: 1rem;
+	font-weight: 500;
+}
+
+.links-list {
+	list-style: none;
+	display: flex;
+	justify-content: center;
+	gap: 1.5rem;
+	flex-wrap: wrap;
+}
+
+.links-list a {
+	color: var(--accent-primary);
+	text-decoration: none;
+	font-weight: 500;
+	font-size: 0.875rem;
+	transition: color 0.3s ease;
+}
+
+.links-list a:hover {
+	color: var(--accent-secondary);
+}
+
+/* Background decoration */
+.background-decoration {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.grid-pattern {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-image: linear-gradient(
+			to right,
+			var(--border-color) 1px,
+			transparent 1px
+		),
+		linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
+	background-size: 32px 32px;
+	opacity: 0.3;
+}
+
+.gradient-orb {
+	position: absolute;
+	border-radius: 50%;
+	filter: blur(60px);
+	opacity: 0.1;
+	animation: drift 8s ease-in-out infinite;
+}
+
+.orb-1 {
+	width: 300px;
+	height: 300px;
+	background: var(--accent-primary);
+	top: 10%;
+	left: -10%;
+	animation-delay: 0s;
+}
+
+.orb-2 {
+	width: 200px;
+	height: 200px;
+	background: var(--accent-secondary);
+	bottom: 10%;
+	right: -5%;
+	animation-delay: 4s;
+}
+
+@keyframes drift {
+	0%,
+	100% {
+		transform: translate(0, 0) scale(1);
+	}
+	25% {
+		transform: translate(20px, -20px) scale(1.1);
+	}
+	50% {
+		transform: translate(-10px, 10px) scale(0.9);
+	}
+	75% {
+		transform: translate(15px, 25px) scale(1.05);
+	}
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.error-content {
+		padding: 2rem 1.5rem;
+	}
+
+	.error-title {
+		font-size: 1.875rem;
+	}
+
+	.error-description {
+		font-size: 1rem;
+	}
+
+	.error-actions {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.btn {
+		width: 100%;
+		max-width: 280px;
+	}
+
+	.links-list {
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.error-page {
+		padding: 1rem 0.5rem;
+	}
+
+	.error-content {
+		padding: 1.5rem 1rem;
+	}
+
+	.code-text {
+		font-size: 4rem;
+	}
+}

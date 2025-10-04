@@ -1,0 +1,285 @@
+---
+// FAQ Section Component
+import Badge from '../common/Badge.astro';
+import Icon from '../common/Icon.astro';
+---
+
+<section class="faq">
+	<div class="container">
+		<header class="faq-header">
+			<Badge icon="❓" text="Frequently Asked Questions" />
+			
+			<h2 class="faq-title">
+				Got Questions? 
+				<span class="gradient-text">We've Got Answers</span>
+			</h2>
+			
+			<p class="faq-description">
+				Everything you need to know about Vantage and how it can transform 
+				your business opportunity discovery process.
+			</p>
+		</header>
+
+		<div class="faq-content">
+			<details class="faq-item">
+				<summary class="faq-question">
+					<span class="question-text">How does Vantage discover business opportunities?</span>
+					<Icon name="chevron-down" class="chevron" size={20} aria-hidden="true" />
+				</summary>
+				<div class="faq-answer">
+					<p>Vantage uses advanced AI algorithms to continuously monitor and analyze conversations across various online platforms including Reddit, Twitter, forums, and specialized communities. Our system identifies emerging trends, pain points, and unmet needs that represent potential business opportunities, then ranks them by market potential and relevance.</p>
+				</div>
+			</details>
+
+			<details class="faq-item">
+				<summary class="faq-question">
+					<span class="question-text">What makes Vantage different from traditional market research?</span>
+					<Icon name="chevron-down" class="chevron" size={20} aria-hidden="true" />
+				</summary>
+				<div class="faq-answer">
+					<p>Unlike traditional market research that relies on surveys and historical data, Vantage provides real-time insights from authentic conversations happening right now. We capture organic discussions where people express genuine needs and frustrations, giving you access to opportunities before they become mainstream or competitive.</p>
+				</div>
+			</details>
+
+			<details class="faq-item">
+				<summary class="faq-question">
+					<span class="question-text">How accurate are the business opportunities identified?</span>
+					<Icon name="chevron-down" class="chevron" size={20} aria-hidden="true" />
+				</summary>
+				<div class="faq-answer">
+					<p>Our AI maintains a 95% accuracy rate in identifying viable business opportunities. We use sophisticated natural language processing and sentiment analysis to filter out noise and focus on genuine market needs. Each opportunity is scored based on demand signals, market size, competition level, and implementation feasibility.</p>
+				</div>
+			</details>
+
+			<details class="faq-item">
+				<summary class="faq-question">
+					<span class="question-text">Can I customize what types of opportunities Vantage looks for?</span>
+					<Icon name="chevron-down" class="chevron" size={20} aria-hidden="true" />
+				</summary>
+				<div class="faq-answer">
+					<p>Absolutely! Vantage allows you to set custom filters based on industry, market size, geographic location, investment level, and business model preferences. You can also create watchlists for specific keywords, competitors, or market segments to receive targeted alerts when relevant opportunities emerge.</p>
+				</div>
+			</details>
+
+			<details class="faq-item">
+				<summary class="faq-question">
+					<span class="question-text">How often is the data updated?</span>
+					<Icon name="chevron-down" class="chevron" size={20} aria-hidden="true" />
+				</summary>
+				<div class="faq-answer">
+					<p>Vantage operates 24/7 with real-time data collection and analysis. New opportunities are identified and added to your dashboard within minutes of being detected. We also provide daily trend reports and weekly deep-dive analyses to help you stay ahead of emerging market shifts.</p>
+				</div>
+			</details>
+
+			<details class="faq-item">
+				<summary class="faq-question">
+					<span class="question-text">What level of technical expertise do I need to use Vantage?</span>
+					<Icon name="chevron-down" class="chevron" size={20} aria-hidden="true" />
+				</summary>
+				<div class="faq-answer">
+					<p>None at all! Vantage is designed for entrepreneurs, business analysts, and innovators of all technical backgrounds. Our intuitive dashboard presents complex data in easy-to-understand formats with clear visualizations, actionable insights, and step-by-step opportunity assessments.</p>
+				</div>
+			</details>
+
+			<details class="faq-item">
+				<summary class="faq-question">
+					<span class="question-text">Is there a free trial available?</span>
+					<Icon name="chevron-down" class="chevron" size={20} aria-hidden="true" />
+				</summary>
+				<div class="faq-answer">
+					<p>Yes! We offer a 14-day free trial that gives you full access to all Vantage features. No credit card required to start. During your trial, you'll receive up to 50 curated business opportunities, complete market analysis, and dedicated onboarding support to help you get the most out of the platform.</p>
+				</div>
+			</details>
+
+			<details class="faq-item">
+				<summary class="faq-question">
+					<span class="question-text">How do I get started with Vantage?</span>
+					<Icon name="chevron-down" class="chevron" size={20} aria-hidden="true" />
+				</summary>
+				<div class="faq-answer">
+					<p>Getting started is simple! Sign up for your free trial, complete a brief questionnaire about your interests and goals, and our AI will immediately begin curating personalized business opportunities for you. You'll have access to your first insights within hours of signing up.</p>
+				</div>
+			</details>
+		</div>
+	</div>
+</section>
+
+<style lang="scss">
+	.faq {
+		padding: 6rem 0;
+		background: var(--bg-secondary);
+		position: relative;
+
+		.container {
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 0 2rem;
+			position: relative;
+			z-index: 1;
+
+			@media (max-width: 768px) {
+				padding: 0 1rem;
+			}
+		}
+	}
+
+	.faq-header {
+		text-align: center;
+		margin-bottom: 4rem;
+
+		:global(.badge) {
+			margin-bottom: 2rem;
+		}
+
+		.faq-title {
+			font-size: clamp(2rem, 4vw, 3rem);
+			font-weight: 700;
+			line-height: 1.2;
+			margin-bottom: 1.5rem;
+			color: var(--text-primary);
+
+			.gradient-text {
+				background: var(--accent-gradient);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
+		}
+
+		.faq-description {
+			font-size: 1.125rem;
+			line-height: 1.6;
+			color: var(--text-secondary);
+			max-width: 600px;
+			margin: 0 auto;
+		}
+	}
+
+	.faq-content {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		margin-bottom: 4rem;
+	}
+
+	.faq-item {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		overflow: hidden;
+		backdrop-filter: blur(10px);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+		&:hover {
+			border-color: var(--accent-primary);
+			box-shadow: var(--shadow-md);
+		}
+
+		&[open] {
+			border-color: var(--accent-primary);
+			box-shadow: var(--shadow-lg);
+
+			.faq-question {
+				border-bottom: 1px solid var(--border-color);
+				
+				.chevron {
+					transform: rotate(180deg);
+					color: var(--accent-primary);
+				}
+			}
+		}
+
+		.faq-question {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 1.5rem;
+			cursor: pointer;
+			user-select: none;
+			font-weight: 600;
+			color: var(--text-primary);
+			font-size: 1.125rem;
+			line-height: 1.4;
+			transition: all 0.2s ease;
+			list-style: none;
+
+			&::-webkit-details-marker {
+				display: none;
+			}
+
+			&::marker {
+				display: none;
+			}
+
+			&:hover {
+				color: var(--accent-primary);
+				
+				.chevron {
+					color: var(--accent-primary);
+					transform: scale(1.1);
+				}
+			}
+
+			.question-text {
+				flex: 1;
+				margin-right: 1rem;
+			}
+
+			.chevron {
+				flex-shrink: 0;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				color: var(--text-secondary);
+			}
+		}
+
+		.faq-answer {
+			padding: 1.5rem;
+			color: var(--text-secondary);
+			line-height: 1.7;
+			font-size: 1rem;
+
+			p {
+				margin: 0;
+			}
+		}
+	}
+
+	// Responsive design
+	@media (max-width: 768px) {
+		.faq {
+			padding: 4rem 0;
+		}
+
+		.faq-header {
+			margin-bottom: 3rem;
+		}
+
+		.faq-item {
+			.faq-question {
+				padding: 1.25rem;
+				font-size: 1rem;
+
+				.question-text {
+					margin-right: 0.75rem;
+				}
+			}
+
+			.faq-answer {
+				padding: 1.25rem;
+				font-size: 0.9rem;
+			}
+		}
+
+		.help-card {
+			padding: 2rem 1.5rem !important;
+
+			h3 {
+				font-size: 1.25rem;
+			}
+
+			p {
+				font-size: 1rem;
+			}
+		}
+	}
+</style>

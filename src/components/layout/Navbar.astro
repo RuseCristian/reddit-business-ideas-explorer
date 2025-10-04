@@ -1,0 +1,330 @@
+---
+import ClerkNav from "./ClerkNav.tsx";
+import Image from "astro/components/Image.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+
+export interface Props {
+    forceScrolled?: boolean;
+}
+
+const { forceScrolled = false } = Astro.props;
+---
+
+<nav class={`navbar ${forceScrolled ? 'scrolled' : ''}`}>
+    <div class="nav-container">
+        <!-- Logo -->
+        <div class="nav-logo">
+            <a href="/" class="logo-link">
+                <Image 
+                    src="/favicon.png" 
+                    alt="Vantage Logo" 
+                    width={32} 
+                    height={32}
+                    class="logo-icon"
+                />
+                <span class="logo-text">Vantage</span>
+            </a>
+        </div>
+
+        <div class="nav-actions">
+            <ClerkNav client:load />
+            <ThemeToggle />
+        </div>
+    </div>
+</nav>
+
+<style lang="scss" is:global>
+    // ===== NAVBAR CONTAINER =====
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: transparent;
+        backdrop-filter: blur(0px);
+        border-bottom: 1px solid transparent;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        // Scrolled state
+        &.scrolled {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+    }
+
+    // ===== NAVIGATION LAYOUT =====
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        @media (max-width: 768px) {
+            padding: 1rem;
+        }
+    }
+
+    // ===== LOGO SECTION =====
+    .nav-logo {
+        // Logo link styles
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: scale(1.05);
+            }
+        }
+
+        // Logo icon
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        // Logo text - hide on mobile
+        .logo-text {
+            @media (max-width: 480px) {
+                display: none;
+            }
+        }
+    }
+
+    // ===== NAVIGATION ACTIONS =====
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    // ===== USER SECTION =====
+    .user-section {
+        display: flex;
+        align-items: center;
+        margin-right: 0.5rem;
+    }
+
+    // ===== SKELETON LOADING =====
+    .nav-skeleton {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-right: 0.5rem;
+    }
+
+    .skeleton-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--bg-secondary);
+        border: 2px solid var(--border-color);
+        animation: skeleton-pulse 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes skeleton-pulse {
+        0% {
+            opacity: 0.6;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    // User button container
+    .user-button-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        background: var(--bg-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 50px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        box-shadow: var(--shadow-md);
+        color: var(--text-primary);
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-primary);
+        }
+    }
+
+    // User avatar
+    .user-avatar {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        border: 2px solid var(--border-color) !important;
+    }
+
+    // Force text color to follow theme
+    .user-button-container * {
+        color: var(--text-primary) !important;
+    }
+
+    // User popover styles
+    .user-popover-card {
+        background: var(--bg-primary) !important;
+        border: 1px solid var(--border-color) !important;
+        box-shadow: var(--shadow-lg) !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(20px) !important;
+    }
+
+    .user-popover-main {
+        padding: 1rem !important;
+        color: var(--text-primary) !important;
+    }
+
+    .user-popover-footer {
+        border-top: 1px solid var(--border-color) !important;
+        padding-top: 0.75rem !important;
+        margin-top: 0.75rem !important;
+    }
+
+    // ===== NAVIGATION BUTTONS =====
+    .nav-btn {
+        // Base button styles
+        position: relative;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 2px solid var(--border-color);
+        background: var(--bg-secondary);
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-md);
+        color: var(--text-primary);
+        overflow: visible;
+        padding: 0;
+
+        // Button interactions
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+
+            .btn-text {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+                visibility: visible;
+            }
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+
+        // Mobile responsive sizing
+        @media (max-width: 768px) {
+            width: 44px;
+            height: 44px;
+
+            .btn-text {
+                display: none;
+            }
+        }
+    }
+
+    // Button icon container
+    .btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    // ===== BUTTON TOOLTIP =====
+    .btn-text {
+        position: absolute;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+            opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        box-shadow: var(--shadow-md);
+        color: var(--text-primary);
+        z-index: 10;
+
+        // Tooltip arrow
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-bottom: 5px solid var(--bg-primary);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+        }
+    }
+</style>
+
+<script>
+    import { initThemeToggle } from "../../scripts/themeToggle";
+
+    // Initialize theme toggle when the component loads
+    initThemeToggle();
+
+    // Navbar scroll effect
+    function initNavbarScroll() {
+        const navbar = document.querySelector('.navbar');
+        if (!navbar) return;
+
+        // Check if navbar is force-scrolled (for dashboard pages)
+        const isForceScrolled = navbar.classList.contains('scrolled');
+
+        function handleScroll() {
+            if (!navbar) return;
+            
+            // If force-scrolled, don't remove the scrolled class
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else if (!isForceScrolled) {
+                navbar.classList.remove('scrolled');
+            }
+        }
+
+        // Add scroll listener
+        window.addEventListener('scroll', handleScroll);
+        
+        // Check initial scroll position
+        handleScroll();
+    }
+
+    // Initialize navbar scroll effect
+    document.addEventListener('DOMContentLoaded', initNavbarScroll);
+    // Also init immediately in case DOM is already loaded
+    initNavbarScroll();
+</script>

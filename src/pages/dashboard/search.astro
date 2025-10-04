@@ -1,0 +1,252 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import Icon from "../../components/common/Icon.astro";
+---
+
+<DashboardLayout>
+	<div class="content">
+		<div class="container">
+			<header>
+				<h1>Discover Business Opportunities</h1>
+				<p>Search through thousands of emerging business ideas from Reddit communities</p>
+			</header>
+
+			<div class="search-wrapper">
+				<Icon name="search" size={24} />
+				<input 
+					type="text" 
+					placeholder="Search for business opportunities, trends, or specific markets..."
+				/>
+				<button type="submit">
+					<Icon name="arrow-right" size={20} />
+				</button>
+			</div>
+
+			<section class="suggestions">
+				<h2>Popular searches</h2>
+				<div class="grid">
+					<button>
+						<Icon name="cpu" size={16} />
+						<span>AI-powered startups</span>
+					</button>
+					<button>
+						<Icon name="leaf" size={16} />
+						<span>Sustainable business ideas</span>
+					</button>
+					<button>
+						<Icon name="shopping-cart" size={16} />
+						<span>E-commerce opportunities</span>
+					</button>
+					<button>
+						<Icon name="cloud" size={16} />
+						<span>SaaS product ideas</span>
+					</button>
+					<button>
+						<Icon name="smartphone" size={16} />
+						<span>Mobile app concepts</span>
+					</button>
+					<button>
+						<Icon name="credit-card" size={16} />
+						<span>Fintech innovations</span>
+					</button>
+					<button>
+						<Icon name="heart" size={16} />
+						<span>Health and wellness</span>
+					</button>
+					<button>
+						<Icon name="home" size={16} />
+						<span>Remote work solutions</span>
+					</button>
+				</div>
+			</section>
+		</div>
+	</div>
+</DashboardLayout>
+
+<style>
+	.content {
+		padding: 2rem;
+		display: flex;
+		justify-content: center;
+		min-height: 100%;
+	}
+
+	.container {
+		width: 100%;
+		max-width: 800px;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	header {
+		text-align: center;
+		margin-bottom: 1rem;
+	}
+
+	h1 {
+		font-size: 2.5rem;
+		font-weight: 700;
+		background: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		margin-bottom: 0.5rem;
+		line-height: 1.2;
+	}
+
+	header p {
+		font-size: 1.125rem;
+		color: var(--text-secondary);
+		line-height: 1.6;
+	}
+
+	.search-wrapper {
+		background: var(--bg-secondary);
+		border: 2px solid var(--border-color);
+		border-radius: 24px;
+		padding: 1rem 1.5rem;
+		backdrop-filter: blur(10px);
+		box-shadow: var(--shadow-lg);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.search-wrapper:focus-within {
+		border-color: var(--accent-primary);
+		box-shadow: 0 0 0 4px var(--accent-overlay), var(--shadow-lg);
+		transform: translateY(-2px);
+	}
+
+	.search-wrapper (svg) {
+		color: var(--text-muted);
+		transition: color 0.3s ease;
+	}
+
+	.search-wrapper:focus-within (svg:first-child) {
+		color: var(--accent-primary);
+	}
+
+	input {
+		flex: 1;
+		border: none;
+		background: transparent;
+		color: var(--text-primary);
+		font-size: 1.125rem;
+		font-weight: 400;
+		outline: none;
+		font-family: inherit;
+	}
+
+	input::placeholder {
+		color: var(--text-muted);
+	}
+
+	.search-wrapper button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 48px;
+		height: 48px;
+		border-radius: 16px;
+		border: none;
+		background: var(--accent-gradient);
+		color: white;
+		cursor: pointer;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+	}
+
+	.search-wrapper button svg {
+		color: white;
+	}
+
+	.search-wrapper button:hover {
+		transform: scale(1.05);
+		box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+	}
+
+	.search-wrapper button:active {
+		transform: scale(0.95);
+	}
+
+	.suggestions h2 {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--text-secondary);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-bottom: 1rem;
+		padding: 0 0.5rem;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 0.75rem;
+	}
+
+	.grid button {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 1rem 1.25rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		color: var(--text-primary);
+		text-align: left;
+		cursor: pointer;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		backdrop-filter: blur(10px);
+		font-size: 0.9rem;
+		font-weight: 500;
+	}
+
+	.grid button:hover {
+		border-color: var(--accent-primary);
+		background: var(--bg-tertiary);
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+	}
+
+	.grid button:active {
+		transform: translateY(0);
+	}
+
+	.grid button span {
+		flex: 1;
+	}
+
+	@media (max-width: 768px) {
+		div[slot="content"] {
+			padding: 1rem;
+		}
+
+		h1 {
+			font-size: 2rem;
+		}
+
+		header p {
+			font-size: 1rem;
+		}
+
+		.search-wrapper {
+			padding: 0.875rem 1rem;
+		}
+
+		input {
+			font-size: 1rem;
+		}
+
+		.grid {
+			grid-template-columns: 1fr;
+		}
+
+		.grid button {
+			padding: 0.875rem 1rem;
+		}
+	}
+</style>

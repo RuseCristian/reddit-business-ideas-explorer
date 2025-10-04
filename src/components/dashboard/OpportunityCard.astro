@@ -1,0 +1,177 @@
+---
+export interface Props {
+	id: number;
+	title: string;
+	description: string;
+	subreddit: string;
+	impactScore: number;
+	timeText: string;
+	variant?: 'default' | 'saved';
+	showRemoveButton?: boolean;
+	onRemove?: () => void;
+}
+
+const {
+	id,
+	title,
+	description,
+	subreddit,
+	impactScore,
+	timeText,
+	variant = 'default',
+	showRemoveButton = false
+} = Astro.props;
+
+const cardClass = variant === 'saved' ? 'opportunity-card saved' : 'opportunity-card';
+---
+
+<div class={cardClass}>
+	<div class="opportunity-info">
+		<h4>{title}</h4>
+		<p class="opportunity-description">{description}</p>
+		<div class="opportunity-meta">
+			<span class="subreddit">{subreddit}</span>
+			<span class="impact-score">{impactScore}</span>
+			<span class="time-info">{timeText}</span>
+		</div>
+	</div>
+	
+	{showRemoveButton ? (
+		<div class="card-actions">
+			<button class="remove-save-btn" title="Remove from saved">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M3 6h18m-2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+				</svg>
+			</button>
+			<a href={`/dashboard/business-opportunity/${id}`} class="view-button">View</a>
+		</div>
+	) : (
+		<a href={`/dashboard/business-opportunity/${id}`} class="view-button">View</a>
+	)}
+</div>
+
+<style lang="scss">
+	.opportunity-card {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1rem;
+		background: var(--bg-secondary, #f9fafb);
+		border-radius: 8px;
+		transition: all 0.2s ease;
+
+		&:hover {
+			background: var(--bg-tertiary, #f3f4f6);
+			transform: translateY(-1px);
+		}
+
+		.opportunity-info {
+			flex: 1;
+
+			h4 {
+				color: var(--text-primary);
+				margin: 0 0 0.5rem 0;
+				font-size: 1rem;
+				font-weight: 600;
+				line-height: 1.3;
+			}
+
+			.opportunity-description {
+				color: var(--text-secondary);
+				margin: 0 0 0.75rem 0;
+				font-size: 0.875rem;
+				line-height: 1.4;
+			}
+
+			.opportunity-meta {
+				display: flex;
+				gap: 0.75rem;
+				align-items: center;
+				flex-wrap: wrap;
+
+				.subreddit {
+					color: var(--accent-primary, #6366f1);
+					font-size: 0.8rem;
+					font-weight: 500;
+					background: var(--bg-primary);
+					padding: 0.2rem 0.5rem;
+					border-radius: 4px;
+				}
+
+				.impact-score {
+					color: white;
+					font-weight: 600;
+					font-size: 0.8rem;
+					background: linear-gradient(135deg, #10b981, #06d6a0);
+					padding: 0.2rem 0.5rem;
+					border-radius: 4px;
+				}
+
+				.time-info {
+					color: var(--text-secondary);
+					font-size: 0.75rem;
+				}
+			}
+		}
+
+		.view-button {
+			background: var(--accent-primary, #6366f1);
+			color: white;
+			padding: 0.5rem 1rem;
+			border-radius: 6px;
+			text-decoration: none;
+			font-size: 0.875rem;
+			font-weight: 500;
+			transition: all 0.2s ease;
+			white-space: nowrap;
+
+			&:hover {
+				background: var(--accent-secondary, #8b5cf6);
+				transform: translateY(-1px);
+			}
+		}
+
+		.card-actions {
+			display: flex;
+			gap: 0.5rem;
+			align-items: center;
+
+			.remove-save-btn {
+				background: none;
+				border: 1px solid var(--border-color);
+				color: var(--text-secondary);
+				padding: 0.5rem;
+				border-radius: 6px;
+				cursor: pointer;
+				transition: all 0.2s ease;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
+				&:hover {
+					background: #fee2e2;
+					border-color: #fca5a5;
+					color: #dc2626;
+				}
+			}
+		}
+	}
+
+	@media (max-width: 768px) {
+		.opportunity-card {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.75rem;
+
+			.card-actions {
+				align-self: flex-end;
+			}
+		}
+
+		.opportunity-meta {
+			flex-direction: column;
+			align-items: flex-start !important;
+			gap: 0.5rem !important;
+		}
+	}
+</style>

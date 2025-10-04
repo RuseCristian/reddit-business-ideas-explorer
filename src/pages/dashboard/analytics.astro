@@ -1,0 +1,511 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import Panel from "../../components/dashboard/Panel.astro";
+import Icon from "../../components/common/Icon.astro";
+import DashboardHeader from "../../components/dashboard/DashboardHeader.astro";
+
+// Mock analytics data - in a real app, this would come from your API
+const analyticsData = {
+	overview: {
+		totalOpportunities: 1247,
+		totalCommunities: 45,
+		totalPosts: 8942,
+		engagementRate: 23.7
+	},
+	trends: {
+		weeklyGrowth: 12.5,
+		monthlyOpportunities: 342,
+		popularCategories: [
+			{ name: "SaaS", count: 234, growth: 15.2 },
+			{ name: "E-commerce", count: 189, growth: 8.7 },
+			{ name: "Mobile Apps", count: 156, growth: 22.1 },
+			{ name: "AI/ML", count: 142, growth: 45.3 }
+		]
+	},
+	performance: {
+		highImpactOpportunities: 89,
+		validatedNeeds: 67,
+		marketGaps: 156,
+		recentActivity: 78
+	},
+	insights: {
+		topCommunities: [
+			{ name: "r/Entrepreneur", opportunities: 89, members: "2.1M" },
+			{ name: "r/SaaS", opportunities: 67, members: "156K" },
+			{ name: "r/startups", opportunities: 54, members: "890K" }
+		],
+		timeDistribution: [
+			{ hour: "9-12", percentage: 28 },
+			{ hour: "13-17", percentage: 35 },
+			{ hour: "18-22", percentage: 23 },
+			{ hour: "23-8", percentage: 14 }
+		]
+	}
+};
+---
+
+<DashboardLayout>
+	<div class="analytics-dashboard">
+		<DashboardHeader 
+			title="Analytics" 
+			subtitle="Comprehensive insights into business opportunities and market trends"
+		/>
+		
+		<div class="masonry-grid">
+			<!-- Overview Metrics -->
+			<Panel title="Total Opportunities" icon="grid" variant="featured">
+				<div class="metric-large">{analyticsData.overview.totalOpportunities.toLocaleString()}</div>
+				<div class="metric-growth positive">+{analyticsData.trends.weeklyGrowth}% this week</div>
+				<p>Identified business opportunities across all communities</p>
+			</Panel>
+
+			<Panel title="Communities Tracked" icon="users">
+				<div class="metric-large">{analyticsData.overview.totalCommunities}</div>
+				<div class="progress-container">
+					<div class="progress-bar">
+						<div class="progress-fill" style="width: 75%"></div>
+					</div>
+					<span class="progress-label">75% active this month</span>
+				</div>
+			</Panel>
+
+			<Panel title="Engagement Rate" icon="activity">
+				<div class="metric-large">{analyticsData.overview.engagementRate}%</div>
+				<div class="metric-growth positive">+2.3% from last month</div>
+				<p>Average engagement across all tracked posts</p>
+			</Panel>
+
+			<!-- Popular Categories -->
+			<Panel title="Popular Categories" icon="package" class="panel-tall">
+				<div class="categories-list">
+					{analyticsData.trends.popularCategories.map(category => (
+						<div class="category-item">
+							<div class="category-info">
+								<span class="category-name">{category.name}</span>
+								<span class="category-count">{category.count} opportunities</span>
+							</div>
+							<div class="category-growth positive">+{category.growth}%</div>
+						</div>
+					))}
+				</div>
+			</Panel>
+
+			<!-- Performance Metrics -->
+			<Panel title="High Impact Opportunities" icon="ai-brain" variant="compact">
+				<div class="metric-large">{analyticsData.performance.highImpactOpportunities}</div>
+				<p>Opportunities with impact score > 8.0</p>
+			</Panel>
+
+			<Panel title="Validated Needs" icon="check" variant="compact">
+				<div class="metric-large">{analyticsData.performance.validatedNeeds}</div>
+				<p>Opportunities with strong validation signals</p>
+			</Panel>
+
+			<!-- Top Communities -->
+			<Panel title="Top Communities" icon="users" class="panel-wide">
+				<div class="communities-grid">
+					{analyticsData.insights.topCommunities.map(community => (
+						<div class="community-card">
+							<div class="community-name">{community.name}</div>
+							<div class="community-stats">
+								<span class="opportunities">{community.opportunities} opportunities</span>
+								<span class="members">{community.members} members</span>
+							</div>
+						</div>
+					))}
+				</div>
+			</Panel>
+
+			<!-- Activity Timeline -->
+			<Panel title="Activity Distribution" icon="activity">
+				<div class="time-chart">
+					{analyticsData.insights.timeDistribution.map(period => (
+						<div class="time-slot">
+							<span class="time-label">{period.hour}</span>
+							<div class="time-bar">
+								<div class="time-fill" style={`width: ${period.percentage * 2}%`}></div>
+							</div>
+							<span class="time-percentage">{period.percentage}%</span>
+						</div>
+					))}
+				</div>
+			</Panel>
+
+			<!-- Market Gaps -->
+			<Panel title="Market Gaps Identified" icon="search">
+				<div class="metric-large">{analyticsData.performance.marketGaps}</div>
+				<div class="gap-insights">
+					<div class="insight-item">
+						<Icon name="arrow-right" size={16} />
+						<span>42 new gaps this week</span>
+					</div>
+					<div class="insight-item">
+						<Icon name="activity" size={16} />
+						<span>23 urgent opportunities</span>
+					</div>
+				</div>
+			</Panel>
+
+			<!-- Recent Activity -->
+			<Panel title="Recent Activity" icon="activity" variant="compact">
+				<div class="metric-large">{analyticsData.performance.recentActivity}</div>
+				<p>New opportunities identified in the last 24 hours</p>
+			</Panel>
+
+			<!-- Performance Summary -->
+			<Panel title="Monthly Summary" icon="grid" class="panel-wide">
+				<div class="summary-grid">
+					<div class="summary-item">
+						<div class="summary-value">{analyticsData.trends.monthlyOpportunities}</div>
+						<div class="summary-label">New Opportunities</div>
+					</div>
+					<div class="summary-item">
+						<div class="summary-value">{analyticsData.overview.totalPosts.toLocaleString()}</div>
+						<div class="summary-label">Posts Analyzed</div>
+					</div>
+					<div class="summary-item">
+						<div class="summary-value">94%</div>
+						<div class="summary-label">Accuracy Rate</div>
+					</div>
+					<div class="summary-item">
+						<div class="summary-value">2.3s</div>
+						<div class="summary-label">Avg Processing</div>
+					</div>
+				</div>
+			</Panel>
+		</div>
+	</div>
+</DashboardLayout>
+
+<style lang="scss">
+	.analytics-dashboard {
+		max-width: 1400px;
+		margin: 0 auto;
+		width: 100%;
+	}
+
+	.masonry-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 1.5rem;
+		grid-auto-rows: auto;
+
+		@media (min-width: 768px) {
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		}
+
+		@media (min-width: 1200px) {
+			grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+		}
+
+		// Panel size variations
+		:global(.panel-wide) {
+			grid-column: span 2;
+			
+			@media (max-width: 1024px) {
+				grid-column: span 1;
+			}
+		}
+
+		:global(.panel-tall) {
+			grid-row: span 2;
+		}
+	}
+
+	// Metric styling
+	.metric-large {
+		font-size: 2.5rem;
+		font-weight: 700;
+		color: var(--accent-primary);
+		margin: 0.5rem 0;
+		line-height: 1;
+	}
+
+	.metric-growth {
+		font-size: 0.875rem;
+		font-weight: 600;
+		padding: 0.25rem 0.5rem;
+		border-radius: 12px;
+		display: inline-block;
+		margin-bottom: 0.5rem;
+
+		&.positive {
+			background: rgba(34, 197, 94, 0.1);
+			color: rgb(34, 197, 94);
+		}
+
+		&.negative {
+			background: rgba(239, 68, 68, 0.1);
+			color: rgb(239, 68, 68);
+		}
+	}
+
+	// Progress bars
+	.progress-container {
+		margin-top: 1rem;
+	}
+
+	.progress-bar {
+		width: 100%;
+		height: 8px;
+		background: var(--bg-tertiary);
+		border-radius: 4px;
+		overflow: hidden;
+		margin-bottom: 0.5rem;
+	}
+
+	.progress-fill {
+		height: 100%;
+		background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+		border-radius: 4px;
+		transition: width 0.6s ease;
+	}
+
+	.progress-label {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+	}
+
+	// Categories list
+	.categories-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.category-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.75rem;
+		background: var(--bg-tertiary);
+		border-radius: 8px;
+		transition: all 0.2s ease;
+
+		&:hover {
+			background: var(--bg-secondary);
+			transform: translateY(-1px);
+		}
+	}
+
+	.category-info {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.category-name {
+		font-weight: 600;
+		color: var(--text-primary);
+	}
+
+	.category-count {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+	}
+
+	.category-growth {
+		font-weight: 600;
+		font-size: 0.875rem;
+	}
+
+	// Communities grid
+	.communities-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 1rem;
+	}
+
+	.community-card {
+		padding: 1rem;
+		background: var(--bg-tertiary);
+		border-radius: 8px;
+		transition: all 0.2s ease;
+
+		&:hover {
+			background: var(--bg-secondary);
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-md);
+		}
+	}
+
+	.community-name {
+		font-weight: 600;
+		color: var(--text-primary);
+		margin-bottom: 0.5rem;
+	}
+
+	.community-stats {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+	}
+
+	// Time chart
+	.time-chart {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.time-slot {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.time-label {
+		font-weight: 600;
+		color: var(--text-primary);
+		min-width: 50px;
+		font-size: 0.875rem;
+	}
+
+	.time-bar {
+		flex: 1;
+		height: 6px;
+		background: var(--bg-tertiary);
+		border-radius: 3px;
+		overflow: hidden;
+	}
+
+	.time-fill {
+		height: 100%;
+		background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+		border-radius: 3px;
+		transition: width 0.6s ease;
+	}
+
+	.time-percentage {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		min-width: 35px;
+		text-align: right;
+	}
+
+	// Gap insights
+	.gap-insights {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-top: 1rem;
+	}
+
+	.insight-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+	}
+
+	// Summary grid
+	.summary-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.summary-item {
+		text-align: center;
+		padding: 1rem;
+		background: var(--bg-tertiary);
+		border-radius: 8px;
+		transition: all 0.2s ease;
+
+		&:hover {
+			background: var(--bg-secondary);
+			transform: translateY(-2px);
+		}
+	}
+
+	.summary-value {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: var(--accent-primary);
+		margin-bottom: 0.25rem;
+	}
+
+	.summary-label {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		font-weight: 500;
+	}
+
+	// Responsive design
+	@media (max-width: 768px) {
+		.analytics-dashboard {
+			padding: 0 1rem;
+		}
+
+		.masonry-grid {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+
+			:global(.panel-wide) {
+				grid-column: span 1;
+			}
+		}
+
+		.communities-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.summary-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
+		}
+
+		.metric-large {
+			font-size: 2rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.summary-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.time-slot {
+			flex-direction: column;
+			gap: 0.5rem;
+			align-items: stretch;
+		}
+
+		.time-label {
+			min-width: auto;
+		}
+
+		.time-percentage {
+			text-align: left;
+			min-width: auto;
+		}
+	}
+
+	// Animation for panels on load
+	:global(.panel) {
+		animation: fadeInUp 0.6s ease forwards;
+		opacity: 0;
+		transform: translateY(20px);
+	}
+
+	:global(.panel:nth-child(1)) { animation-delay: 0.1s; }
+	:global(.panel:nth-child(2)) { animation-delay: 0.2s; }
+	:global(.panel:nth-child(3)) { animation-delay: 0.3s; }
+	:global(.panel:nth-child(4)) { animation-delay: 0.4s; }
+	:global(.panel:nth-child(5)) { animation-delay: 0.5s; }
+	:global(.panel:nth-child(6)) { animation-delay: 0.6s; }
+	:global(.panel:nth-child(7)) { animation-delay: 0.7s; }
+	:global(.panel:nth-child(8)) { animation-delay: 0.8s; }
+	:global(.panel:nth-child(9)) { animation-delay: 0.9s; }
+	:global(.panel:nth-child(10)) { animation-delay: 1.0s; }
+
+	@keyframes fadeInUp {
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>

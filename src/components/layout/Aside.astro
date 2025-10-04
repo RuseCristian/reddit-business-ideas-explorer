@@ -1,0 +1,52 @@
+---
+import CircularButton from "../common/CircularButton.astro";
+---
+
+<aside>
+	<CircularButton
+		icon="grid"
+		label="Dashboard"
+		href="/dashboard"
+		labelPosition="right"
+	/>
+
+	<CircularButton
+		icon="users"
+		label="Communities"
+		href="/dashboard/communities"
+		labelPosition="right"
+	/>
+
+	<CircularButton
+		icon="activity"
+		label="Analytics"
+		href="/dashboard/analytics"
+		labelPosition="right"
+	/>
+
+	<CircularButton
+		icon="search"
+		label="✨ Search Ideas"
+		href="/dashboard/search"
+		labelPosition="right"
+	/>
+</aside>
+
+<style lang="scss">
+	// ===== SIDEBAR CONTAINER =====
+	aside {
+		background: var(--bg-secondary);
+		border-right: 1px solid var(--border-color);
+		z-index: 100;
+		display: flex;
+		flex-direction: column;
+		padding: 1rem;
+		box-shadow: var(--shadow-md);
+		gap: 0.5rem;
+
+		@media (max-width: 768px) {
+			width: 60px;
+			padding: 0.75rem 0;
+		}
+	}
+</style>

@@ -1,0 +1,65 @@
+---
+export interface Props {
+	variant?: 'primary' | 'secondary';
+	size?: 'normal' | 'large';
+	class?: string;
+	[key: string]: any;
+}
+
+const { variant = 'primary', size = 'normal', class: className = '', ...props } = Astro.props;
+---
+
+<button class={`btn btn-${variant} ${size === 'large' ? 'btn-large' : ''} ${className}`} {...props}>
+	<slot />
+</button>
+
+<style lang="scss">
+	// Buttons
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1.5rem;
+		border-radius: 12px;
+		font-weight: 500;
+		text-decoration: none;
+		border: none;
+		cursor: pointer;
+		transition:
+			transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+			box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: 1rem;
+
+		&.btn-primary {
+			background: var(--accent-gradient);
+			color: white;
+			box-shadow: var(--shadow-md);
+
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: var(--shadow-lg);
+			}
+		}
+
+		&.btn-secondary {
+			background: var(--bg-secondary);
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+			backdrop-filter: blur(10px);
+
+			&:hover {
+				background: var(--bg-tertiary);
+				transform: translateY(-2px);
+			}
+		}
+
+		&.btn-large {
+			padding: 1rem 2rem;
+			font-size: 1.125rem;
+		}
+
+		&:active {
+			transform: translateY(0);
+		}
+	}
+</style>

@@ -1,0 +1,159 @@
+---
+import Icon from './Icon.astro';
+
+export interface Props {
+	type: 'feature' | 'testimonial';
+	// Feature card props
+	iconName?: string;
+	title?: string;
+	description?: string;
+	// Testimonial card props
+	quote?: string;
+	authorName?: string;
+	authorTitle?: string;
+	avatarInitials?: string;
+}
+
+const { 
+	type, 
+	iconName, 
+	title, 
+	description, 
+	quote, 
+	authorName, 
+	authorTitle, 
+	avatarInitials 
+} = Astro.props;
+---
+
+<div class:list={['card', type]}>
+	{type === 'feature' && (
+		<>
+			<div class="icon">
+				{iconName && <Icon name={iconName} size={32} />}
+			</div>
+			<h3>{title}</h3>
+			<p class="description">{description}</p>
+		</>
+	)}
+	
+	{type === 'testimonial' && (
+		<>
+			<div class="content">
+				<div class="quote-icon">
+					<Icon name="quote" size={32} />
+				</div>
+				<p class="quote">{quote}</p>
+			</div>
+			<div class="author">
+				<div class="avatar">
+					<div class="avatar-placeholder">{avatarInitials}</div>
+				</div>
+				<div class="info">
+					<h4>{authorName}</h4>
+					<p class="title">{authorTitle}</p>
+				</div>
+			</div>
+		</>
+	)}
+</div>
+
+<style lang="scss">
+	.card {
+		padding: 2rem;
+		border-radius: 12px;
+		border: 3px solid var(--border-color);
+		background: var(--bg-secondary);
+		backdrop-filter: blur(10px);
+		transition:
+			transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+			box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: var(--shadow-lg);
+		display: flex;
+		flex-direction: column;
+
+		// Feature card specific styles
+		&.feature {
+			.icon {
+				width: 64px;
+				height: 64px;
+				border-radius: 12px;
+				background: var(--accent-gradient);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-bottom: 1.5rem;
+				color: white;
+			}
+
+			h3 {
+				font-size: 1.25rem;
+				font-weight: 600;
+				margin-bottom: 1rem;
+				color: var(--text-primary);
+			}
+
+			.description {
+				color: var(--text-secondary);
+				line-height: 1.6;
+				flex-grow: 1;
+			}
+		}
+
+		// Testimonial card specific styles
+		&.testimonial {
+			.content {
+				margin-bottom: 1.5rem;
+
+				.quote-icon {
+					color: var(--accent-primary);
+					margin-bottom: 1rem;
+					opacity: 0.7;
+				}
+
+				.quote {
+					font-size: 1rem;
+					line-height: 1.6;
+					color: var(--text-primary);
+					font-style: italic;
+				}
+			}
+
+			.author {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+
+				.avatar {
+					.avatar-placeholder {
+						width: 48px;
+						height: 48px;
+						border-radius: 50%;
+						background: var(--accent-gradient);
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						color: white;
+						font-weight: 600;
+						font-size: 0.875rem;
+					}
+				}
+
+				.info {
+					h4 {
+						font-size: 1rem;
+						font-weight: 600;
+						margin-bottom: 0.25rem;
+						color: var(--text-primary);
+					}
+
+					.title {
+						font-size: 0.875rem;
+						color: var(--text-secondary);
+						font-style: normal;
+					}
+				}
+			}
+		}
+	}
+</style>
