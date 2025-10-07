@@ -1,0 +1,813 @@
+---
+import DashboardLayout from "../../../layouts/DashboardLayout.astro";
+import BusinessOpportunityDetails from "../../../components/dashboard/BusinessOpportunityDetails.tsx";
+const { id } = Astro.params;
+---
+
+<DashboardLayout>
+	<BusinessOpportunityDetails opportunityId={id || "1"} client:load />
+</DashboardLayout>
+
+<style lang="scss">
+	// Analysis Dashboard - Redesigned to match project theme
+	:global(.analysis-dashboard) {
+		max-width: 1000px;
+		margin: 0 auto;
+		width: 100%;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	// Back Navigation
+	:global(.back-navigation) {
+		margin-bottom: 1rem;
+	}
+
+	:global(.back-button) {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.875rem 1.5rem;
+		background: linear-gradient(135deg, #4a90e2, #357abd);
+		border: none;
+		border-radius: 12px;
+		color: white;
+		font-size: 1rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		text-decoration: none;
+		box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+
+		&:hover {
+			background: linear-gradient(135deg, #357abd, #2a5f8f);
+			transform: translateX(-3px) translateY(-1px);
+			box-shadow: 0 4px 16px rgba(74, 144, 226, 0.4);
+		}
+
+		&:active {
+			transform: translateX(-2px) translateY(0);
+		}
+
+		.back-icon {
+			font-size: 1.3rem;
+			font-weight: bold;
+			transition: transform 0.3s ease;
+		}
+
+		.back-text {
+			font-weight: 600;
+			letter-spacing: 0.025em;
+		}
+
+		&:focus {
+			outline: 2px solid var(--accent-color);
+			outline-offset: 2px;
+		}
+	}
+
+	// Top Metrics Row - Enhanced design
+	:global(.metrics-row) {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1rem;
+
+		@media (max-width: 768px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		@media (max-width: 480px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	:global(.metric-card) {
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		padding: 1rem;
+		box-shadow: var(--shadow-sm);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		position: relative;
+		overflow: hidden;
+	}
+
+	:global(.metric-header) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+
+	:global(.metric-icon) {
+		font-size: 1.25rem;
+		flex-shrink: 0;
+	}
+
+	:global(.metric-label) {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		font-weight: 500;
+		margin: 0;
+		text-align: center;
+	}
+
+	:global(.metric-number) {
+		font-size: 1.75rem;
+		font-weight: 700;
+		color: var(--text-primary);
+		line-height: 1;
+		margin: 0;
+		text-align: center;
+	}
+
+	// Main Opportunity Container - Card-based layout
+	:global(.opportunity-container) {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	// Opportunity Header - Enhanced with better spacing
+	:global(.opportunity-header) {
+		padding: 2rem;
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		box-shadow: var(--shadow-sm);
+		position: relative;
+	}
+
+	// Title with Badge Layout - Improved responsiveness
+	:global(.title-with-badge) {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		margin-bottom: 1.5rem;
+		flex-wrap: wrap;
+
+		@media (max-width: 768px) {
+			flex-direction: column;
+			gap: 0.75rem;
+		}
+	}
+
+	// Enhanced Subreddit Info Layout
+	:global(.subreddit-info) {
+		display: flex;
+		align-items: baseline;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	:global(.subreddit-details) {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: flex-start;
+		gap: 0.25rem;
+	}
+
+	:global(.subreddit-name) {
+		font-weight: 600;
+		font-size: 0.9rem;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	:global(.subreddit-display) {
+		font-size: 0.8rem;
+		opacity: 0.9;
+		font-weight: 400;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	:global(.community-stats) {
+		background: var(--bg-secondary);
+		color: var(--text-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 20px;
+		padding: 0.6rem 1rem;
+		font-size: 0.9rem;
+		font-weight: 600;
+		transition: all 0.2s ease;
+		display: inline-flex;
+		align-items: center;
+		white-space: nowrap;
+		flex-shrink: 0;
+		line-height: 1.2;
+		vertical-align: baseline;
+
+		.meta-icon {
+			font-size: 1rem;
+			margin-right: 0.25rem;
+		}
+	}
+
+	:global(.main-title) {
+		font-weight: 700;
+		color: var(--text-primary);
+		margin: 0;
+		line-height: 1.2;
+		flex: 1;
+
+		@media (max-width: 768px) {
+			font-size: 1.75rem;
+		}
+	}
+
+	:global(h2.main-title) {
+		margin-bottom: 1rem;
+	}
+
+	// Enhanced Subreddit Badge - Matches project theme
+	:global(.meta-badge.subreddit-main) {
+		background: var(--accent-gradient);
+		color: white;
+		border: none;
+		border-radius: 20px;
+		padding: 0.6rem 1rem;
+		font-size: 0.9rem;
+		font-weight: 600;
+		box-shadow: var(--shadow-sm);
+		backdrop-filter: blur(10px);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		white-space: nowrap;
+		flex-shrink: 0;
+		text-decoration: none;
+		display: inline-flex;
+		align-items: center;
+		line-height: 1.2;
+		vertical-align: baseline;
+
+		&.clickable-badge {
+			cursor: pointer;
+			
+			&:hover {
+				transform: translateY(-1px);
+				box-shadow: var(--shadow-md);
+				filter: brightness(1.1);
+			}
+			
+			&:active {
+				transform: translateY(0);
+			}
+		}
+
+		.meta-icon {
+			font-size: 1.1rem;
+			margin-right: 0.1rem;
+		}
+	}
+
+	:global(.main-description) {
+		color: var(--text-secondary);
+		margin: 0 0 1.5rem 0;
+		line-height: 1.6;
+		font-size: 1rem;
+	}
+
+	// Impact Section - Redesigned to match theme
+	:global(.impact-section) {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding: 1rem;
+		background: var(--bg-secondary);
+		border-radius: 8px;
+		border: 1px solid var(--border-color);
+	}
+
+	:global(.impact-label) {
+		font-size: 1rem;
+		color: var(--text-primary);
+		font-weight: 600;
+	}
+
+	:global(.impact-bar) {
+		flex: 1;
+		min-width: 200px;
+		height: 10px;
+		background: var(--bg-tertiary);
+		border-radius: 5px;
+		overflow: hidden;
+		border: 1px solid var(--border-color);
+	}
+
+	:global(.impact-fill) {
+		height: 100%;
+		background: var(--accent-gradient);
+		border-radius: 5px;
+		transition: width 0.3s ease;
+	}
+
+	:global(.impact-score) {
+		font-size: 1.125rem;
+		font-weight: 700;
+		color: var(--text-primary);
+		min-width: 60px;
+		padding: 0.25rem 0.5rem;
+		background: var(--bg-primary);
+		border-radius: 6px;
+		border: 1px solid var(--border-color);
+	}
+
+	// Section Styles - Individual cards
+	:global(.keywords-section),
+	:global(.business-analysis-section),
+	:global(.solutions-section),
+	:global(.sources-section) {
+		padding: 2rem;
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		box-shadow: var(--shadow-sm);
+		transition: all 0.3s ease;
+	}
+
+	// Business Analysis Section - New styling
+	:global(.analysis-grid) {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 1.5rem;
+
+		@media (max-width: 768px) {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+	}
+
+	:global(.analysis-card) {
+		background: var(--bg-tertiary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		padding: 1.5rem;
+		position: relative;
+		overflow: hidden;
+		transition: all 0.3s ease;
+
+		&::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 3px;
+			background: var(--accent-gradient);
+		}
+	}
+
+	:global(.analysis-header) {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+
+	:global(.analysis-icon) {
+		font-size: 1.5rem;
+		width: 40px;
+		height: 40px;
+		background: var(--accent-gradient);
+		color: white;
+		border-radius: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		box-shadow: var(--shadow-sm);
+	}
+
+	:global(.analysis-title) {
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0;
+		line-height: 1.3;
+	}
+
+	:global(.analysis-content) {
+		color: var(--text-secondary);
+		line-height: 1.6;
+		font-size: 1rem;
+		margin: 0;
+	}
+
+	:global(.section-title) {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0 0 1.5rem 0;
+	}
+
+	:global(.section-icon) {
+		font-size: 1.5rem;
+		padding: 0.5rem;
+		background: var(--bg-secondary);
+		border-radius: 8px;
+		border: 1px solid var(--border-color);
+	}
+
+	// Keywords Section - Redesigned badges with standout styling
+	:global(.keywords-grid) {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	:global(.keyword-badge) {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.6rem 1.25rem;
+		background: var(--accent-gradient);
+		color: white;
+		border: none;
+		border-radius: 24px;
+		font-size: 0.875rem;
+		font-weight: 600;
+		box-shadow: var(--shadow-sm);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		position: relative;
+		overflow: hidden;
+	}
+
+
+
+	// Solutions Section - Enhanced cards
+	:global(.solutions-grid) {
+		display: grid;
+		gap: 1.5rem;
+	}
+
+	:global(.solution-card) {
+		background: var(--bg-tertiary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		padding: 1.5rem;
+		position: relative;
+		overflow: hidden;
+
+		&::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 3px;
+			background: var(--accent-gradient);
+		}
+	}
+
+	:global(.solution-header) {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	:global(.solution-number) {
+		width: 36px;
+		height: 36px;
+		background: var(--accent-gradient);
+		color: white;
+		border-radius: 8px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: 700;
+		font-size: 1rem;
+		flex-shrink: 0;
+		box-shadow: var(--shadow-sm);
+	}
+
+	:global(.solution-title) {
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 0;
+		line-height: 1.3;
+	}
+
+	:global(.solution-description) {
+		color: var(--text-secondary);
+		margin: 0 0 1rem 0;
+		line-height: 1.6;
+		font-size: 1rem;
+	}
+
+	:global(.solution-meta) {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	// Meta Badges - Redesigned to match theme
+	:global(.meta-badge) {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 0.75rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		color: var(--text-primary);
+		border-radius: 8px;
+		font-size: 0.875rem;
+		font-weight: 500;
+		transition: all 0.2s ease;
+
+		&.market {
+			background: rgba(34, 197, 94, 0.15);
+			color: #22c55e;
+			border-color: rgba(34, 197, 94, 0.4);
+			
+			[data-theme="dark"] & {
+				color: #4ade80;
+				background: rgba(34, 197, 94, 0.2);
+			}
+		}
+
+		&.model {
+			background: rgba(59, 130, 246, 0.15);
+			color: #3b82f6;
+			border-color: rgba(59, 130, 246, 0.4);
+			
+			[data-theme="dark"] & {
+				color: #60a5fa;
+				background: rgba(59, 130, 246, 0.2);
+			}
+		}
+
+		&.upvotes {
+			background: rgba(34, 197, 94, 0.15);
+			color: #22c55e;
+			border-color: rgba(34, 197, 94, 0.4);
+			
+			[data-theme="dark"] & {
+				color: #4ade80;
+				background: rgba(34, 197, 94, 0.2);
+			}
+		}
+	}
+
+	:global(.meta-icon) {
+		font-size: 1rem;
+	}
+
+	// Sources Section - Enhanced expandable design
+	:global(.source-category) {
+		margin-bottom: 1.5rem;
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		overflow: hidden;
+		background: var(--bg-tertiary);
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	:global(.expand-header) {
+		width: 100%;
+		padding: 1rem 1.5rem;
+		background: var(--bg-secondary);
+		border: none;
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		cursor: pointer;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--text-primary);
+
+		&:hover {
+			background: var(--accent-overlay);
+		}
+	}
+
+	:global(.expand-icon) {
+		font-size: 1.25rem;
+		padding: 0.25rem;
+		background: var(--bg-primary);
+		border-radius: 6px;
+		border: 1px solid var(--border-color);
+	}
+
+	:global(.expand-arrow) {
+		margin-left: auto;
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		transition: transform 0.3s ease;
+	}
+
+	:global(.expand-content) {
+		padding: 1.5rem;
+		background: var(--bg-primary);
+		border-top: 1px solid var(--border-color);
+		display: grid;
+		gap: 1rem;
+
+		:global(a) {
+			text-decoration: none !important;
+		}
+	}
+
+	// Source Items - Enhanced design
+	:global(.source-item) {
+		padding: 1rem 0;
+		border-bottom: 1px solid var(--border-color);
+
+		&:last-child {
+			border-bottom: none;
+			padding-bottom: 0;
+		}
+
+		&:first-child {
+			padding-top: 0;
+		}
+	}
+
+	:global(.source-link) {
+		background: linear-gradient(135deg, #4a90e2, #357abd);
+		color: white;
+		border: none;
+		cursor: pointer;
+		transition: all 0.2s ease;
+
+		&:hover {
+			background: linear-gradient(135deg, #357abd, #2a5f8f);
+			transform: translateY(-1px);
+			box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+		}
+
+		&:active {
+			transform: translateY(0);
+		}
+	}
+
+	:global(.source-title) {
+		display: block;
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		text-decoration: none;
+		margin-bottom: 0.75rem;
+		line-height: 1.4;
+		transition: color 0.2s ease;
+	}
+
+	:global(.comment-text) {
+		color: var(--text-primary);
+		margin-bottom: 0.75rem;
+		line-height: 1.6;
+		font-size: 1rem;
+		padding: 0.75rem;
+		background: var(--bg-primary);
+		border-radius: 8px;
+		border-left: 4px solid var(--accent-color);
+		border: 1px solid var(--border-color);
+	}
+
+	:global(.post-text) {
+		color: var(--text-primary);
+		margin-bottom: 0.75rem;
+		line-height: 1.6;
+		font-size: 1rem;
+		padding: 0.75rem;
+		background: var(--bg-primary);
+		border-radius: 8px;
+		border-left: 4px solid var(--accent-color);
+		border: 1px solid var(--border-color);
+	}
+
+	:global(.source-meta) {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	// Loading and Error States - Enhanced design
+	:global(.loading-state),
+	:global(.error-state) {
+		text-align: center;
+		padding: 3rem 2rem;
+		color: var(--text-secondary);
+		background: var(--bg-primary);
+		border-radius: 12px;
+		border: 1px solid var(--border-color);
+	}
+
+	:global(.loading-spinner) {
+		width: 40px;
+		height: 40px;
+		border: 3px solid var(--border-color);
+		border-top: 3px solid var(--accent-primary);
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+		margin: 0 auto 1rem;
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	:global(.error-state) {
+		background: rgba(239, 68, 68, 0.1);
+		border-color: rgba(239, 68, 68, 0.3);
+		color: #dc2626;
+
+		h3 {
+			margin: 0 0 0.5rem 0;
+			color: #dc2626;
+		}
+
+		p {
+			margin: 0;
+			color: var(--text-secondary);
+		}
+	}
+
+	// Responsive Design - Enhanced breakpoints
+	@media (max-width: 768px) {
+		:global(.analysis-dashboard) {
+			padding: 0;
+			gap: 1rem;
+		}
+
+		:global(.opportunity-header) {
+			padding: 1.5rem;
+		}
+
+		:global(.keywords-section),
+		:global(.solutions-section),
+		:global(.sources-section) {
+			padding: 1.5rem;
+		}
+
+		:global(.subreddit-info) {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.5rem;
+		}
+
+		:global(.community-stats) {
+			align-self: flex-start;
+		}
+
+		:global(.impact-section) {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 0.75rem;
+		}
+
+		:global(.impact-bar) {
+			min-width: 100%;
+		}
+
+		:global(.solution-header) {
+			flex-direction: column;
+			gap: 0.75rem;
+		}
+
+		:global(.solution-number) {
+			align-self: flex-start;
+		}
+
+		:global(.source-meta) {
+			flex-direction: column;
+		}
+	}
+
+	@media (max-width: 480px) {
+		:global(.main-title) {
+			font-size: 1.5rem;
+		}
+
+		:global(.section-title) {
+			font-size: 1.25rem;
+		}
+
+		:global(.metric-card) {
+			padding: 0.75rem;
+		}
+
+		:global(.metric-number) {
+			font-size: 1.5rem;
+		}
+	}
+</style>

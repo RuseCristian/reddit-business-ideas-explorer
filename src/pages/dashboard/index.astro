@@ -1,0 +1,382 @@
+---
+import DashboardHeader from "../../components/dashboard/DashboardHeader.astro";
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import OpportunitySection from "../../components/dashboard/OpportunitySection.astro";
+import "../../styles/dashboard-opportunity-cards.scss";
+
+// Default empty data - will be populated by client-side fetch
+const recentlyViewedOpportunities: any[] = [];
+const savedOpportunities: any[] = [];
+---
+
+<script>
+	// TypeScript declarations for window functions
+	declare global {
+		interface Window {
+			viewOpportunity: (opportunityId: number) => void;
+			trackActivity: (activityType: string, resourceId: number, resourceType: string, metadata?: Record<string, any>) => Promise<void>;
+			refreshDashboard: () => Promise<void>;
+		}
+	}
+
+	// Activity tracking utility
+	const trackActivity = async (
+		activityType: string, 
+		resourceId: number, 
+		resourceType: string, 
+		metadata: Record<string, any> = {}
+	): Promise<void> => {
+		try {
+			await fetch("/api/user/track-activity", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					activityType,
+					resourceId,
+					resourceType,
+					metadata,
+				}),
+			});
+		} catch (error) {
+			console.log("Activity tracking failed:", error);
+			// Don't break the user experience if tracking fails
+		}
+	};
+
+	// Load personalized dashboard data
+	const loadDashboardData = async () => {
+		try {
+			// Add cache-busting parameter
+			const timestamp = Date.now();
+			const response = await fetch(`/api/user/dashboard-data?t=${timestamp}`);
+			
+			if (response.ok) {
+				const data = await response.json();
+				
+				if (data.success) {
+					const { recentlyViewed, bookmarkedOpportunities, counts } = data.data;
+					
+					// Update Recently Viewed section
+					updateOpportunitySection("recently-viewed", {
+						title: "Recently Viewed",
+						icon: "👁️",
+						count: `${counts.recentlyViewed} items`,
+						opportunities: recentlyViewed,
+						footerLink: "/dashboard/search",
+						footerText: "View All Recent",
+					});
+					
+					// Update Saved Ideas section
+					updateOpportunitySection("saved-ideas", {
+						title: "Saved Ideas", 
+						icon: "💾",
+						count: `${counts.bookmarked} saved`,
+						opportunities: bookmarkedOpportunities,
+						footerLink: "/dashboard/search?filter=saved",
+						footerText: "Manage Saved Ideas",
+					});
+				} else {
+					console.log("Failed to load dashboard data:", data.error);
+					showEmptyState();
+				}
+			} else if (response.status === 401) {
+				showAuthPrompt();
+			} else {
+				console.log("Error loading dashboard data, status:", response.status);
+				showEmptyState();
+			}
+		} catch (error) {
+			console.log("Dashboard data fetch failed:", error);
+			showEmptyState();
+		}
+	};
+
+	(async () => {
+		await loadDashboardData();
+	})();
+
+	// Interface for section data
+	interface SectionData {
+		title: string;
+		icon: string;
+		count: string;
+		opportunities: Array<{
+			id: number;
+			title: string;
+			description: string;
+			subreddit: string;
+			impactScore: number;
+			timeText: string;
+		}>;
+		footerLink?: string;
+		footerText?: string;
+	}
+
+	// Function to update opportunity sections dynamically - NOW USING THE COMPONENT STRUCTURE
+	function updateOpportunitySection(sectionId: string, data: SectionData): void {
+		const section = document.querySelector(`[data-section="${sectionId}"]`);
+		if (!section) return;
+
+		// Update count
+		const countElement = section.querySelector('.section-count');
+		if (countElement) {
+			countElement.textContent = data.count;
+		}
+
+		// Update opportunities list - limit to 5 cards max
+		const listElement = section.querySelector('.section-content');
+		if (listElement && data.opportunities.length > 0) {
+			// Limit to maximum 5 opportunities for display
+			const displayOpportunities = data.opportunities.slice(0, 5);
+			
+			listElement.innerHTML = displayOpportunities.map((opp: {
+				id: number;
+				title: string;
+				description: string;
+				subreddit: string;
+				impactScore: number;
+				timeText: string;
+			}) => {
+				// Truncate description to max 100 characters
+				const truncatedDescription = opp.description.length > 100 
+					? opp.description.substring(0, 100) + '...'
+					: opp.description;
+				
+				return `
+					<div class="dashboard-opportunity-card" onclick="viewOpportunity(${opp.id})">
+						<div class="dashboard-opportunity-info">
+							<h4>${opp.title}</h4>
+							<p class="dashboard-opportunity-description">${truncatedDescription}</p>
+							<div class="dashboard-opportunity-meta">
+								<span class="dashboard-subreddit-badge">${opp.subreddit}</span>
+								<span class="dashboard-impact-badge">${opp.impactScore.toFixed(1)}</span>
+								<span class="dashboard-time-info">${opp.timeText}</span>
+							</div>
+						</div>
+						<a href="/dashboard/business-opportunity/${opp.id}" class="dashboard-view-button" onclick="event.stopPropagation(); trackActivity('viewed_opportunity', ${opp.id}, 'opportunity', {source: 'dashboard'});">View</a>
+					</div>
+				`;
+			}).join('');
+		} else if (listElement) {
+			listElement.innerHTML = `
+				<div class="empty-section">
+					<p>No ${data.title.toLowerCase()} yet. Start exploring opportunities!</p>
+				</div>
+			`;
+		}
+	}
+
+	// Function to handle opportunity viewing
+	function viewOpportunity(opportunityId: number): void {
+		// Track the view
+		trackActivity("viewed_opportunity", opportunityId, "opportunity", {
+			source: "dashboard",
+			timestamp: Date.now(),
+		});
+		
+		// Navigate to opportunity details
+		window.open(`/dashboard/business-opportunity/${opportunityId}`, "_blank");
+	}
+
+	// Show empty state for unauthenticated or error cases
+	function showEmptyState(): void {
+		updateOpportunitySection("recently-viewed", {
+			title: "Recently Viewed",
+			icon: "👁️", 
+			count: "0 items",
+			opportunities: [],
+		});
+		
+		updateOpportunitySection("saved-ideas", {
+			title: "Saved Ideas",
+			icon: "💾",
+			count: "0 saved", 
+			opportunities: [],
+		});
+	}
+
+	// Show authentication prompt
+	function showAuthPrompt(): void {
+		const sections = document.querySelectorAll('[data-section]');
+		sections.forEach(section => {
+			const listElement = section.querySelector('.section-content');
+			if (listElement) {
+				listElement.innerHTML = `
+					<div class="auth-prompt">
+						<p>Sign in to see your personalized dashboard</p>
+						<a href="/sign-in" class="auth-button">Sign In</a>
+					</div>
+				`;
+			}
+		});
+	}
+
+	// Make functions globally available
+	window.viewOpportunity = viewOpportunity;
+	window.trackActivity = trackActivity;
+	window.refreshDashboard = loadDashboardData;
+</script>
+
+<DashboardLayout>
+	<div class="dashboard-home">
+
+		<DashboardHeader 
+			title="Reddit Business Ideas Dashboard" 
+			subtitle="Discover and analyze business opportunities from Reddit communities"
+			showRefreshButton={true}
+		/>
+
+		<!-- User Activity Sections -->
+		<div class="user-sections">
+			<div data-section="recently-viewed">
+				<OpportunitySection
+					title="Recently Viewed"
+					icon="👁️"
+					count="Loading..."
+					opportunities={recentlyViewedOpportunities}
+					footerLink="/dashboard/activity"
+					footerText="View All Recent"
+					variant="default"
+				/>
+			</div>
+			
+			<div data-section="saved-ideas">
+				<OpportunitySection
+					title="Saved Ideas"
+					icon="💾"
+					count="Loading..."
+					opportunities={savedOpportunities}
+					footerLink="/dashboard/bookmarks"
+					footerText="Manage Saved Ideas"
+					variant="saved"
+				/>
+			</div>
+		</div>
+
+		<div class="quick-actions">
+			<h3>🚀 Quick Actions</h3>
+			<div class="action-links">
+				<a href="/dashboard/communities" class="action-link">
+					<div class="action-icon">🏘️</div>
+					<div class="action-content">
+						<strong>Browse Communities</strong>
+						<span>Explore business ideas by subreddit</span>
+					</div>
+				</a>
+				<a href="/dashboard/analytics" class="action-link">
+					<div class="action-icon">📈</div>
+					<div class="action-content">
+						<strong>View Analytics</strong>
+						<span>Analyze trends and metrics</span>
+					</div>
+				</a>
+				<a href="/dashboard/search" class="action-link">
+					<div class="action-icon">🔍</div>
+					<div class="action-content">
+						<strong>Search Ideas</strong>
+						<span>Find specific opportunities</span>
+					</div>
+				</a>
+				<a href="/dashboard/bookmarks" class="action-link">
+					<div class="action-icon">🔖</div>
+					<div class="action-content">
+						<strong>My Bookmarks</strong>
+						<span>Manage saved opportunities</span>
+					</div>
+				</a>
+				<a href="/dashboard/activity" class="action-link">
+					<div class="action-icon">📊</div>
+					<div class="action-content">
+						<strong>Activity History</strong>
+						<span>View your exploration history</span>
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+</DashboardLayout>
+
+<style lang="scss">
+	.dashboard-home {
+		max-width: 1000px;
+		margin: 0 auto;
+	}
+
+	// User Activity Sections
+	.user-sections {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 2rem;
+		margin-bottom: 3rem;
+
+		@media (max-width: 768px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	// Styles for the container only - component styles are in their own files
+
+	.quick-actions {
+		h3 {
+			color: var(--text-primary);
+			margin-bottom: 1.5rem;
+			text-align: center;
+		}
+	}
+
+	.action-links {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.action-link {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		padding: 1.5rem 2rem;
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		text-decoration: none;
+		transition: all 0.2s ease;
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		}
+
+		.action-icon {
+			font-size: 2rem;
+			background: var(--bg-secondary);
+			padding: 1rem;
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 60px;
+			height: 60px;
+		}
+
+		.action-content {
+			flex: 1;
+
+			strong {
+				display: block;
+				color: var(--text-primary);
+				font-size: 1.1rem;
+				margin-bottom: 0.25rem;
+			}
+
+			span {
+				color: var(--text-secondary);
+				font-size: 0.9rem;
+			}
+		}
+	}
+
+	@media (max-width: 768px) {
+		.action-link {
+			padding: 1.5rem;
+		}
+	}
+</style>

@@ -1,0 +1,132 @@
+---
+import Icon from './Icon.astro';
+
+export interface Props {
+	icon?: string;
+	label?: string;
+	labelPosition?: 'bottom' | 'right';
+	href?: string;
+	class?: string;
+	[key: string]: any;
+}
+
+const { 
+	icon,
+	label,
+	labelPosition = 'bottom',
+	href,
+	class: className = '',
+	...props 
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+const positionClass = `label-${labelPosition}`;
+const combinedClass = `circular-btn ${positionClass} ${className}`.trim();
+---
+
+<Tag
+	class={combinedClass}
+	href={href}
+	{...props}
+>
+	{icon && <Icon name={icon} size={20} />}
+	<slot />
+	{label && <span class="btn-text">{label}</span>}
+</Tag>
+
+<style lang="scss">
+	// ===== CIRCULAR BUTTON =====
+	.circular-btn {
+		position: relative;
+		width: 48px;
+		height: 48px;
+		border-radius: 50%;
+		border: 2px solid var(--border-color);
+		background: var(--bg-secondary);
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.3s ease;
+		box-shadow: var(--shadow-md);
+		color: var(--text-primary);
+		text-decoration: none;
+		padding: 0;
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-lg);
+		}
+
+		&.label-bottom:hover .btn-text {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+			visibility: visible;
+		}
+
+		&.label-right:hover .btn-text {
+			opacity: 1;
+			transform: translateY(-50%) translateX(0);
+			visibility: visible;
+		}
+
+		@media (max-width: 768px) {
+			width: 44px;
+			height: 44px;
+
+			.btn-text {
+				display: none;
+			}
+		}
+	}
+
+	// ===== TOOLTIP =====
+	.btn-text {
+		position: absolute;
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 6px;
+		padding: 0.5rem 0.75rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		white-space: nowrap;
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.3s ease;
+		pointer-events: none;
+		box-shadow: var(--shadow-md);
+		color: var(--text-primary);
+		z-index: 1000;
+	}
+
+	// ===== BOTTOM LABEL =====
+	.label-bottom .btn-text {
+		top: calc(100% + 8px);
+		left: 50%;
+		transform: translateX(-50%) translateY(10px);
+
+		&::before {
+			content: "";
+			position: absolute;
+			bottom: 100%;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 0;
+			height: 0;
+			border-bottom: 5px solid var(--bg-primary);
+			border-left: 5px solid transparent;
+			border-right: 5px solid transparent;
+		}
+	}
+
+	// ===== RIGHT LABEL =====
+	.label-right .btn-text {
+		top: 50%;
+		left: calc(100% + 8px);
+		transform: translateY(-50%) translateX(10px);
+
+		&::before {
+			all: unset
+		}
+	}
+</style>

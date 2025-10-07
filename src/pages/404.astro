@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/layout/Navbar.astro';
+import Footer from '../components/layout/Footer.astro';
+
+---
+
+<Layout>
+	<Navbar />
+	
+	<main class="error-page">
+		<div class="error-container">
+			<div class="error-content">
+				<!-- Error code with animated gradient -->
+				<div class="error-code">
+					<span class="code-text">404</span>
+					<div class="error-decoration">
+						<div class="floating-dot dot-1"></div>
+						<div class="floating-dot dot-2"></div>
+						<div class="floating-dot dot-3"></div>
+					</div>
+				</div>
+				
+				<!-- Error message -->
+				<div class="error-message">
+					<h1 class="error-title">Page Not Found</h1>
+					<p class="error-description">
+						Oops! The page you're looking for doesn't exist or has been moved.
+						This might be because the link is broken, the page has been deleted, or you may have mistyped the address.<br /><br />
+						Don't worry, use the navigation above or the helpful links below to get back on track.
+						If you believe this is an error, feel free to contact support or try searching for what you need.
+					</p>
+				</div>
+				
+				<!-- Action buttons -->
+				<div class="error-actions">
+					<a href="/" class="btn btn-primary">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+							<polyline points="9,22 9,12 15,12 15,22"/>
+						</svg>
+						Back to Home
+					</a>
+					<button onclick="history.back()" class="btn btn-secondary">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="m19 12-7-7-7 7"/>
+							<path d="m19 12-7 7-7-7"/>
+						</svg>
+						Go Back
+					</button>
+				</div>
+				
+				<!-- Helpful links -->
+				<div class="error-links">
+					<p class="links-title">Or explore these areas:</p>
+					<ul class="links-list">
+						<li><a href="/opportunities">Business Opportunities</a></li>
+						<li><a href="/trends">Market Trends</a></li>
+						<li><a href="/insights">AI Insights</a></li>
+					</ul>
+				</div>
+			</div>
+			
+			<!-- Decorative background elements -->
+			<div class="background-decoration">
+				<div class="grid-pattern"></div>
+				<div class="gradient-orb orb-1"></div>
+				<div class="gradient-orb orb-2"></div>
+			</div>
+		</div>
+	</main>
+	<Footer />
+</Layout>
+
+<style>
+	@import "../styles/error-page.css";
+</style>

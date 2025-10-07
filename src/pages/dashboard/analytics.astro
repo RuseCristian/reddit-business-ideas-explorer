@@ -1,0 +1,788 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import Panel from "../../components/dashboard/Panel.astro";
+import Icon from "../../components/common/Icon.astro";
+import DashboardHeader from "../../components/dashboard/DashboardHeader.astro";
+import { DatabaseService, DatabaseError } from "../../lib/database/database-service";
+
+export const prerender = true;
+export const revalidate = 604800; // 7 days
+
+let analyticsData: any = null;
+let errorMessage: string | null = null;
+
+try {
+	analyticsData = await DatabaseService.getAnalytics();
+} catch (error) {
+	console.error("Failed to fetch analytics data:", error);
+	errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+}
+
+function formatNumber(num: number): string {
+	if (num >= 1000000) {
+		return (num / 1000000).toFixed(1) + "M";
+	} else if (num >= 1000) {
+		return (num / 1000).toFixed(1) + "K";
+	}
+	return num.toString();
+}
+
+function getGrowthClass(value: number): string {
+	return value >= 0 ? "positive" : "negative";
+}
+---
+
+<DashboardLayout>
+	<div class="analytics-dashboard">
+		<DashboardHeader 
+			title="Analytics" 
+			subtitle="Comprehensive insights into business opportunities and market trends"
+		/>
+		
+		{errorMessage && (
+			<div class="error-banner">
+				<Icon name="activity" size={20} />
+				<span>Failed to load analytics data: {errorMessage}</span>
+			</div>
+		)}
+		
+		{analyticsData && (
+			<div class="masonry-grid">
+				<Panel title="Total Opportunities" icon="grid" variant="featured">
+					<div class="metric-large">{formatNumber(analyticsData.overview.totalOpportunities)}</div>
+					<div class={`metric-growth ${getGrowthClass(analyticsData.overview.weeklyGrowth)}`}>
+						{analyticsData.overview.weeklyGrowth >= 0 ? '+' : ''}{analyticsData.overview.weeklyGrowth.toFixed(1)}% this week
+					</div>
+					<p>Active: {formatNumber(analyticsData.overview.activeOpportunities)} ({analyticsData.overview.activeOpportunityRate.toFixed(1)}%)</p>
+				</Panel>
+
+				<Panel title="Communities Tracked" icon="users">
+					<div class="metric-large">{analyticsData.overview.totalCommunities}</div>
+					<div class="progress-container">
+						<div class="progress-bar">
+							<div class="progress-fill" style={`width: ${analyticsData.overview.activeCommunities > 0 ? (analyticsData.overview.activeCommunities / analyticsData.overview.totalCommunities) * 100 : 0}%`}></div>
+						</div>
+						<span class="progress-label">{analyticsData.overview.activeCommunities} active communities</span>
+					</div>
+				</Panel>
+
+				<Panel title="Impact Distribution" icon="package" class="panel-tall">
+					<div class="impact-distribution">
+						<div class="impact-item">
+							<div class="impact-info">
+								<span class="impact-name">High Impact (8-10)</span>
+								<span class="impact-count">{analyticsData.performance.impactDistribution.high} opportunities</span>
+							</div>
+							<div class="impact-bar">
+								<div class="impact-fill high" style={`width: ${analyticsData.performance.impactDistribution.high > 0 ? Math.max((analyticsData.performance.impactDistribution.high / (analyticsData.performance.impactDistribution.high + analyticsData.performance.impactDistribution.medium + analyticsData.performance.impactDistribution.low)) * 100, 10) : 0}%`}></div>
+							</div>
+						</div>
+						<div class="impact-item">
+							<div class="impact-info">
+								<span class="impact-name">Medium Impact (5-7)</span>
+								<span class="impact-count">{analyticsData.performance.impactDistribution.medium} opportunities</span>
+							</div>
+							<div class="impact-bar">
+								<div class="impact-fill medium" style={`width: ${analyticsData.performance.impactDistribution.medium > 0 ? Math.max((analyticsData.performance.impactDistribution.medium / (analyticsData.performance.impactDistribution.high + analyticsData.performance.impactDistribution.medium + analyticsData.performance.impactDistribution.low)) * 100, 10) : 0}%`}></div>
+							</div>
+						</div>
+						<div class="impact-item">
+							<div class="impact-info">
+								<span class="impact-name">Lower Impact (1-4)</span>
+								<span class="impact-count">{analyticsData.performance.impactDistribution.low} opportunities</span>
+							</div>
+							<div class="impact-bar">
+								<div class="impact-fill low" style={`width: ${analyticsData.performance.impactDistribution.low > 0 ? Math.max((analyticsData.performance.impactDistribution.low / (analyticsData.performance.impactDistribution.high + analyticsData.performance.impactDistribution.medium + analyticsData.performance.impactDistribution.low)) * 100, 10) : 0}%`}></div>
+							</div>
+						</div>
+					</div>
+				</Panel>
+
+				<Panel title="High Impact Opportunities" icon="ai-brain" variant="compact">
+					<div class="metric-large">{analyticsData.performance.highImpactOpportunities}</div>
+					<p>Opportunities with impact score ≥ 8.0</p>
+				</Panel>
+
+				<Panel title="Market Opportunities" icon="check" variant="compact">
+					<div class="metric-large">{analyticsData.performance.validatedNeeds}</div>
+					<p>Validated business needs and market gaps</p>
+				</Panel>
+
+				<Panel title="Top Communities" icon="users" class="panel-wide">
+					<div class="communities-grid">
+						{analyticsData.communities.topCommunities.slice(0, 5).map((community: any) => (
+							<div class="community-card">
+								<div class="community-name">r/{community.name}</div>
+								<div class="community-stats">
+									<span class="opportunities">{community.opportunities} opportunities</span>
+									<span class="members">{community.subscribersFormatted} members</span>
+								</div>
+							</div>
+						))}
+					</div>
+					{analyticsData.communities.topCommunities.length === 0 && (
+						<p class="no-data">No community data available</p>
+					)}
+				</Panel>
+
+				<Panel title="Time-Sensitive Opportunities" icon="hourglass" class="panel-tall">
+					<div class="time-sensitive-panel">
+						{analyticsData.performance.timeSensitivity && analyticsData.performance.timeSensitivity.length > 0 ? (
+							<>
+								<div class="time-sensitive-grid">
+									{analyticsData.performance.timeSensitivity
+										.filter((item: any) => item.timeSensitivity && item.count > 0)
+										.sort((a: any, b: any) => {
+											const order = { 'Urgent': 0, 'Time-bound': 1, 'Moderate': 2, 'Flexible': 3 };
+											return (order[a.timeSensitivity as keyof typeof order] || 999) - (order[b.timeSensitivity as keyof typeof order] || 999);
+										})
+										.map((item: any) => {
+											const timeSensitivity = item.timeSensitivity || 'Unknown';
+											const urgencyClass = timeSensitivity.toLowerCase().replace('-', '').replace(/\s+/g, '');
+											const urgencyIcon = timeSensitivity === 'Urgent' ? '🔥' : 
+																				timeSensitivity === 'Time-bound' ? '⏰' : 
+																				timeSensitivity === 'Moderate' ? '📅' : '⏳';
+											
+											return (
+												<div class={`urgency-card ${urgencyClass}`}>
+													<div class="urgency-icon">{urgencyIcon}</div>
+													<div class="urgency-content">
+														<div class="urgency-label">{timeSensitivity}</div>
+														<div class="urgency-count">{item.count}</div>
+														<div class="urgency-description">
+															{timeSensitivity === 'Urgent' ? 'Act now - trending issues' : 
+															 timeSensitivity === 'Time-bound' ? 'Seasonal or event-based' : 
+															 timeSensitivity === 'Moderate' ? 'Plan within months' : 
+															 'Long-term opportunities'}
+														</div>
+													</div>
+												</div>
+											);
+										})
+									}
+								</div>
+								<div class="time-sensitive-summary">
+									<div class="summary-metric">
+										<span class="summary-label">Total Time-Sensitive</span>
+										<span class="summary-value">
+											{analyticsData.performance.timeSensitivity
+												.filter((item: any) => item.timeSensitivity === 'Urgent' || item.timeSensitivity === 'Time-bound')
+												.reduce((sum: number, item: any) => sum + item.count, 0)}
+										</span>
+									</div>
+									<div class="summary-note">
+										Urgent & time-bound opportunities requiring quick action
+									</div>
+								</div>
+							</>
+						) : (
+							<p class="no-data">No time sensitivity data available</p>
+						)}
+					</div>
+				</Panel>
+
+				<Panel title="Recent Activity" icon="activity" variant="compact">
+					<div class="metric-large">{analyticsData.temporal.recentActivity}</div>
+					<p>New opportunities in last 7 days</p>
+				</Panel>
+			</div>
+		)}
+
+		{!analyticsData && !errorMessage && (
+			<div class="loading-state">
+				<p>Loading analytics data...</p>
+			</div>
+		)}
+	</div>
+</DashboardLayout>
+
+<style lang="scss">
+	.analytics-dashboard {
+		max-width: 1400px;
+		margin: 0 auto;
+		width: 100%;
+	}
+
+	.error-banner {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 1rem;
+		background: rgba(239, 68, 68, 0.1);
+		border: 1px solid rgba(239, 68, 68, 0.2);
+		border-radius: 8px;
+		color: rgb(239, 68, 68);
+		margin-bottom: 1.5rem;
+		font-size: 0.875rem;
+	}
+
+	.loading-state {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: 200px;
+		color: var(--text-secondary);
+		font-style: italic;
+	}
+
+	.masonry-grid {
+		column-count: 1;
+		column-gap: 1.5rem;
+
+		@media (min-width: 768px) {
+			column-count: 2;
+		}
+
+		@media (min-width: 1200px) {
+			column-count: 3;
+		}
+
+		@media (min-width: 1600px) {
+			column-count: 4;
+		}
+
+		// Make panels break properly in columns
+		:global(.panel) {
+			break-inside: avoid;
+			margin-bottom: 1.5rem;
+			display: inline-block;
+			width: 100%;
+		}
+
+		// Panel size variations for visual interest
+		:global(.panel-wide) {
+			@media (min-width: 768px) {
+				column-span: all;
+				margin-bottom: 1.5rem;
+			}
+		}
+
+		:global(.panel-tall) {
+			// Naturally taller due to content
+		}
+
+		:global(.panel-compact) {
+			// Naturally compact due to less content
+		}
+
+		:global(.panel-featured) {
+			// Featured panels can be styled differently
+			border: 2px solid var(--accent-primary);
+			box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+		}
+	}
+
+	// Metric styling
+	.metric-large {
+		font-size: 2.5rem;
+		font-weight: 700;
+		color: var(--accent-primary);
+		margin: 0.5rem 0;
+		line-height: 1;
+	}
+
+	.metric-growth {
+		font-size: 0.875rem;
+		font-weight: 600;
+		padding: 0.25rem 0.5rem;
+		border-radius: 12px;
+		display: inline-block;
+		margin-bottom: 0.5rem;
+
+		&.positive {
+			background: rgba(34, 197, 94, 0.1);
+			color: rgb(34, 197, 94);
+		}
+
+		&.negative {
+			background: rgba(239, 68, 68, 0.1);
+			color: rgb(239, 68, 68);
+		}
+	}
+
+	// Progress bars
+	.progress-container {
+		margin-top: 1rem;
+	}
+
+	.progress-bar {
+		width: 100%;
+		height: 8px;
+		background: var(--bg-tertiary);
+		border-radius: 4px;
+		overflow: hidden;
+		margin-bottom: 0.5rem;
+	}
+
+	.progress-fill {
+		height: 100%;
+		background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+		border-radius: 4px;
+		transition: width 0.6s ease;
+	}
+
+	.progress-label {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+	}
+
+	// Impact distribution
+	.impact-distribution {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		padding: 0.5rem 0;
+	}
+
+	.impact-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.impact-info {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.impact-name {
+		font-weight: 600;
+		color: var(--text-primary);
+		font-size: 0.875rem;
+	}
+
+	.impact-count {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+	}
+
+	.impact-bar {
+		width: 100%;
+		height: 6px;
+		background: var(--bg-tertiary);
+		border-radius: 3px;
+		overflow: hidden;
+	}
+
+	.impact-fill {
+		height: 100%;
+		border-radius: 3px;
+		transition: width 0.6s ease;
+
+		&.high {
+			background: linear-gradient(90deg, #10b981, #059669);
+		}
+
+		&.medium {
+			background: linear-gradient(90deg, #f59e0b, #d97706);
+		}
+
+		&.low {
+			background: linear-gradient(90deg, #6b7280, #4b5563);
+		}
+	}
+
+	// Communities grid
+	.communities-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 1rem;
+	}
+
+	.community-card {
+		padding: 1rem;
+		background: var(--bg-tertiary);
+		border-radius: 10px;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		border: 1px solid transparent;
+
+		&:hover {
+			background: var(--bg-secondary);
+			transform: translateY(-3px) scale(1.02);
+			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+			border-color: var(--accent-primary);
+		}
+	}
+
+	.community-name {
+		font-weight: 600;
+		color: var(--text-primary);
+		margin-bottom: 0.5rem;
+	}
+
+	.community-stats {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+	}
+
+	.no-data {
+		text-align: center;
+		color: var(--text-secondary);
+		font-style: italic;
+		padding: 2rem;
+	}
+
+	// Time-Sensitive Opportunities Panel
+	.time-sensitive-panel {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.time-sensitive-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	.urgency-card {
+		display: flex;
+		gap: 1rem;
+		padding: 1.25rem;
+		background: var(--bg-tertiary);
+		border-radius: 12px;
+		border-left: 4px solid transparent;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		position: relative;
+		overflow: hidden;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: linear-gradient(135deg, transparent 0%, var(--bg-secondary) 100%);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		&:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+
+			&::before {
+				opacity: 1;
+			}
+
+			.urgency-icon {
+				transform: scale(1.2) rotate(5deg);
+			}
+		}
+
+		&.urgent {
+			border-left-color: #ef4444;
+			background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, var(--bg-tertiary) 100%);
+		}
+
+		&.timebound {
+			border-left-color: #f59e0b;
+			background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, var(--bg-tertiary) 100%);
+		}
+
+		&.moderate {
+			border-left-color: #3b82f6;
+			background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, var(--bg-tertiary) 100%);
+		}
+
+		&.flexible {
+			border-left-color: #10b981;
+			background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, var(--bg-tertiary) 100%);
+		}
+	}
+
+	.urgency-icon {
+		font-size: 2.5rem;
+		line-height: 1;
+		transition: transform 0.3s ease;
+		flex-shrink: 0;
+		position: relative;
+		z-index: 1;
+	}
+
+	.urgency-content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		position: relative;
+		z-index: 1;
+	}
+
+	.urgency-label {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--text-secondary);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	.urgency-count {
+		font-size: 2rem;
+		font-weight: 700;
+		color: var(--text-primary);
+		line-height: 1;
+	}
+
+	.urgency-description {
+		font-size: 0.8125rem;
+		color: var(--text-secondary);
+		margin-top: 0.25rem;
+		line-height: 1.4;
+	}
+
+	.time-sensitive-summary {
+		padding: 1.25rem;
+		background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+		border-radius: 10px;
+		border: 1px solid rgba(239, 68, 68, 0.2);
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		align-items: center;
+	}
+
+	.summary-metric {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.summary-label {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--text-secondary);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	.summary-value {
+		font-size: 3rem;
+		font-weight: 700;
+		color: #ef4444;
+		line-height: 1;
+		text-shadow: 0 2px 10px rgba(239, 68, 68, 0.2);
+	}
+
+	.summary-note {
+		font-size: 0.8125rem;
+		color: var(--text-secondary);
+		text-align: center;
+		font-style: italic;
+	}
+
+	// Gap insights
+	.gap-insights {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-top: 1rem;
+	}
+
+	.insight-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+	}
+
+	// Summary grid
+	.summary-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.summary-item {
+		text-align: center;
+		padding: 1.25rem;
+		background: var(--bg-tertiary);
+		border-radius: 10px;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		border: 1px solid transparent;
+
+		&:hover {
+			background: var(--bg-secondary);
+			transform: translateY(-3px) scale(1.05);
+			border-color: var(--accent-primary);
+			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+		}
+	}
+
+	.summary-value {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: var(--accent-primary);
+		margin-bottom: 0.25rem;
+	}
+
+	.summary-label {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		font-weight: 500;
+	}
+
+	// Severity list
+	.severity-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.severity-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.75rem;
+		background: var(--bg-tertiary);
+		border-radius: 6px;
+	}
+
+	.severity-name {
+		font-weight: 600;
+		color: var(--text-primary);
+		text-transform: capitalize;
+	}
+
+	.severity-count {
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+	}
+
+	// Processing stats
+	.processing-stats {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.processing-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.5rem 0;
+		border-bottom: 1px solid var(--bg-tertiary);
+
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+
+	.processing-label {
+		font-weight: 500;
+		color: var(--text-primary);
+	}
+
+	.processing-value {
+		font-weight: 600;
+		color: var(--accent-primary);
+	}
+
+	// Responsive design
+	@media (max-width: 768px) {
+		.analytics-dashboard {
+			padding: 0 1rem;
+		}
+
+		.masonry-grid {
+			column-count: 1;
+			column-gap: 1rem;
+
+			:global(.panel) {
+				margin-bottom: 1rem;
+			}
+
+			:global(.panel-wide) {
+				column-span: none;
+			}
+		}
+
+		.communities-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.summary-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
+		}
+
+		.metric-large {
+			font-size: 2rem;
+		}
+
+		.urgency-card {
+			padding: 1rem;
+			gap: 0.75rem;
+		}
+
+		.urgency-icon {
+			font-size: 2rem;
+		}
+
+		.urgency-count {
+			font-size: 1.5rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.summary-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.time-sensitive-panel {
+			gap: 1rem;
+		}
+
+		.urgency-description {
+			font-size: 0.75rem;
+		}
+	}
+
+	// Animation for panels on load with varied delays for masonry effect
+	:global(.panel) {
+		animation: fadeInScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+		opacity: 0;
+		transform: translateY(20px) scale(0.95);
+		transition: all 0.3s ease;
+
+		&:hover {
+			transform: translateY(-4px) scale(1);
+			box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+		}
+	}
+
+	:global(.panel:nth-child(1)) { animation-delay: 0.05s; }
+	:global(.panel:nth-child(2)) { animation-delay: 0.1s; }
+	:global(.panel:nth-child(3)) { animation-delay: 0.15s; }
+	:global(.panel:nth-child(4)) { animation-delay: 0.2s; }
+	:global(.panel:nth-child(5)) { animation-delay: 0.25s; }
+	:global(.panel:nth-child(6)) { animation-delay: 0.3s; }
+	:global(.panel:nth-child(7)) { animation-delay: 0.35s; }
+	:global(.panel:nth-child(8)) { animation-delay: 0.4s; }
+	:global(.panel:nth-child(9)) { animation-delay: 0.45s; }
+	:global(.panel:nth-child(10)) { animation-delay: 0.5s; }
+
+	@keyframes fadeInScale {
+		to {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+		}
+	}
+
+	// Add subtle variations to panels for organic masonry feel
+	:global(.panel:nth-child(3n+1)) {
+		// Slightly larger padding for visual variety
+	}
+
+	:global(.panel:nth-child(4n+2)) {
+		// Different timing
+		animation-duration: 0.6s;
+	}
+</style>

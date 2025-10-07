@@ -1,0 +1,85 @@
+---
+import Card from '../common/Card.astro';
+import Badge from '../common/Badge.astro';
+---
+
+<section class="features" aria-labelledby="features-heading">
+	<div class="container">
+		<header class="section-header">
+			<Badge icon="⚡" text="Powerful Features" />
+			<h2 id="features-heading">Why Choose Vantage?</h2>
+			<p>Where artificial intelligence meets entrepreneurial brilliance</p>
+		</header>
+
+		<div class="features-grid" role="list">
+			<article role="listitem">
+				<Card
+					type="feature"
+					iconName="trending-up"
+					title="Real-time Discovery"
+					description="Continuously monitor conversations across multiple platforms to capture emerging business opportunities the moment they surface in online communities."
+				/>
+			</article>
+
+			<article role="listitem">
+				<Card
+					type="feature"
+					iconName="lightbulb"
+					title="Intelligent Analysis"
+					description="Advanced AI algorithms evaluate market sentiment, demand signals, and feasibility to rank each opportunity by its potential for success."
+				/>
+			</article>
+
+			<article role="listitem">
+				<Card
+					type="feature"
+					iconName="layers"
+					title="Precision Targeting"
+					description="Filter opportunities by industry, investment requirements, complexity level, and market timing to discover ideas perfectly aligned with your goals."
+				/>
+			</article>
+		</div>
+	</div>
+</section><style lang="scss">
+	.features {
+		padding: 6rem 0;
+		background: var(--bg-primary);
+
+		.section-header {
+			text-align: center;
+			margin-bottom: 4rem;
+
+			:global(.badge) {
+				margin-bottom: 2rem;
+			}
+
+			h2 {
+				font-size: 2.5rem;
+				font-weight: 700;
+				margin-bottom: 1rem;
+			}
+
+			p {
+				font-size: 1.125rem;
+				color: var(--text-secondary);
+			}
+		}
+
+		.features-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 2rem;
+			align-items: stretch;
+			
+			article {
+				display: flex;
+				
+				> :global(.card) {
+					flex: 1;
+					display: flex;
+					flex-direction: column;
+				}
+			}
+		}
+	}
+</style>

@@ -1,0 +1,106 @@
+---
+interface Props {
+	title: string;
+	subtitle?: string;
+	showRefreshButton?: boolean;
+}
+
+const { title, subtitle, showRefreshButton = false } = Astro.props;
+---
+
+<div class="dashboard-header">
+	<div class="header-content">
+		<div class="header-text">
+			<h1>{title}</h1>
+			{subtitle && <p>{subtitle}</p>}
+		</div>
+		{showRefreshButton && (
+			<button 
+				class="refresh-button" 
+				onclick="if(window.refreshDashboard) window.refreshDashboard()"
+				title="Refresh dashboard data"
+			>
+				🔄 Refresh
+			</button>
+		)}
+	</div>
+</div>
+
+<style>
+	.dashboard-header {
+		text-align: center;
+		margin-bottom: 3rem;
+		padding: 2rem;
+		background: var(--bg-primary);
+		border-radius: 12px;
+		border: 1px solid var(--border-color);
+
+		h1 {
+			color: var(--text-primary);
+			margin-bottom: 1rem;
+			font-size: 2.5rem;
+		}
+
+		p {
+			color: var(--text-secondary);
+			font-size: 1.1rem;
+		}
+	}
+
+	.header-content {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.header-text {
+		flex: 1;
+	}
+
+	.refresh-button {
+		background: var(--accent-primary, #6366f1);
+		color: white;
+		border: none;
+		padding: 0.75rem 1.5rem;
+		border-radius: 8px;
+		font-size: 0.875rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		white-space: nowrap;
+		box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+
+		&:hover {
+			background: var(--accent-secondary, #5046e5);
+			transform: translateY(-1px);
+			box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+		}
+
+		&:active {
+			transform: translateY(0);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.dashboard-header {
+			margin-bottom: 1.5rem;
+			padding-bottom: 1rem;
+		}
+
+		.dashboard-header h1 {
+			font-size: 1.5rem;
+		}
+
+		.dashboard-header p {
+			font-size: 1rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.header-content {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.75rem;
+		}
+	}
+</style>

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/png" href="/favicon.png" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#ffffff" />
+		<meta name="description" content="Ignite your next breakthrough with Vantage - the AI-powered platform that discovers emerging business opportunities before the competition." />
+		
+		<title>Vantage - AI-Powered Business Opportunity Discovery</title>
+		
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		/* Light theme colors */
+		--bg-primary: #ffffff;
+		--bg-secondary: rgba(255, 255, 255, 0.8);
+		--bg-tertiary: #f8fafc;
+		--text-primary: #1e293b;
+		--text-secondary: #64748b;
+		--text-muted: #94a3b8;
+		--accent-primary: #3b82f6;
+		--accent-secondary: #06b6d4;
+		--accent-gradient: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+		--accent-overlay: rgba(59, 130, 246, 0.15);
+		--border-color: rgba(148, 163, 184, 0.3);
+		--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+		--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+		--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+		--gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	}
+
+	[data-theme="dark"] {
+		--bg-primary: #0a0a0a;
+		--bg-secondary: rgba(20, 20, 20, 0.8);
+		--bg-tertiary: #111827;
+		--text-primary: #f1f5f9;
+		--text-secondary: #94a3b8;
+		--text-muted: #64748b;
+		--accent-primary: #60a5fa;
+		--accent-secondary: #22d3ee;
+		--accent-gradient: linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%);
+		--accent-overlay: rgba(96, 165, 250, 0.15);
+		--border-color: rgba(148, 163, 184, 0.2);
+		--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+		--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+		--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+		--gradient-bg: linear-gradient(135deg, #1e3a8a 0%, #581c87 100%);
+	}
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+
+	* {
+		/* Webkit browsers (Chrome, Safari, Edge) */
+		&::-webkit-scrollbar {
+			width: 8px;
+			height: 8px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: var(--bg-secondary);
+			border-radius: 10px;
+			border: 1px solid var(--border-color);
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+			border-radius: 10px;
+			border: 1px solid var(--border-color);
+			transition: all 0.3s ease;
+
+			&:hover {
+				background: linear-gradient(135deg, #475569 0%, #334155 100%);
+				transform: scale(1.1);
+			}
+
+			&:active {
+				background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+			}
+		}
+
+		&::-webkit-scrollbar-corner {
+			background: var(--bg-secondary);
+		}
+
+		/* Firefox */
+		scrollbar-width: thin;
+		scrollbar-color: #64748b var(--bg-secondary);
+	}
+
+	/* Smooth scrolling behavior */
+	* {
+		scroll-behavior: smooth;
+	}
+
+	body {
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		background: var(--bg-primary);
+		background-image: 
+			linear-gradient(to right, var(--border-color) 1px, transparent 1px),
+			linear-gradient(to bottom, var(--border-color) 1px, transparent 1px),
+			radial-gradient(circle at 50% 10%, var(--accent-overlay) 8%, transparent 20%);
+		background-size: 32px 32px, 32px 32px, 100% 100%;
+		color: var(--text-primary);
+		scroll-behavior: smooth;
+		min-block-size: 100vh;
+
+		&[style*="padding"] {
+			/* Target inline styles that Clerk adds */
+			padding: 0 !important;
+		}
+	}
+
+	.container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 2rem;
+
+		@media (max-width: 768px) {
+			padding: 0 1rem;
+		}
+	}
+	/* Global button styles */
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.875rem 1.5rem;
+		border-radius: 12px;
+		font-weight: 500;
+		text-decoration: none;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: 1rem;
+		min-width: 140px;
+		justify-content: center;
+	}
+	.btn-primary {
+		background: var(--accent-gradient);
+		color: white;
+		box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+	}
+	.btn-primary:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+	}
+	.btn-secondary {
+		background: var(--bg-tertiary);
+		color: var(--text-primary);
+		border: 1px solid var(--border-color);
+	}
+	.btn-secondary:hover {
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+		border-color: var(--accent-primary);
+	}
+	@media (max-width: 768px) {
+		.btn {
+			width: 100%;
+			max-width: 280px;
+		}
+	}
+</style>
+

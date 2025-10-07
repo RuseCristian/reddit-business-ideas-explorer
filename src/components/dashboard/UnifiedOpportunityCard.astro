@@ -1,0 +1,82 @@
+---
+export interface Props {
+	id: number;
+	title: string;
+	description: string;
+	subreddit: string;
+	impactScore: number;
+	timeText: string;
+	variant?: 'default' | 'saved';
+	showRemoveButton?: boolean;
+	onRemove?: () => void;
+	source?: string;
+}
+
+const {
+	id,
+	title,
+	description,
+	subreddit,
+	impactScore,
+	timeText,
+	variant = 'default',
+	showRemoveButton = false,
+	source = 'dashboard'
+} = Astro.props;
+
+const cardClass = variant === 'saved' ? 'dashboard-opportunity-card saved' : 'dashboard-opportunity-card';
+
+// Truncate description to max 100 characters for consistency
+const truncatedDescription = description.length > 100 
+	? description.substring(0, 100) + '...'
+	: description;
+---
+
+<div class={cardClass} onclick={`viewOpportunity(${id})`}>
+	<div class="dashboard-opportunity-info">
+		<h4>{title}</h4>
+		<p class="dashboard-opportunity-description">{truncatedDescription}</p>
+		<div class="dashboard-opportunity-meta">
+			<span class="dashboard-subreddit-badge">{subreddit}</span>
+			<span class="dashboard-impact-badge">{impactScore.toFixed(1)}</span>
+			<span class="dashboard-time-info">{timeText}</span>
+		</div>
+	</div>
+	
+	{showRemoveButton ? (
+		<div class="dashboard-card-actions">
+			<button class="dashboard-remove-btn" title="Remove from saved">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M3 6h18m-2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+				</svg>
+			</button>
+			<a href={`/dashboard/business-opportunity/${id}`} class="dashboard-view-button" onclick={`event.stopPropagation(); trackActivity('viewed_opportunity', ${id}, 'opportunity', {source: '${source}'});`}>View</a>
+		</div>
+	) : (
+		<a href={`/dashboard/business-opportunity/${id}`} class="dashboard-view-button" onclick={`event.stopPropagation(); trackActivity('viewed_opportunity', ${id}, 'opportunity', {source: '${source}'});`}>View</a>
+	)}
+</div>
+
+<style lang="scss">
+	// Component-specific styles (non-global)
+	// The dashboard opportunity card styles are now in src/styles/dashboard-opportunity-cards.scss
+	
+	.dashboard-remove-btn {
+		background: none;
+		border: 1px solid var(--border-color);
+		color: var(--text-secondary);
+		padding: 0.5rem;
+		border-radius: 6px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&:hover {
+			background: #fee2e2;
+			border-color: #fca5a5;
+			color: #dc2626;
+		}
+	}
+</style>

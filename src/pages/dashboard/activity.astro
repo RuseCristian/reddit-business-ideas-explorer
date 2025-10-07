@@ -1,0 +1,552 @@
+---
+import DashboardLayout from "../../layouts/DashboardLayout.astro";
+import DashboardHeader from "../../components/dashboard/DashboardHeader.astro";
+import UnifiedOpportunityCard from "../../components/dashboard/UnifiedOpportunityCard.astro";
+import "../../styles/dashboard-opportunity-cards.scss";
+---
+
+<script>
+	// Load activity history
+	const loadActivityHistory = async () => {
+		try {
+			const response = await fetch("/api/user/activity-history");
+			
+			if (response.ok) {
+				const data = await response.json();
+				
+				if (data.success) {
+					const { activities, totalCount } = data.data;
+					updateActivityDisplay(activities, totalCount);
+				} else {
+					showEmptyState("Failed to load activity history");
+				}
+			} else if (response.status === 401) {
+				showAuthPrompt();
+			} else {
+				showEmptyState("Error loading activity");
+			}
+		} catch (error) {
+			console.log("Activity fetch failed:", error);
+			showEmptyState("Failed to load activity");
+		}
+	};
+
+	// Clear activity history
+	const clearActivityHistory = async () => {
+		if (!confirm('Are you sure you want to clear your entire activity history? This action cannot be undone.')) {
+			return;
+		}
+
+		try {
+			const response = await fetch("/api/user/activity-history", {
+				method: 'DELETE',
+			});
+			
+			if (response.ok) {
+				loadActivityHistory(); // Reload to show empty state
+			} else {
+				alert('Failed to clear activity history');
+			}
+		} catch (error) {
+			console.error("Failed to clear activity:", error);
+			alert('Failed to clear activity history');
+		}
+	};
+
+	// Update activity display
+	function updateActivityDisplay(activities: any[], totalCount: number) {
+		const container = document.querySelector('.activity-content');
+		const countElement = document.querySelector('.activity-count');
+		
+		if (countElement) {
+			countElement.textContent = `${totalCount} activities`;
+		}
+		
+		if (container && activities.length > 0) {
+			// Group activities by date
+			const groupedActivities = groupActivitiesByDate(activities);
+			
+			container.innerHTML = Object.entries(groupedActivities).map(([date, dayActivities]) => `
+				<div class="activity-group">
+					<h3 class="activity-date">${date}</h3>
+					<div class="activity-list">
+						${(dayActivities as any[]).map((activity: any) => {
+							// If it's an opportunity-related activity with details, use unified card
+							if (activity.opportunityId && activity.title && activity.description) {
+								return `
+									<div class="activity-opportunity">
+										<div class="activity-header">
+											<div class="activity-icon">${getActivityIcon(activity.activityType)}</div>
+											<div class="activity-action">
+												<strong>${getActivityActionText(activity.activityType)}</strong>
+												<span class="activity-time">${activity.timeText}</span>
+											</div>
+										</div>
+										<div class="dashboard-opportunity-card" onclick="viewOpportunity(${activity.opportunityId})">
+											<div class="dashboard-opportunity-info">
+												<h4>${activity.title}</h4>
+												<p class="dashboard-opportunity-description">${activity.description.length > 100 ? activity.description.substring(0, 100) + '...' : activity.description}</p>
+												<div class="dashboard-opportunity-meta">
+													<span class="dashboard-subreddit-badge">${activity.subreddit || 'Unknown'}</span>
+													${activity.impactScore ? `<span class="dashboard-impact-badge">${activity.impactScore.toFixed(1)}</span>` : ''}
+												</div>
+											</div>
+											<a href="/dashboard/business-opportunity/${activity.opportunityId}" class="dashboard-view-button" onclick="event.stopPropagation(); trackActivity('viewed_opportunity', ${activity.opportunityId}, 'opportunity', {source: 'activity_page'});">
+												View Details
+											</a>
+										</div>
+									</div>
+								`;
+							} else {
+								// For non-opportunity activities, use simpler format
+								return `
+									<div class="activity-item ${activity.activityType}">
+										<div class="activity-icon">
+											${getActivityIcon(activity.activityType)}
+										</div>
+										<div class="activity-details">
+											<div class="activity-title">
+												${getActivityTitle(activity)}
+											</div>
+											<div class="activity-meta">
+												<span class="activity-time">${activity.timeText}</span>
+											</div>
+										</div>
+									</div>
+								`;
+							}
+						}).join('')}
+					</div>
+				</div>
+			`).join('');
+		} else if (container) {
+			showEmptyState();
+		}
+	}
+
+	// Get action text for activities
+	function getActivityActionText(activityType: string): string {
+		switch (activityType) {
+			case 'viewed_opportunity':
+				return 'Viewed opportunity';
+			case 'saved_opportunity':
+				return 'Saved opportunity';
+			case 'unsaved_opportunity':
+				return 'Removed bookmark';
+			case 'searched':
+				return 'Searched';
+			case 'filtered':
+				return 'Applied filters';
+			default:
+				return 'Activity';
+		}
+	}
+
+	// Add global function for opportunity viewing
+	function viewOpportunity(id: number) {
+		trackActivity('viewed_opportunity', id, 'opportunity', {source: 'activity_page'});
+		window.location.href = `/dashboard/business-opportunity/${id}`;
+	}
+
+	function trackActivity(activityType: string, resourceId: number, resourceType: string, metadata: any = {}) {
+		fetch("/api/user/track-activity", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				activityType,
+				resourceId,
+				resourceType,
+				metadata,
+			}),
+		}).catch(error => console.log("Activity tracking failed:", error));
+	}
+
+	// Group activities by date
+	function groupActivitiesByDate(activities: any[]) {
+		const groups: Record<string, any[]> = {};
+		
+		activities.forEach(activity => {
+			const date = new Date(activity.timestamp).toLocaleDateString('en-US', {
+				weekday: 'long',
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric'
+			});
+			
+			if (!groups[date]) {
+				groups[date] = [];
+			}
+			groups[date].push(activity);
+		});
+		
+		return groups;
+	}
+
+	// Get activity icon
+	function getActivityIcon(activityType: string): string {
+		switch (activityType) {
+			case 'viewed_opportunity':
+				return '👁️';
+			case 'saved_opportunity':
+				return '🔖';
+			case 'unsaved_opportunity':
+				return '📝';
+			case 'searched':
+				return '🔍';
+			case 'filtered':
+				return '⚡';
+			default:
+				return '📊';
+		}
+	}
+
+	// Get activity title
+	function getActivityTitle(activity: any): string {
+		switch (activity.activityType) {
+			case 'viewed_opportunity':
+				return activity.title || 'Viewed business opportunity';
+			case 'saved_opportunity':
+				return `Saved: ${activity.title || 'business opportunity'}`;
+			case 'unsaved_opportunity':
+				return `Removed bookmark: ${activity.title || 'business opportunity'}`;
+			case 'searched':
+				return `Searched for: "${activity.metadata?.query || 'opportunities'}"`;
+			case 'filtered':
+				return `Applied filters: ${activity.metadata?.filters || 'multiple criteria'}`;
+			default:
+				return 'Activity recorded';
+		}
+	}
+
+	// Show empty state
+	function showEmptyState(message = "No activity yet") {
+		const container = document.querySelector('.activity-content');
+		if (container) {
+			container.innerHTML = `
+				<div class="empty-state">
+					<div class="empty-icon">📊</div>
+					<h3>${message}</h3>
+					<p>Your browsing activity will appear here as you explore opportunities.</p>
+					<a href="/dashboard/search" class="empty-action">Start Exploring</a>
+				</div>
+			`;
+		}
+	}
+
+	// Show auth prompt
+	function showAuthPrompt() {
+		const container = document.querySelector('.activity-content');
+		if (container) {
+			container.innerHTML = `
+				<div class="auth-prompt">
+					<p>Sign in to see your activity history</p>
+					<a href="/sign-in" class="auth-button">Sign In</a>
+				</div>
+			`;
+		}
+	}
+
+	// Make functions globally available
+	(window as any).clearActivityHistory = clearActivityHistory;
+	(window as any).viewOpportunity = viewOpportunity;
+	(window as any).trackActivity = trackActivity;
+
+	// Load activity when page loads
+	document.addEventListener('DOMContentLoaded', loadActivityHistory);
+</script>
+
+<DashboardLayout>
+	<div class="activity-page">
+		<DashboardHeader 
+			title="📊 Activity History" 
+			subtitle="Track your business opportunity exploration"
+		/>
+
+		<div class="activity-section">
+			<div class="activity-header">
+				<div class="activity-title-section">
+					<h2>Your Activity</h2>
+					<span class="activity-count">Loading...</span>
+				</div>
+				<button class="clear-activity-btn" onclick="clearActivityHistory()">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M3 6h18m-2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+					</svg>
+					Clear History
+				</button>
+			</div>
+			
+			<div class="activity-content">
+				<div class="loading-state">
+					<div class="loading-spinner"></div>
+					<p>Loading your activity...</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</DashboardLayout>
+
+<style lang="scss">
+	.activity-page {
+		max-width: 1000px;
+		margin: 0 auto;
+	}
+
+	.activity-section {
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		border-radius: 12px;
+		overflow: hidden;
+	}
+
+	.activity-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1.5rem;
+		border-bottom: 1px solid var(--border-color);
+		background: var(--bg-secondary);
+
+		.activity-title-section {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+
+			h2 {
+				color: var(--text-primary);
+				margin: 0;
+				font-size: 1.25rem;
+				font-weight: 600;
+			}
+
+			.activity-count {
+				color: var(--text-secondary);
+				font-size: 0.875rem;
+				background: var(--bg-tertiary);
+				padding: 0.5rem 1rem;
+				border-radius: 20px;
+				font-weight: 500;
+			}
+		}
+
+		.clear-activity-btn {
+			background: #fee2e2;
+			color: #dc2626;
+			border: 1px solid #fca5a5;
+			padding: 0.6rem 1rem;
+			border-radius: 8px;
+			font-size: 0.875rem;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+
+			&:hover {
+				background: #fecaca;
+				border-color: #f87171;
+				transform: translateY(-1px);
+			}
+		}
+	}
+
+	.activity-content {
+		padding: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.activity-group {
+		.activity-date {
+			color: var(--text-primary);
+			font-size: 1.1rem;
+			font-weight: 600;
+			margin: 0 0 1rem 0;
+			padding-bottom: 0.5rem;
+			border-bottom: 2px solid var(--border-color);
+		}
+
+		.activity-list {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
+	}
+
+	.activity-opportunity {
+		.activity-header {
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
+			margin-bottom: 0.75rem;
+			
+			.activity-icon {
+				font-size: 1.2rem;
+				width: 32px;
+				height: 32px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: var(--bg-tertiary);
+				border-radius: 50%;
+				flex-shrink: 0;
+			}
+			
+			.activity-action {
+				display: flex;
+				flex-direction: column;
+				gap: 0.25rem;
+				
+				strong {
+					color: var(--text-primary);
+					font-size: 0.875rem;
+				}
+				
+				.activity-time {
+					color: var(--text-secondary);
+					font-size: 0.75rem;
+					font-weight: 500;
+				}
+			}
+		}
+	}
+
+	.activity-item {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-color);
+		border-radius: 8px;
+		transition: all 0.2s ease;
+
+		&:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			border-color: var(--accent-primary);
+		}
+
+		&.viewed_opportunity {
+			border-left: 4px solid #6366f1;
+		}
+
+		&.saved_opportunity {
+			border-left: 4px solid #10b981;
+		}
+
+		&.unsaved_opportunity {
+			border-left: 4px solid #f59e0b;
+		}
+
+		&.searched {
+			border-left: 4px solid #8b5cf6;
+		}
+
+		&.filtered {
+			border-left: 4px solid #06b6d4;
+		}
+	}
+
+	.activity-icon {
+		font-size: 1.5rem;
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--bg-tertiary);
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
+	.activity-details {
+		flex: 1;
+
+		.activity-title {
+			color: var(--text-primary);
+			font-weight: 600;
+			margin-bottom: 0.5rem;
+			line-height: 1.3;
+		}
+
+		.activity-meta {
+			display: flex;
+			gap: 1rem;
+			align-items: center;
+			flex-wrap: wrap;
+
+			.activity-time {
+				color: var(--text-secondary);
+				font-size: 0.875rem;
+				font-weight: 500;
+			}
+		}
+	}
+
+	.loading-state, .empty-state, .auth-prompt {
+		text-align: center;
+		padding: 3rem 2rem;
+		color: var(--text-secondary);
+	}
+
+	.loading-spinner {
+		width: 40px;
+		height: 40px;
+		border: 3px solid var(--border-color);
+		border-top: 3px solid var(--accent-primary);
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+		margin: 0 auto 1rem;
+	}
+
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+
+	.empty-state {
+		.empty-icon {
+			font-size: 3rem;
+			margin-bottom: 1rem;
+			opacity: 0.5;
+		}
+
+		h3 {
+			margin: 0 0 0.5rem 0;
+			color: var(--text-primary);
+		}
+
+		p {
+			margin: 0 0 1.5rem 0;
+		}
+
+		.empty-action {
+			background: var(--accent-primary);
+			color: white;
+			padding: 0.75rem 1.5rem;
+			border-radius: 8px;
+			text-decoration: none;
+			font-weight: 600;
+			transition: all 0.2s ease;
+
+			&:hover {
+				background: var(--accent-secondary);
+				transform: translateY(-1px);
+			}
+		}
+	}
+
+	.auth-prompt {
+		.auth-button {
+			background: var(--accent-primary);
+			color: white;
+			padding: 0.75rem 1.5rem;
+			border-radius: 8px;
+			text-decoration: none;
+			font-weight: 600;
+		}
+	}
+</style>

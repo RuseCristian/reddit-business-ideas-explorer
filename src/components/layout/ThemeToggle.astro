@@ -1,0 +1,45 @@
+---
+import CircularButton from '../common/CircularButton.astro';
+import Icon from '../common/Icon.astro';
+---
+
+<CircularButton
+	id="theme-toggle"
+	class="theme-toggle"
+	ariaLabel="Toggle theme"
+	title="Toggle between light and dark theme"
+	label="Theme"
+>
+	<Icon name="sun" class="sun-icon" />
+	<Icon name="moon" class="moon-icon" />
+</CircularButton>
+
+<style lang="scss">
+	.theme-toggle {
+		.sun-icon,
+		.moon-icon {
+			position: absolute;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			color: var(--text-primary);
+		}
+
+		// Default state (light theme)
+		.moon-icon {
+			opacity: 0;
+			transform: rotate(90deg);
+		}
+
+		// Dark theme state
+		&.dark {
+			.sun-icon {
+				opacity: 0;
+				transform: rotate(-90deg);
+			}
+
+			.moon-icon {
+				opacity: 1;
+				transform: rotate(0deg);
+			}
+		}
+	}
+</style>

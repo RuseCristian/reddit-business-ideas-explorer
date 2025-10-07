@@ -1,0 +1,141 @@
+---
+// Hero Section Component
+import Badge from '../common/Badge.astro';
+import Icon from '../common/Icon.astro';
+---
+
+<section class="hero">
+	<div class="container">
+		<header class="hero-content">
+			<div class="badge-wrapper">
+				<Badge icon="🚀" text="AI-Powered Business Intelligence" />
+			</div>
+
+			<h1 class="hero-title">
+				Ignite Your Next
+				<span class="gradient-text">Business Vantage</span>
+				with AI-Powered Insights
+			</h1>
+
+			<p class="hero-description">
+				Transform scattered online conversations into brilliant business ideas. 
+				Vantage uses advanced AI to discover, analyze, and rank emerging opportunities 
+				from across the web, giving you the competitive edge to act first.
+			</p>
+
+			<nav class="hero-cta" aria-label="Primary actions">
+				<a href="#pricing" class="btn btn-primary" role="button">
+					<span>Start Discovering</span>
+					<Icon name="arrow-right" size={20} aria-hidden="true" />
+				</a>
+
+				<button type="button" class="btn btn-secondary">
+					<Icon name="play" size={20} aria-hidden="true" />
+					Watch Demo
+				</button>
+			</nav>
+
+			<aside class="hero-stats" aria-label="Platform statistics">
+				<div class="stat">
+					<div class="stat-number">10K+</div>
+					<div class="stat-label">Ideas Analyzed</div>
+				</div>
+				<div class="stat">
+					<div class="stat-number">95%</div>
+					<div class="stat-label">Accuracy Rate</div>
+				</div>
+				<div class="stat">
+					<div class="stat-number">24/7</div>
+					<div class="stat-label">Live Monitoring</div>
+				</div>
+			</aside>
+		</header>
+	</div>
+</section>
+
+<style lang="scss">
+	// Hero Section
+	.hero {
+		min-height: 80vh;
+		display: flex;
+		align-items: center;
+		position: relative;
+		overflow: hidden;
+		padding: 6rem 0 0;
+		justify-content: center;
+
+		.hero-content {
+			position: relative;
+			z-index: 2;
+			text-align: center;
+			color: var(--text-primary);
+		}
+
+		.badge-wrapper {
+			margin-bottom: 2rem;
+		}
+
+		.hero-title {
+			font-size: clamp(2.5rem, 5vw, 4rem);
+			font-weight: 700;
+			line-height: 1.1;
+			margin-bottom: 1.5rem;
+			color: var(--text-primary);
+
+			.gradient-text {
+				background: var(--accent-gradient);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-clip: text;
+			}
+		}
+
+		.hero-description {
+			font-size: 1.25rem;
+			line-height: 1.6;
+			max-width: 600px;
+			margin: 0 auto 2.5rem;
+			color: var(--text-secondary);
+		}
+
+		.hero-cta {
+			display: flex;
+			gap: 1rem;
+			justify-content: center;
+			margin-bottom: 4rem;
+
+			@media (max-width: 640px) {
+				flex-direction: column;
+				align-items: center;
+			}
+		}
+
+		.hero-stats {
+			display: flex;
+			gap: 3rem;
+			justify-content: center;
+
+			@media (max-width: 640px) {
+				gap: 2rem;
+			}
+
+			.stat {
+				text-align: center;
+
+				.stat-number {
+					font-size: 2rem;
+					font-weight: 700;
+					margin-bottom: 0.25rem;
+					color: var(--text-primary);
+				}
+
+				.stat-label {
+					font-size: 0.875rem;
+					color: var(--text-muted);
+				}
+			}
+		}
+	}
+
+
+</style>

@@ -1,0 +1,309 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/layout/Navbar.astro";
+import Footer from "../components/layout/Footer.astro";
+
+---
+
+<Layout>
+	<Navbar />
+	
+	<main class="error-page">
+		<div class="error-container">
+			<div class="error-content">
+				<!-- Error icon with animated decoration -->
+				<div class="error-code">
+					<span class="clock-icon">⏰</span>
+					<div class="error-decoration">
+						<div class="floating-dot dot-1"></div>
+						<div class="floating-dot dot-2"></div>
+						<div class="floating-dot dot-3"></div>
+					</div>
+				</div>
+				
+				<!-- Error message -->
+				<div class="error-message">
+					<h1 class="error-title">Clock Sync Issue Detected</h1>
+					<p class="error-description">
+						Your system clock appears to be out of sync, which is preventing proper authentication. 
+						Don't worry - this is easy to fix!
+					</p>
+				</div>
+				
+				<div class="solution-steps">
+					<h2 class="steps-title">How to fix this:</h2>
+					<div class="os-tabs">
+						<button class="tab-button active" data-os="windows">Windows</button>
+						<button class="tab-button" data-os="mac">Mac</button>
+						<button class="tab-button" data-os="linux">Linux</button>
+					</div>
+				
+				<div class="tab-content active" data-os="windows">
+					<ol>
+						<li>Right-click on the clock in your taskbar</li>
+						<li>Select "Adjust date/time"</li>
+						<li>Turn OFF "Set time automatically"</li>
+						<li>Turn ON "Set time automatically"</li>
+						<li>Click "Sync now"</li>
+					</ol>
+				</div>
+				
+				<div class="tab-content" data-os="mac">
+					<ol>
+						<li>Open System Preferences → Date & Time</li>
+						<li>Click the lock to make changes (enter password)</li>
+						<li>Uncheck "Set date and time automatically"</li>
+						<li>Check "Set date and time automatically" again</li>
+						<li>Your Mac will sync automatically</li>
+					</ol>
+				</div>
+				
+				<div class="tab-content" data-os="linux">
+					<ol>
+						<li>Open terminal</li>
+						<li>Run: <code>sudo ntpdate -s time.nist.gov</code></li>
+						<li>Or: <code>sudo systemctl restart ntp</code></li>
+					</ol>
+				</div>
+				</div>
+				
+				<div class="current-time">
+					<h3 class="time-title">Your Current Time:</h3>
+					<div class="time-display" id="current-time"></div>
+					<div class="time-info">
+						<small>Your system time is shown above for reference.</small>
+					</div>
+				</div>
+				
+				<!-- Action buttons -->
+				<div class="error-actions" id="action-buttons">
+					<button class="btn btn-primary" onclick="location.reload()">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M3 2v6h6m2 13a9 9 0 1 1 0-18 9 9 0 0 1 9 9 9 9 0 0 1-9 9z"/>
+							<path d="M12 7v5l4 2"/>
+						</svg>
+						Try Again
+					</button>
+					<a href="/" class="btn btn-secondary">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+							<polyline points="9,22 9,12 15,12 15,22"/>
+						</svg>
+						Go to Homepage
+					</a>
+				</div>
+				
+				<!-- Technical details -->
+				<div class="error-links">
+					<details class="technical-details">
+						<summary class="links-title">Technical Details</summary>
+						<p>
+							This error occurs when your system clock is significantly different from the server time. 
+							Security tokens (JWT) have strict timing requirements to prevent replay attacks. 
+							A time difference of more than a few seconds can cause authentication to fail.
+						</p>
+					</details>
+				</div>
+			</div>
+			
+			<!-- Decorative background elements -->
+			<div class="background-decoration">
+				<div class="grid-pattern"></div>
+				<div class="gradient-orb orb-1"></div>
+				<div class="gradient-orb orb-2"></div>
+			</div>
+		</div>
+	</main>
+	<Footer />
+</Layout>
+
+<style>
+@import "../styles/error-page.css";
+
+
+	.clock-icon {
+		font-size: clamp(4rem, 10vw, 8rem);
+		line-height: 1;
+		display: block;
+		filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.3));
+	}
+
+	/* Solution steps */
+	.solution-steps {
+		text-align: left;
+		margin: 2.5rem 0;
+		background: var(--bg-tertiary);
+		border-radius: 16px;
+		padding: 1.5rem;
+		border: 1px solid var(--border-color);
+	}
+
+	.steps-title {
+		color: var(--text-primary);
+		text-align: center;
+		margin-bottom: 1.5rem;
+		font-size: 1.25rem;
+		font-weight: 600;
+	}
+
+	.os-tabs {
+		display: flex;
+		justify-content: center;
+		gap: 0.5rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.tab-button {
+		padding: 0.5rem 1rem;
+		border: 1px solid var(--border-color);
+		background: var(--bg-secondary);
+		color: var(--text-secondary);
+		border-radius: 8px;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		font-weight: 500;
+	}
+
+	.tab-button.active {
+		background: var(--accent-primary);
+		color: white;
+		border-color: var(--accent-primary);
+	}
+
+	.tab-button:hover:not(.active) {
+		border-color: var(--accent-primary);
+		color: var(--text-primary);
+	}
+
+	.tab-content {
+		display: none;
+		background: var(--bg-primary);
+		padding: 1.5rem;
+		border-radius: 12px;
+		border: 1px solid var(--border-color);
+	}
+
+	.tab-content.active {
+		display: block;
+	}
+
+	.tab-content ol {
+		margin: 0;
+		padding-left: 1.5rem;
+	}
+
+	.tab-content li {
+		color: var(--text-primary);
+		margin-bottom: 0.75rem;
+		line-height: 1.6;
+	}
+
+	.tab-content code {
+		background: var(--bg-secondary);
+		padding: 0.25rem 0.5rem;
+		border-radius: 0.375rem;
+		font-family: 'JetBrains Mono', 'Courier New', monospace;
+		color: var(--accent-primary);
+		font-size: 0.875rem;
+	}
+
+	/* Current time display */
+	.current-time {
+		margin: 2.5rem 0;
+		padding: 1.5rem;
+		background: var(--bg-tertiary);
+		border-radius: 16px;
+		border: 1px solid var(--border-color);
+	}
+
+	.time-title {
+		color: var(--text-primary);
+		font-size: 1.125rem;
+		font-weight: 600;
+		margin-bottom: 1rem;
+	}
+
+	.time-display {
+		font-size: 1.75rem;
+		font-weight: 700;
+		background: var(--accent-gradient);
+		background-clip: text;
+		-webkit-background-clip: text;
+		color: transparent;
+		margin: 0.75rem 0;
+		font-family: 'JetBrains Mono', 'Courier New', monospace;
+	}
+
+	.time-info {
+		color: var(--text-muted);
+		font-size: 0.875rem;
+		line-height: 1.5;
+	}
+
+
+	/* Technical details */
+	.technical-details {
+		text-align: left;
+	}
+
+	.technical-details summary {
+		color: var(--text-secondary);
+		cursor: pointer;
+		font-weight: 500;
+		font-size: 0.875rem;
+		transition: color 0.3s ease;
+	}
+
+	.technical-details summary:hover {
+		color: var(--accent-primary);
+	}
+
+	.technical-details p {
+		color: var(--text-muted);
+		font-size: 0.875rem;
+		line-height: 1.6;
+		margin-top: 1rem;
+		padding: 1rem;
+		background: var(--bg-primary);
+		border-radius: 8px;
+		border-left: 3px solid var(--accent-primary);
+	}
+
+
+
+</style>
+
+<script>
+	// Update current time display
+	function updateTime() {
+		const timeElement = document.getElementById('current-time');
+		if (timeElement) {
+			const now = new Date();
+			timeElement.textContent = now.toLocaleString();
+		}
+	}
+	
+	// Initialize time display
+	updateTime();
+	setInterval(updateTime, 1000);
+	
+	// Handle OS tab switching
+	document.querySelectorAll('.tab-button').forEach(button => {
+		button.addEventListener('click', () => {
+			const os = button.getAttribute('data-os');
+			
+			// Update active tab button
+			document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+			button.classList.add('active');
+			
+			// Update active tab content
+			document.querySelectorAll('.tab-content').forEach(content => {
+				content.classList.remove('active');
+			});
+			const activeContent = document.querySelector(`.tab-content[data-os="${os}"]`);
+			if (activeContent) {
+				activeContent.classList.add('active');
+			}
+		});
+	});
+</script>
