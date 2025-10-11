@@ -14,17 +14,22 @@ const savedOpportunities: any[] = [];
 	declare global {
 		interface Window {
 			viewOpportunity: (opportunityId: number) => void;
-			trackActivity: (activityType: string, resourceId: number, resourceType: string, metadata?: Record<string, any>) => Promise<void>;
+			trackActivity: (
+				activityType: string,
+				resourceId: number,
+				resourceType: string,
+				metadata?: Record<string, any>,
+			) => Promise<void>;
 			refreshDashboard: () => Promise<void>;
 		}
 	}
 
 	// Activity tracking utility
 	const trackActivity = async (
-		activityType: string, 
-		resourceId: number, 
-		resourceType: string, 
-		metadata: Record<string, any> = {}
+		activityType: string,
+		resourceId: number,
+		resourceType: string,
+		metadata: Record<string, any> = {},
 	): Promise<void> => {
 		try {
 			await fetch("/api/user/track-activity", {
@@ -48,14 +53,17 @@ const savedOpportunities: any[] = [];
 		try {
 			// Add cache-busting parameter
 			const timestamp = Date.now();
-			const response = await fetch(`/api/user/dashboard-data?t=${timestamp}`);
-			
+			const response = await fetch(
+				`/api/user/dashboard-data?t=${timestamp}`,
+			);
+
 			if (response.ok) {
 				const data = await response.json();
-				
+
 				if (data.success) {
-					const { recentlyViewed, bookmarkedOpportunities, counts } = data.data;
-					
+					const { recentlyViewed, bookmarkedOpportunities, counts } =
+						data.data;
+
 					// Update Recently Viewed section
 					updateOpportunitySection("recently-viewed", {
 						title: "Recently Viewed",
@@ -65,10 +73,10 @@ const savedOpportunities: any[] = [];
 						footerLink: "/dashboard/search",
 						footerText: "View All Recent",
 					});
-					
+
 					// Update Saved Ideas section
 					updateOpportunitySection("saved-ideas", {
-						title: "Saved Ideas", 
+						title: "Saved Ideas",
 						icon: "💾",
 						count: `${counts.bookmarked} saved`,
 						opportunities: bookmarkedOpportunities,
@@ -82,7 +90,10 @@ const savedOpportunities: any[] = [];
 			} else if (response.status === 401) {
 				showAuthPrompt();
 			} else {
-				console.log("Error loading dashboard data, status:", response.status);
+				console.log(
+					"Error loading dashboard data, status:",
+					response.status,
+				);
 				showEmptyState();
 			}
 		} catch (error) {
@@ -113,36 +124,42 @@ const savedOpportunities: any[] = [];
 	}
 
 	// Function to update opportunity sections dynamically - NOW USING THE COMPONENT STRUCTURE
-	function updateOpportunitySection(sectionId: string, data: SectionData): void {
+	function updateOpportunitySection(
+		sectionId: string,
+		data: SectionData,
+	): void {
 		const section = document.querySelector(`[data-section="${sectionId}"]`);
 		if (!section) return;
 
 		// Update count
-		const countElement = section.querySelector('.section-count');
+		const countElement = section.querySelector(".section-count");
 		if (countElement) {
 			countElement.textContent = data.count;
 		}
 
 		// Update opportunities list - limit to 5 cards max
-		const listElement = section.querySelector('.section-content');
+		const listElement = section.querySelector(".section-content");
 		if (listElement && data.opportunities.length > 0) {
 			// Limit to maximum 5 opportunities for display
 			const displayOpportunities = data.opportunities.slice(0, 5);
-			
-			listElement.innerHTML = displayOpportunities.map((opp: {
-				id: number;
-				title: string;
-				description: string;
-				subreddit: string;
-				impactScore: number;
-				timeText: string;
-			}) => {
-				// Truncate description to max 100 characters
-				const truncatedDescription = opp.description.length > 100 
-					? opp.description.substring(0, 100) + '...'
-					: opp.description;
-				
-				return `
+
+			listElement.innerHTML = displayOpportunities
+				.map(
+					(opp: {
+						id: number;
+						title: string;
+						description: string;
+						subreddit: string;
+						impactScore: number;
+						timeText: string;
+					}) => {
+						// Truncate description to max 100 characters
+						const truncatedDescription =
+							opp.description.length > 100
+								? opp.description.substring(0, 100) + "..."
+								: opp.description;
+
+						return `
 					<div class="dashboard-opportunity-card" onclick="viewOpportunity(${opp.id})">
 						<div class="dashboard-opportunity-info">
 							<h4>${opp.title}</h4>
@@ -156,7 +173,9 @@ const savedOpportunities: any[] = [];
 						<a href="/dashboard/business-opportunity/${opp.id}" class="dashboard-view-button" onclick="event.stopPropagation(); trackActivity('viewed_opportunity', ${opp.id}, 'opportunity', {source: 'dashboard'});">View</a>
 					</div>
 				`;
-			}).join('');
+					},
+				)
+				.join("");
 		} else if (listElement) {
 			listElement.innerHTML = `
 				<div class="empty-section">
@@ -173,33 +192,36 @@ const savedOpportunities: any[] = [];
 			source: "dashboard",
 			timestamp: Date.now(),
 		});
-		
+
 		// Navigate to opportunity details
-		window.open(`/dashboard/business-opportunity/${opportunityId}`, "_blank");
+		window.open(
+			`/dashboard/business-opportunity/${opportunityId}`,
+			"_blank",
+		);
 	}
 
 	// Show empty state for unauthenticated or error cases
 	function showEmptyState(): void {
 		updateOpportunitySection("recently-viewed", {
 			title: "Recently Viewed",
-			icon: "👁️", 
+			icon: "👁️",
 			count: "0 items",
 			opportunities: [],
 		});
-		
+
 		updateOpportunitySection("saved-ideas", {
 			title: "Saved Ideas",
 			icon: "💾",
-			count: "0 saved", 
+			count: "0 saved",
 			opportunities: [],
 		});
 	}
 
 	// Show authentication prompt
 	function showAuthPrompt(): void {
-		const sections = document.querySelectorAll('[data-section]');
-		sections.forEach(section => {
-			const listElement = section.querySelector('.section-content');
+		const sections = document.querySelectorAll("[data-section]");
+		sections.forEach((section) => {
+			const listElement = section.querySelector(".section-content");
 			if (listElement) {
 				listElement.innerHTML = `
 					<div class="auth-prompt">
@@ -219,11 +241,10 @@ const savedOpportunities: any[] = [];
 
 <DashboardLayout>
 	<div class="dashboard-home">
-
-		<DashboardHeader 
-			title="Reddit Business Ideas Dashboard" 
+		<DashboardHeader
+			title="Reddit Business Ideas Dashboard"
 			subtitle="Discover and analyze business opportunities from Reddit communities"
-			showRefreshButton={true}
+			showRefreshButton={false}
 		/>
 
 		<!-- User Activity Sections -->
@@ -239,7 +260,7 @@ const savedOpportunities: any[] = [];
 					variant="default"
 				/>
 			</div>
-			
+
 			<div data-section="saved-ideas">
 				<OpportunitySection
 					title="Saved Ideas"
@@ -315,6 +336,16 @@ const savedOpportunities: any[] = [];
 	}
 
 	// Styles for the container only - component styles are in their own files
+
+	:global(.empty-section) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 200px;
+		text-align: center;
+		color: var(--text-secondary);
+		font-style: italic;
+	}
 
 	.quick-actions {
 		h3 {

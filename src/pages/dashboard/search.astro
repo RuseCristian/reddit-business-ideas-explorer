@@ -200,8 +200,6 @@ import DashboardHeader from "../../components/dashboard/DashboardHeader.astro";
 		overflow: hidden;
 
 		&:hover {
-			transform: translateY(-2px);
-			box-shadow: var(--shadow-md);
 			border-color: var(--accent-primary);
 		}
 
@@ -248,8 +246,6 @@ import DashboardHeader from "../../components/dashboard/DashboardHeader.astro";
 
 		&:hover {
 			background: var(--bg-secondary);
-			border-color: var(--accent-primary);
-			color: var(--accent-primary);
 			transform: translateY(-1px);
 		}
 
@@ -428,9 +424,8 @@ import DashboardHeader from "../../components/dashboard/DashboardHeader.astro";
 		transition: all 0.2s ease;
 		min-width: 44px;
 
-		&:hover:not(:disabled) {
+		&:hover:not(:disabled):not(.active) {
 			background: var(--accent-overlay);
-			border-color: var(--accent-primary);
 		}
 
 		&:disabled {

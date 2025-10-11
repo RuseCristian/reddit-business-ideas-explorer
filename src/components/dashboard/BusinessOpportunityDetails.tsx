@@ -67,6 +67,8 @@ export default function BusinessOpportunityDetails({
 	const [expandedComments, setExpandedComments] = useState<Set<string>>(
 		new Set()
 	);
+	const [isBookmarked, setIsBookmarked] = useState(false);
+	const [bookmarkLoading, setBookmarkLoading] = useState(false);
 
 	// Activity tracking hook
 	const { trackOpportunityView } = useActivityTracker();
@@ -119,6 +121,28 @@ export default function BusinessOpportunityDetails({
 			setExpandedComments(newExpanded);
 		}
 	};
+
+	// Check bookmark status
+	useEffect(() => {
+		const checkBookmarkStatus = async () => {
+			try {
+				const response = await fetch("/api/user/bookmarks");
+				if (response.ok) {
+					const data = await response.json();
+					if (data.success) {
+						const bookmarked = data.data.opportunities.some(
+							(opp: any) => opp.id === parseInt(opportunityId)
+						);
+						setIsBookmarked(bookmarked);
+					}
+				}
+			} catch (error) {
+				console.log("Failed to check bookmark status:", error);
+			}
+		};
+
+		checkBookmarkStatus();
+	}, [opportunityId]);
 
 	useEffect(() => {
 		const fetchOpportunity = async () => {
@@ -272,6 +296,44 @@ export default function BusinessOpportunityDetails({
 		}
 	};
 
+	const handleBookmarkToggle = async () => {
+		setBookmarkLoading(true);
+		try {
+			const method = isBookmarked ? "DELETE" : "POST";
+			const url = isBookmarked
+				? `/api/user/bookmarks?opportunityId=${opportunityId}`
+				: "/api/user/bookmarks";
+
+			const response = await fetch(url, {
+				method,
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: method === "POST" ? JSON.stringify({ opportunityId: parseInt(opportunityId) }) : undefined,
+			});
+
+			if (response.ok) {
+				setIsBookmarked(!isBookmarked);
+				// Track the activity
+				if (typeof window !== "undefined" && (window as any).trackActivity) {
+					await (window as any).trackActivity(
+						isBookmarked ? "unsaved_opportunity" : "saved_opportunity",
+						parseInt(opportunityId),
+						"opportunity",
+						{ source: "opportunity-details" }
+					);
+				}
+			} else {
+				alert(`Failed to ${isBookmarked ? "remove" : "save"} bookmark`);
+			}
+		} catch (error) {
+			console.error("Bookmark toggle failed:", error);
+			alert(`Failed to ${isBookmarked ? "remove" : "save"} bookmark`);
+		} finally {
+			setBookmarkLoading(false);
+		}
+	};
+
 	return (
 		<div className="analysis-dashboard">
 			{/* Back Navigation */}
@@ -283,6 +345,23 @@ export default function BusinessOpportunityDetails({
 				>
 					<span className="back-icon">←</span>
 					<span className="back-text">Back</span>
+				</button>
+				<button
+					onClick={handleBookmarkToggle}
+					className={`bookmark-button ${isBookmarked ? "bookmarked" : ""}`}
+					disabled={bookmarkLoading}
+					aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+				>
+					{bookmarkLoading ? (
+						<span className="bookmark-loading">⏳</span>
+					) : isBookmarked ? (
+						<span className="bookmark-filled">💾</span>
+					) : (
+						<span className="bookmark-empty">🔖</span>
+					)}
+					<span className="bookmark-text">
+						{isBookmarked ? "Saved" : "Save"}
+					</span>
 				</button>
 			</div>
 
