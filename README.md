@@ -1,4 +1,4 @@
-# Reddit Business Ideas Explorer - Web Application
+# Vantange - AI business Leads - Web Application
 
 > **Part 1 of 2-Part System**  
 > **Frontend & API Platform** | Complete system includes **[AI Data Pipeline →](https://github.com/RuseCristian/reddit-business-ideas-data-pipeline)** _(Python/LLM processing)_
