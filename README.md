@@ -19,7 +19,7 @@ Transform Reddit discussions into actionable business insights with AI-powered d
 
 ## System Overview
 
-**Reddit Business Ideas Explorer** is a full-stack platform that leverages AI and machine learning to discover and analyze business opportunities within Reddit community discussions. Instead of manually browsing thousands of posts, the system processes content from business-focused subreddits and transforms user pain points into structured business insights.
+**Vantage** is a full-stack platform that leverages AI and machine learning to discover and analyze business opportunities within Reddit community discussions. Instead of manually browsing thousands of posts, the system processes content from business-focused subreddits and transforms user pain points into structured business insights.
 
 ### Two-Part Architecture
 
